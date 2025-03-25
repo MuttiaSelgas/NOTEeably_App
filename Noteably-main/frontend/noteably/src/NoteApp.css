@@ -1,0 +1,378 @@
+body {
+    font-family: 'Raleway', sans-serif;
+}
+/* Back button styling */
+#back-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#back-button:hover {
+    background-color: #ff4c4c;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 10px;
+}
+
+.app-logo {
+    width: 100px;
+    margin-right: 10px;
+}
+
+.search-bar {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    margin-left: 10px;
+}
+
+.app-content {
+    display: flex;
+    flex-grow: 1;
+}
+
+/* Sidebar styling */
+.sidebar {
+    width: 200px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-right: 1px solid #ddd;
+}
+
+.sidebar-title {
+    font-size: 18px;
+    color: #1f2937;
+    margin-bottom: 20px;
+}
+
+.navigation-list {
+    list-style: none;
+    padding: 0;
+}
+
+/* Default styling for navigation items */
+.nav-item {
+    margin-bottom: 10px;
+}
+
+/* Link styling */
+.nav-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-size: 16px;
+    padding: 10px;
+    border-radius: 20px;
+    transition: background-color 0.2s, color 0.2s;
+}
+
+/* Icon styling */
+.nav-link .icon {
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+/* Colors for individual navigation items */
+.nav-item.dashboard .nav-link {
+    color: #ff6b81;
+}
+
+.nav-item.folders .nav-link {
+    color: #ffffff;
+    background-color: #ff9e7c;
+}
+
+.nav-item.todo .nav-link {
+    color: #ffc94d;
+}
+
+.nav-item.calendar .nav-link {
+    color: #5cb85c;
+}
+
+.nav-item.timer .nav-link {
+    color: #4ea8de;
+}
+
+.nav-item.settings .nav-link {
+    color: #333;
+}
+
+/* Active navigation item styling */
+.nav-item.active .nav-link {
+    background-color: #ff9e7c;
+    color: white;
+}
+
+.nav-item.active .icon {
+    color: white;
+}
+
+/* Hover effect */
+.nav-link:hover {
+    background-color: #f1f5f9;
+    color: inherit;
+}
+
+.nav-link:hover .icon {
+    color: inherit;
+}
+
+/* Sidebar list styling */
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    margin: 10px 0;
+    color: #333;
+    font-weight: bold;
+}
+
+.sidebar ul li a {
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+}
+
+.sidebar ul li a:hover {
+    color: #ff6b6b;
+}
+
+/* Notes container styling */
+.folder-container {
+    height: 100px;
+    border: 1px solid #ccc;
+    background-image: url('http://localhost:3000/ASSETS/polkadot.png');
+    background-size: cover;
+    background-position: center;
+    padding: 20px;
+    border-radius: 30px;
+    width: 100%;
+    max-width: 1500px;
+    z-index: 0;
+    position: relative;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden;
+    margin-top:50px;
+}
+
+.form-container {
+    margin-bottom: 50px;
+}
+
+.folder-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 24px;
+    color: #333;
+}
+
+.folder-header small {
+    font-size: 14px;
+    color: #999;
+    margin-left: 20px;
+    margin-top: 5px;
+}
+
+.folder-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.folder-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    padding: 8px;
+    border-radius: 100%;
+    transition: background-color 0.3s ease;
+}
+
+.folder-actions button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#back-button { color: #ff6b6b; }
+#add-button { color: #007bff; }
+#filter-button { color: #4caf50; }
+
+#add-button{
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: #ff6b6b;
+    color: white;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+/* Note cards styling */
+.notes-list {
+    display: flex;
+    flex-direction: column;
+}
+
+.note-card {
+    display: flex;
+    justify-content: space-between;
+    padding: 17px;
+    margin: 5px 0;
+    border-radius: 8px;
+    color: white;
+    position: relative;
+}
+
+.note-title {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.note-text {
+    font-size: 12px;
+    margin: 5px 0;
+}
+
+.note-content {
+    margin-top: 5px;
+}
+
+.menu-icon {
+    cursor: pointer;
+    font-size: 25px;
+}
+
+/* Dropdown menu styling */
+.dropdown {
+    position: absolute;
+    right: 10px;
+    background-color: white;
+    border-radius: 8px;
+    padding: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 120px;
+}
+
+.dropdown-button {
+    width: 100%;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.dropdown-button.edit {
+    background-color: #118AB2 !important;
+    color: white;
+}
+
+.dropdown-button.delete {
+    background-color: #EF476F !important;
+    color: white;
+}
+
+.dropdown-button:hover {
+    opacity: 1;
+    background-color: #F78C6B !important;
+    transform: translateX(2px);
+}
+
+/* Form container styling */
+.form-container {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 17px;
+    border: 1px solid lightgray;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ql-editor::placeholder {
+    color: black;
+}
+
+.ql-editor {
+    color: black;
+}
+
+.note-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.form-title {
+    flex: 1;
+    padding: 8px;
+    margin-right: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.save-button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.save-button:hover {
+    background-color: #0056b3;
+}
+
+.form-date {
+    margin-top: 10px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Dialog content with image styling */
+.dialog-content-with-image {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.dialog-icon {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.dialog-content-with-image span {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}

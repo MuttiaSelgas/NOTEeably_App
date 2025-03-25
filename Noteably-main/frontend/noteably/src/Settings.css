@@ -1,0 +1,177 @@
+.settings-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.profile-picture-section {
+    background-color: white;
+    padding: 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 20px;
+    border: 1px solid lightgray;
+    margin-bottom: 30px;
+}
+
+.current-avatar {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.current-avatar h2 {
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.current-avatar-img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 1rem;
+    border: 3px solid #118AB2;
+}
+
+.upload-section {
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.file-input {
+    display: none;
+}
+
+.upload-button {
+    background-color: #118AB2;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: inline-block;
+    transition: background-color 0.3s;
+    font-size: 0.9rem;
+}
+
+.upload-button:hover {
+    background-color: #06D6A0;
+}
+
+.avatar-gallery {
+    margin-top: 2rem;
+    text-align: center;
+}
+
+.avatar-gallery h3 {
+    color: #666;
+    margin-bottom: 1rem;
+}
+
+.avatar-options {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+}
+
+.avatar-option {
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.avatar-option:hover {
+    transform: scale(1.1);
+}
+
+.avatar-option.selected {
+    border: 3px solid #118AB2;
+}
+
+.avatar-option img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+}
+
+.settings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.settings-card {
+    background-color: white;
+    overflow: hidden;
+    border-radius: 20px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid lightgray;
+}
+
+.card-header {
+    background-color: #118AB2;
+    color: white;
+    padding: 1rem;
+}
+
+.card-header h2 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.card-content {
+    padding: 1.5rem;
+}
+
+.input-group {
+    margin-bottom: 1rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #666;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.settings-footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.save-button, .logout-button {
+    padding: 0.8rem 2rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s;
+}
+
+.save-button {
+    background-color: #06D6A0;
+    color: white;
+}
+
+.save-button:hover {
+    background-color: #05BF8F;
+}
+
+.logout-button {
+    background-color: #EF476F;
+    color: white;
+}
+
+.logout-button:hover {
+    background-color: #D63D63;
+}

@@ -1,0 +1,305 @@
+
+
+body {
+    font-family: 'Raleway', sans-serif;
+}
+
+
+.folder-app {
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid lightgray;
+    border-radius: 30px;
+    padding: 20px;
+    background-image: url('C:\\Users\\Muttia\\Downloads\\NOTEeably_IT342\\Noteably-main\\frontend\\noteably\\src\\assets\\polkadot.png');
+    box-sizing: border-box;
+    overflow: hidden;
+    z-index: 0;
+    position: relative;
+    min-height: 100vh;
+    margin-top: 50px;
+    
+    
+}
+
+.top-section {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.search-bar {
+    width: 200px;
+    padding: 10px;
+    border-radius: 20px;
+    border: 2px solid #ccc;
+    margin: 10px;
+    transition: border-color 0.3s ease;
+    height: 50px;
+    font-size: 15px;
+}
+
+.search-bar:hover {
+    border-color: #F78C6B;
+    border-width: 2px;
+}
+
+.search-bar:hover::placeholder {
+    color: #F78C6B;
+}
+
+.search-bar:focus {
+    border-color: #06D6A0;
+    outline: none;
+}
+
+.search-bar:focus::placeholder {
+    color:#06D6A0;
+}
+
+.add-btn {
+    background-color: #06D6A0;
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px;
+}
+
+.folder-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    width: 100%;
+    justify-content: flex-start;
+    
+}
+
+.folder-item {
+    position: relative;
+    width: 165px;
+    text-align: center;
+    transition: transform 0.2s ease;
+    border: none;
+}
+
+.folder-item:hover {
+    transform: translateY(-2px);
+}
+
+.folder-icon {
+    width: 170px;
+    height: 120px;
+    
+}
+
+.folder-title {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 5px;
+    font-size: 16px;
+    color: #333;
+    position: relative;
+    padding: 5px;
+    margin-left: 15px;
+    z-index: 1;
+    
+}
+
+.options-icon {
+    cursor: pointer;
+    margin-right: 0; /* Ensure no margin */
+    padding: 5px;
+    border-radius: 50%;
+    transition: background-color 0.2s ease;
+    
+}
+
+.options-icon:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+   
+}
+
+.options-dropdown {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #e0e0e0;
+    padding: 8px 0;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+    min-width: 120px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: dropdownAppear 0.2s ease forwards;
+}
+
+@keyframes dropdownAppear {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.options-dropdown button {
+    padding: 10px 15px;
+    border: none;
+    background: none;
+    cursor: pointer;
+    width: 100%;
+    text-align: left;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+    color: #333;
+    margin-right:30px;
+}
+
+.options-dropdown button:hover {
+    background-color: #f5f5f5;
+    color: #06D6A0;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    width: 300px;
+    z-index: 2001;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content form {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-content input {
+    background-color: white;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.modal-content button[type="submit"] {
+    padding: 10px;
+    background-color: #118AB2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-bottom: 10px;
+}
+
+.confirm-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 50%;
+    left: 55%;
+    transform: translate(-50%, -50%);
+    width: 500px; /* Adjust width as needed */
+    z-index: 2001; /* Ensure it appears above other elements */
+}
+
+
+.confirm-content {
+    background: white;
+    border: 2px solid lightgray; /* Border style */
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    animation: slideIn 0.3s ease-out;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.confirm-content img {
+    width: 80px;
+    height: 80px;
+    object-fit: contain;
+}
+
+.confirm-content .confirm-text {
+    flex: 1;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(100px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.confirm-content h3 {
+    margin: 0 0 15px 0;
+    color: #333;
+}
+
+.confirm-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.confirm-buttons button {
+    padding: 8px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.ok-btn {
+    background-color: #06D6A0;
+    color: white;
+}
+
+.ok-btn:hover {
+    background-color: #05bf8f;
+}
+
+.cancel-btn {
+    background-color: #ef476f;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #d63d63;
+}
+

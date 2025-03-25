@@ -1,0 +1,49 @@
+/* General button styles */
+.fc-button {
+    background-color: #118AB2 !important; /* Background color for buttons */
+    color: #ffffff !important; /* Text color */
+    border: none !important; /* Remove border */
+    border-radius: 5px !important; /* Rounded corners */
+    padding: 10px 15px !important; /* Adjust padding */
+    font-size: 14px !important; /* Text size */
+    font-weight: bold !important; /* Bold text */
+    transition: background-color 0.3s ease-in-out !important; /* Smooth hover transition */
+    box-shadow: none !important; /* Remove any shadow */
+    outline: none !important; /* Remove focus outline */
+  }
+  
+  /* Hover effect for buttons */
+  .fc-button:hover {
+    background-color: #073B4C !important; /* Darker shade on hover */
+    color: #ffffff !important; /* Keep text white */
+  }
+  
+  /* Active button (when clicked or selected) */
+  .fc-button.fc-button-active {
+    background-color: #06D6A0 !important; /* Highlighted color for active button */
+    color: #000000 !important; /* Change text color for contrast */
+  }
+  
+  /* Specific button styles */
+  .fc-today-button {
+    background-color: #FFD166 !important; /* Custom color for "Today" button */
+  }
+  
+  .fc-today-button:hover {
+    background-color: #FFA500 !important; /* Hover color for "Today" button */
+  }
+  
+  /* Toolbar layout (optional, for spacing between buttons) */
+  .fc-toolbar .fc-toolbar-chunk {
+    margin: 5px 0 !important; /* Add spacing between toolbar sections */
+  }
+  
+  /* Optional: Make the toolbar buttons larger or spaced out */
+  .fc-toolbar {
+    font-size: 16px !important; /* Adjust toolbar font size */
+  }
+  
+  .fc-button-group > .fc-button {
+    margin-right: 5px !important; /* Add spacing between grouped buttons */
+  }
+  

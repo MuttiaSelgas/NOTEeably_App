@@ -1,0 +1,24 @@
+.folder-item {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    width: 145px; /* Set a fixed width */
+    height: 145px; /* Set a fixed height */
+}
+
+.folder-icon {
+    width: 40px;
+    height: 40px;
+}
+
+.no-folder-message {
+    text-align: center;
+    color: #999;
+    background-color: white; /* White background for uniformity */
+    padding: 10px; /* Padding for spacing */
+    border-radius: 5px; /* Rounded corners */
+    width: 100%; /* Full width */
+    position: absolute; /* Positioning */
+    top: 10%; /* Adjust top position */
+}

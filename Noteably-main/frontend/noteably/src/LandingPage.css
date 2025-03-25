@@ -1,0 +1,199 @@
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    font-family: 'Arial', sans-serif;
+    background-color: #f7f8fc;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 40vh;
+    color: #ffffff;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between; /* Ensures logo and buttons are spaced apart */
+    align-items: center;
+    width: 100%; /* Make sure the header spans the full container */
+    padding: 5px 15px 5px; /* Adjust padding for more consistent spacing */
+    background: transparent; /* Remove background */
+}
+
+.logo {
+    width: 110px;
+    height: auto;
+    margin-right: auto; /* Push the logo away from the buttons */
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 15px;
+    margin-left: auto; /* Prevent buttons from sticking to the logo */
+}
+
+
+.auth-button {
+    padding: 10px 25px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.auth-button.register {
+    background-color: #EF476F;
+    color: #fff;
+}
+
+.auth-button.login {
+    background-color: #4CAF50;
+    color: #fff;
+}
+
+.auth-button.register:hover {
+    background-color: #ff5252;
+}
+
+.auth-button.login:hover {
+    background-color: #45a049;
+}
+
+/* Main Content */
+.main-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+    border: 1px solid lightgray; /* Border style */
+    border-radius: 30px; /* Rounded corners */
+    padding: 15px; /* Inner padding */
+    background-image: url('C:\\Users\\Muttia\\Downloads\\NOTEeably_IT342\\Noteably-main\\frontend\\noteably\\src\\assets\\polkadot.png');
+    background-size: cover; /* Ensure background image fills the area */
+   
+    box-sizing: border-box; /* Ensure padding and border are included in size */
+    overflow: hidden; /* Prevent overflow */
+    z-index: 0; /* Ensure it's behind other elements */
+    position: relative;
+    min-height: 90vh;
+}
+
+.content-box {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 0px 0px 30px 0px;
+    border-radius: 12px;
+    max-width: 700px;
+    width: 100%;
+    box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 2; /* Position above the background */
+    border: 2px solid lightgray; /* Border style */
+    border-radius: 30px; /* Rounded corners */
+}
+
+.welcome-image {
+    max-width: 100%; /* Prevent the image from exceeding the container width */
+    height: auto; /* Maintain aspect ratio */
+    margin-bottom: 20px; /* Add space between the image and the text */
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+}
+
+.main-logo {
+    width: 120px;
+    height: auto;
+}
+
+.main-heading {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.subtext {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.cta-text {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+    color: #333;
+}
+
+.register-button {
+    padding: 15px 40px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #fff;
+    background-color: #f58c6c;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+
+    margin-top: -10px;
+}
+
+.register-button:hover {
+    background-color: #febd59;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .main-heading {
+        font-size: 2rem;
+    }
+
+    .subtext,
+    .cta-text {
+        font-size: 1rem;
+    }
+
+    .register-button {
+        padding: 12px 30px;
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .content-box {
+        padding: 30px 15px;
+    }
+
+    .main-heading {
+        font-size: 1.8rem;
+    }
+
+    .subtext,
+    .cta-text {
+        font-size: 0.9rem;
+    }
+
+    .register-button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+
+    .logo {
+        margin-right: 15px;
+    }
+
+    .auth-buttons {
+        gap: 10px;
+        margin-left: 15px;
+    }
+}
