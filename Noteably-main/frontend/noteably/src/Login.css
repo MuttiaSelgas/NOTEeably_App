@@ -1,0 +1,183 @@
+Login css
+
+/* Reset default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body, html {
+    height: 90%;
+    width: 100%;
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.header {
+    width: 80%;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(247, 248, 252, 0.8);
+    margin-top: 10px;
+}
+
+.logo {
+    width: 100px;
+    height: auto;
+}
+
+.auth-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.auth-button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.auth-button.register {
+    background-color: #ff6b6b;
+    color: #fff;
+}
+
+.auth-button.register:hover {
+    background-color: #ff5252;
+}
+
+.auth-button.login {
+    background-color: #4caf50;
+    color: #fff;
+}
+
+.auth-button.login:hover {
+    background-color: #45a049;
+}
+
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
+    border: 1px solid lightgray; /* Border style */
+    border-radius: 30px; /* Rounded corners */
+    padding: 20px; /* Inner padding */
+    background: url('C:\Users\Muttia\Downloads\Noteably-main\Noteably-main\frontend\noteably\public\ASSETS\polkadot.png') no-repeat center center; /* Polkadot background */
+    background-size: cover; /*  Ensure background image fills the area */
+    box-sizing: border-box; /* Ensure padding and border are included in size */
+    overflow: hidden; /* Prevent overflow */
+    z-index: 0; /* Ensure it's behind other elements */
+    position: relative;
+    min-height: 87vh;
+}
+
+.login-card {
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 50px;
+    border-radius: 12px;
+    width: 350px;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    z-index: 2; /* Position above the background */
+    border: 2px solid lightgray; /* Border style */
+    border-radius: 30px; /* Rounded corners */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    justify-content: center;
+    align-items: center;
+    color: #073B4C;
+}
+
+.login-card p {
+    font-size: 14px;
+    color:#1b8eb1;
+}
+
+.login-card a {
+    text-decoration: none;
+    color: #44d49c;
+    font-weight: bold;
+}
+
+
+/* MIKU OO EE OO */
+.password-image {
+    width: 350px;
+    height: auto;
+    margin-top: -100px;
+}
+
+
+.login-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+}
+
+.login-form input {
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+.password-container {
+    position: relative;
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+
+.password-container input[type="password"],
+.password-container input[type="text"] {
+    flex-grow: 1;
+    padding-right: 35px;
+}
+
+.show-password-checkbox {
+    position: absolute;
+    right: -100px;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.forgot-password {
+    text-align: right;
+    font-size: 12px;
+    color: #555;
+    text-decoration: none;
+    align-self: flex-end;
+    margin-bottom: 10px;
+}
+
+.login-button {
+    background-color: #ffd966;
+    color: #333;
+    border-radius: 25px;
+    padding: 10px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    width: 100%;
+}
+
+.login-button:hover {
+    background-color: #ffc107;
+    background-color: #ffc107;
+}
+

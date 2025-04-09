@@ -1,0 +1,108 @@
+/* Flex container for the image and form */
+.register-content {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  max-width: 800px;
+  background-color: #fff;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
+  border: 2px solid lightgray;
+}
+
+/* Resize the image container */
+.register-image {
+  flex: 0.4; /* Adjust the width ratio of the image */
+}
+
+.register-image img {
+  width: 100%;
+  height: 100%;
+  border-radius: 19px 0 0 19px;
+  object-fit: cover;
+}
+
+/* Adjust form width */
+.register-form {
+  flex: 0.6; /* Adjust the width ratio of the form */
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #073B4C;
+}
+
+.register-form p {
+  font-size: 14px;
+  color:#1b8eb1;
+  margin-bottom: 15px;
+  margin-top: -15px;
+}
+
+.register-form a {
+  text-decoration: none;
+  color: #44d49c;
+  font-weight: bold;
+}
+
+.auth-title {
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-input {
+  padding: 12px 15px;
+  margin: 10px 0;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 16px;
+  width: 100%;
+  outline: none;
+}
+
+.auth-button {
+  padding: 12px 20px;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #ff6b6b;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.auth-button:hover {
+  background-color: #ff5252;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .register-content {
+    flex-direction: column;
+  }
+
+  .register-image {
+    flex: none; /* Reset flex property */
+    height: 200px; /* Set a fixed height for smaller screens */
+  }
+
+  .register-image img {
+    border-radius: 20px 20px 0 0;
+  }
+
+  .register-form {
+    flex: none;
+    padding: 20px; /* Adjust padding for smaller screens */
+  }
+}
+  
