@@ -12,22 +12,23 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.noteably.databinding.ActivityDashboardBinding
+import com.example.noteably.databinding.ActivityFolderBinding
 import com.example.noteably.network.APIClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class Dashboard : AppCompatActivity() {
+class Folder : AppCompatActivity() {
 
-    private lateinit var binding: ActivityDashboardBinding
+    private lateinit var binding: ActivityFolderBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
         // 🔧 First: Inflate the layout properly using ViewBinding
-        binding = ActivityDashboardBinding.inflate(layoutInflater)
+        binding = ActivityFolderBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         // 🧱 Apply padding for notches/system bars
@@ -59,13 +60,13 @@ class Dashboard : AppCompatActivity() {
 
         // 🔘 Navigation Buttons
         binding.dashboardbttn.setOnClickListener {
-            // Already on Dashboard - no action needed or reload
+            val dashboardIntent = Intent(this, Dashboard::class.java)
+            dashboardIntent.putExtra("STUDENT_ID", intent.getStringExtra("STUDENT_ID"))
+            startActivity(dashboardIntent)
         }
 
         binding.folderbttn.setOnClickListener {
-            val folderIntent = Intent(this, Folder::class.java)
-            folderIntent.putExtra("STUDENT_ID", intent.getStringExtra("STUDENT_ID"))
-            startActivity(folderIntent)
+
         }
 
         binding.todobttn.setOnClickListener {
@@ -120,25 +121,25 @@ class Dashboard : AppCompatActivity() {
     private fun fetchStudentData(studentId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                Log.d("Dashboard", "Calling API with studentId: $studentId")
+                Log.d("Folder", "Calling API with studentId: $studentId")
                 val response = APIClient.apiService.getStudent(studentId)
 
                 if (response.isSuccessful && response.body() != null) {
                     val student = response.body()
                     withContext(Dispatchers.Main) {
-                        Log.d("Dashboard", "Student fetched: name=${student?.name}, id=${student?.studentId}")
+                        Log.d("Folder", "Student fetched: name=${student?.name}, id=${student?.studentId}")
                         binding.studentName.text = student?.name ?: "No Name"
                         binding.studentId.text = student?.studentId ?: "N/A"
                     }
                 } else {
-                    Log.e("Dashboard", "Failed to load student. Code: ${response.code()}")
+                    Log.e("Folder", "Failed to load student. Code: ${response.code()}")
                     withContext(Dispatchers.Main) {
                         binding.studentName.text = "Error loading name"
                         binding.studentId.text = "Error loading ID"
                     }
                 }
             } catch (e: Exception) {
-                Log.e("Dashboard", "Error fetching student data: ${e.message}")
+                Log.e("Folder", "Error fetching student data: ${e.message}")
                 withContext(Dispatchers.Main) {
                     binding.studentName.text = "Network error"
                     binding.studentId.text = "Try again later"

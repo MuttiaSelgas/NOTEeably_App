@@ -12,38 +12,35 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.noteably.databinding.ActivityDashboardBinding
+import com.example.noteably.databinding.ActivityToDoBinding
 import com.example.noteably.network.APIClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class Dashboard : AppCompatActivity() {
+class ToDo : AppCompatActivity() {
 
-    private lateinit var binding: ActivityDashboardBinding
+    private lateinit var binding: ActivityToDoBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        // 🔧 First: Inflate the layout properly using ViewBinding
-        binding = ActivityDashboardBinding.inflate(layoutInflater)
+        binding = ActivityToDoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // 🧱 Apply padding for notches/system bars
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
         }
 
-        // 🖼️ Load default profile image
         Glide.with(this)
             .load(R.drawable.blueprofile)
             .override(140, 140)
             .into(binding.imageView)
 
-        // 🎯 Get studentId from intent
         val studentId = intent.getStringExtra("STUDENT_ID") ?: ""
         Log.d("Dashboard", "Received student ID: $studentId")
         if (studentId.isNotEmpty()) {
@@ -52,14 +49,14 @@ class Dashboard : AppCompatActivity() {
             Log.e("Dashboard", "No student ID found in intent.")
         }
 
-        // ⚙️ More button menu
         binding.moreSetting.setOnClickListener { view ->
             showPopupMenu(view)
         }
 
-        // 🔘 Navigation Buttons
         binding.dashboardbttn.setOnClickListener {
-            // Already on Dashboard - no action needed or reload
+            val dashboardIntent = Intent(this, Dashboard::class.java)
+            dashboardIntent.putExtra("STUDENT_ID", intent.getStringExtra("STUDENT_ID"))
+            startActivity(dashboardIntent)
         }
 
         binding.folderbttn.setOnClickListener {
@@ -69,9 +66,7 @@ class Dashboard : AppCompatActivity() {
         }
 
         binding.todobttn.setOnClickListener {
-            val todoIntent = Intent(this, ToDo::class.java)
-            todoIntent.putExtra("STUDENT_ID", intent.getStringExtra("STUDENT_ID"))
-            startActivity(todoIntent)
+
         }
 
         binding.calendarbttn.setOnClickListener {
@@ -93,7 +88,6 @@ class Dashboard : AppCompatActivity() {
         }
     }
 
-    // 📋 Menu popup for logout
     private fun showPopupMenu(view: View) {
         val popup = PopupMenu(this, view)
         popup.menuInflater.inflate(R.menu.menu_dashboard, popup.menu)
@@ -109,14 +103,12 @@ class Dashboard : AppCompatActivity() {
         popup.show()
     }
 
-    // 🔐 Logout and go back to MainActivity
     private fun logout() {
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 
-    // 🌐 Fetch student data from backend by custom studentId
     private fun fetchStudentData(studentId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {

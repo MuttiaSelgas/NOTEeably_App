@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.text.InputType
+import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.noteably.model.Student
@@ -12,7 +13,6 @@ import com.example.noteably.network.APIClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 
 class LoginPage : AppCompatActivity() {
@@ -53,23 +53,31 @@ class LoginPage : AppCompatActivity() {
                 override fun onResponse(call: Call<Student>, response: Response<Student>) {
                     if (response.isSuccessful) {
                         val student = response.body()
+
+                        Log.d("LoginPage", "Login successful. Student ID: ${student?.studentId}")
+
                         Toast.makeText(this@LoginPage, "Welcome ${student?.name}!", Toast.LENGTH_SHORT).show()
 
-                        // Navigate to MainPage (you can replace this with your main screen)
-                        startActivity(Intent(this@LoginPage, Dashboard::class.java))
+                        // ✅ Intent + putExtra BEFORE starting the activity
+                        val intent = Intent(this@LoginPage, Dashboard::class.java)
+                        intent.putExtra("STUDENT_ID", student?.studentId ?: "")
+                        startActivity(intent)
                         finish()
+
                     } else {
+                        Log.e("LoginPage", "Login failed: ${response.code()}")
                         Toast.makeText(this@LoginPage, "Invalid credentials", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<Student>, t: Throwable) {
+                    Log.e("LoginPage", "Login error: ${t.message}")
                     Toast.makeText(this@LoginPage, "Login failed: ${t.message}", Toast.LENGTH_LONG).show()
                 }
             })
         }
 
-        // Miku Password Toggle with Transition
+        // Miku Password Toggle with Transitions
         passwordLayout.setEndIconOnClickListener {
             if (isPasswordVisible) {
                 mikuImage.setImageResource(R.drawable.mikushow)

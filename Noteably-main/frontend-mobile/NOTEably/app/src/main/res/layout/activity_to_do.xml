@@ -7,9 +7,8 @@
     android:layout_height="match_parent"
     android:background="@drawable/polkadot_portrait"
     android:orientation="vertical"
-    tools:context=".Dashboard">
+    tools:context=".ToDo">
 
-    <!-- Top Row: Profile Picture + Student Info + More Icon -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -86,10 +85,10 @@
                 android:layout_width="100dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/red_button"
+                android:background="@drawable/red_button2"
                 android:text="dashboard"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/red"
                 android:textStyle="bold" />
 
             <Button
@@ -108,10 +107,10 @@
                 android:layout_width="100dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/yellow_button2"
+                android:background="@drawable/yellow_button"
                 android:text="to-do"
                 android:textAllCaps="false"
-                android:textColor="@color/yellow"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <Button

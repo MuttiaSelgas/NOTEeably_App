@@ -15,6 +15,6 @@ interface APIService {
     @POST("login")
     fun loginStudent(@Body credentials: Map<String, String>): Call<Student>
 
-    @GET("{id}")
-    suspend fun getStudent(@Path("id") id: String): Response<Student>
+    @GET("find/{studentId}")
+    suspend fun getStudent(@Path("studentId") studentId: String): Response<Student>
 }

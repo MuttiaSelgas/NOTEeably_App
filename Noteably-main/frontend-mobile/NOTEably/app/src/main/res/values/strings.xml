@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">NOTEably</string>
+
+    <string-array name="string_levels">
+        <item>Logout</item>
+    </string-array>
 </resources>
