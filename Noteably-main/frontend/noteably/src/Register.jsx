@@ -28,12 +28,21 @@ const Register = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        addStudent(student).then(() => {
-            navigate('/login');
-        }).catch(error => {
-            console.error('Registration failed:', error);
-            alert('Registration failed');
-        });
+
+        // Validation check to ensure no empty fields
+        if (!student.name || !student.course || !student.contactNumber || !student.email || !student.password) {
+            alert('All fields are required');
+            return;
+        }
+
+        addStudent(student)
+            .then(() => {
+                navigate('/login');
+            })
+            .catch((error) => {
+                console.error('Registration failed:', error);
+                alert('Registration failed: ' + error.response?.data?.message || error.message);
+            });
     };
 
     return (

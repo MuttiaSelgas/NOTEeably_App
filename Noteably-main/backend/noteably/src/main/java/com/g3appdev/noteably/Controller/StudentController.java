@@ -2,6 +2,10 @@ package com.g3appdev.noteably.Controller;
 
 import com.g3appdev.noteably.Entity.StudentEntity;
 import com.g3appdev.noteably.Service.StudentService;
+import com.g3appdev.noteably.Service.JWT;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import com.g3appdev.noteably.dto.StudentResponseDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +24,12 @@ public class StudentController {
 
     @Autowired
     private StudentService studentService;
+
+    @Autowired
+    private JWT jwt;
+
+    @Autowired
+    private UserDetailsService userDetailsService;
 
     // Get all students
     @GetMapping
@@ -44,15 +54,22 @@ public class StudentController {
 
     // Register a new student
     @PostMapping("/register")
-    public StudentEntity registerStudent(@RequestBody StudentEntity studentEntity) {
-        // Log sensitive information carefully: Passwords should ideally be encrypted or hidden in logs
+    public StudentResponseDto registerStudent(@RequestBody StudentEntity studentEntity) {
         System.out.println("Registering new student: " + studentEntity.getName() + 
                            ", Email: " + studentEntity.getEmail());
-        // You might still want to print the password here, but keep it safe and secure
-        // If you really need to log the password for debugging purposes (development only):
         System.out.println("Password (Plain-text for debugging): " + studentEntity.getPassword());
 
-        return studentService.registerStudent(studentEntity);
+        StudentEntity savedStudent = studentService.registerStudent(studentEntity);
+
+        StudentResponseDto response = new StudentResponseDto();
+        response.setStudentId(savedStudent.getStudentId());
+        response.setName(savedStudent.getName());
+        response.setCourse(savedStudent.getCourse());
+        response.setContactNumber(savedStudent.getContactNumber());
+        response.setEmail(savedStudent.getEmail());
+        response.setProfilePicture(savedStudent.getProfilePicture());
+
+        return response;
     }
 
     // Update an existing student
@@ -74,9 +91,31 @@ public class StudentController {
 
     // Login endpoint
     @PostMapping("/login")
-    public StudentEntity loginStudent(@RequestBody Map<String, String> credentials) {
+    public Map<String, Object> loginStudent(@RequestBody Map<String, String> credentials) {
         System.out.println("Login attempt for email: " + credentials.get("email"));
-        return studentService.loginStudent(credentials.get("email"), credentials.get("password"));
+        try {
+            StudentEntity student = studentService.loginStudent(credentials.get("email"), credentials.get("password"));
+            UserDetails userDetails = userDetailsService.loadUserByUsername(credentials.get("email"));
+            String token = jwt.generateToken(userDetails);
+            System.out.println("Generated JWT token: " + token);
+
+            StudentResponseDto response = new StudentResponseDto();
+            response.setStudentId(student.getStudentId());
+            response.setName(student.getName());
+            response.setCourse(student.getCourse());
+            response.setContactNumber(student.getContactNumber());
+            response.setEmail(student.getEmail());
+            response.setProfilePicture(student.getProfilePicture());
+
+            Map<String, Object> result = new java.util.HashMap<>();
+            result.put("token", token);
+            result.put("student", response);
+            return result;
+        } catch (RuntimeException e) {
+            System.err.println("Login error: " + e.getMessage());
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
     }
 
     // Upload profile picture
