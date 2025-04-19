@@ -10,7 +10,7 @@ import EventNoteIcon from '@mui/icons-material/EventNote';
 import Calendar from './Calendar';
 import { API_ENDPOINTS, axiosConfig } from './config/api';
 import { getImageUrl } from './studentService';
-import axios from 'axios';
+import { axiosRequest } from './studentService';
 import './antioverflow.css';
 
 // Define theme colors
@@ -28,13 +28,23 @@ function Dashboard() {
 
   useEffect(() => {
     const fetchStudentData = async () => {
-      const studentId = localStorage.getItem('studentId');
+      // const studentId = localStorage.getItem('studentId');
+      const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+      let studentId = null;
+      if (fullStudentInfo) {
+        try {
+          const studentObj = JSON.parse(fullStudentInfo);
+          studentId = studentObj.id;
+        } catch (error) {
+          console.error("Error parsing fullStudentInfo from localStorage", error);
+        }
+      }
       if (!studentId) {
         console.error("No student ID found in localStorage.");
         return;
       }
       try {
-        const response = await axios.get(API_ENDPOINTS.STUDENT.GET_BY_ID(studentId), axiosConfig);
+        const response = await axiosRequest({ method: 'get', url: API_ENDPOINTS.STUDENT.GET_BY_ID(studentId), ...axiosConfig });
         const { studentId: apiStudentId, name, profilePicture } = response.data;
         setStudentData({ 
           studentId: apiStudentId, 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { axiosRequest } from './studentService';
 import { Box, Typography, Checkbox } from '@mui/material';
 
 const apiUrl = "http://localhost:8080/api/TodoList";
@@ -9,13 +9,23 @@ const ToDoListWidget = () => {
 
     // Fetch ToDo Items
     const fetchToDoItems = async () => {
-        const studentId = localStorage.getItem('studentId');
+        // const studentId = localStorage.getItem('studentId');
+        const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+        let studentId = null;
+        if (fullStudentInfo) {
+            try {
+                const studentObj = JSON.parse(fullStudentInfo);
+                studentId = studentObj.id;
+            } catch (error) {
+                console.error("Error parsing fullStudentInfo from localStorage", error);
+            }
+        }
         if (!studentId) {
             console.error("Student ID is not available.");
             return;
         }
         try {
-            const response = await axios.get(`${apiUrl}/getByStudent/${studentId}`);
+            const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
             setToDoItems(response.data);
         } catch (error) {
             console.error("Error fetching ToDo items", error);

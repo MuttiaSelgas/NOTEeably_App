@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import { axiosRequest } from './studentService';
 import { Box, Typography, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -12,13 +12,19 @@ const TimerListWidget = () => {
 
     // Fetch Timer List
     const fetchTimers = async () => {
-        const studentId = localStorage.getItem('studentId');
+        const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+        if (!fullStudentInfo) {
+            console.error("Full student info is not available.");
+            return;
+        }
+        const studentObj = JSON.parse(fullStudentInfo);
+        const studentId = studentObj.id; // numeric ID expected by backend
         if (!studentId) {
-            console.error("Student ID is not available.");
+            console.error("Numeric student ID is not available.");
             return;
         }
         try {
-            const response = await axios.get(`${apiUrl}/getByStudent/${studentId}`);
+            const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
             setTimerList(response.data);
         } catch (error) {
             console.error("Error fetching timers:", error);

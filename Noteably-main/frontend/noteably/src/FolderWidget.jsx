@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Axios from 'axios';
+import { axiosRequest } from './studentService';
 import { Box, Typography, Paper } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import './FolderWidget.css'; // Ensure you have a CSS file for styling
@@ -13,13 +13,23 @@ const FolderWidget = () => {
         navigate(`/noteApp/${folderId}`);
     };
     const url = "http://localhost:8080/api/folders";
-    const studentId = localStorage.getItem('studentId');
+    // const studentId = localStorage.getItem('studentId');
+    const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+    let studentId = null;
+    if (fullStudentInfo) {
+        try {
+            const studentObj = JSON.parse(fullStudentInfo);
+            studentId = studentObj.id;
+        } catch (error) {
+            console.error("Error parsing fullStudentInfo from localStorage", error);
+        }
+    }
     const [folders, setFolders] = useState([]);
 
     useEffect(() => {
         const fetchFolders = async () => {
             try {
-                const res = await Axios.get(`${url}/getByStudent/${studentId}`);
+                const res = await axiosRequest({ method: 'get', url: `${url}/getByStudent/${studentId}` });
                 setFolders(res.data);
             } catch (error) {
                 console.error("Error fetching folders:", error);

@@ -1,11 +1,11 @@
-import axios from 'axios';
+import { axiosInstance } from '../studentService';
 
 const BASE_URL = 'http://localhost:8080/api/timer';
 
 const timerService = {
     getAllTimers: async () => {
         try {
-            const response = await axios.get(`${BASE_URL}/getAll`);
+            const response = await axiosInstance.get(`${BASE_URL}/getAll`);
             return response.data;
         } catch (error) {
             throw error;
@@ -14,7 +14,7 @@ const timerService = {
 
     getTimerById: async (timerID) => {
         try {
-            const response = await axios.get(`${BASE_URL}/get/${timerID}`);
+            const response = await axiosInstance.get(`${BASE_URL}/get/${timerID}`);
             return response.data;
         } catch (error) {
             throw error;
@@ -23,7 +23,7 @@ const timerService = {
 
     createTimer: async (timerData) => {
         try {
-            const response = await axios.post(`${BASE_URL}/create`, timerData);
+            const response = await axiosInstance.post(`${BASE_URL}/create`, timerData);
             return response.data;
         } catch (error) {
             throw error;
@@ -32,7 +32,7 @@ const timerService = {
 
     updateTimer: async (timerID, timerData) => {
         try {
-            const response = await axios.put(`${BASE_URL}/update/${timerID}`, timerData);
+            const response = await axiosInstance.put(`${BASE_URL}/update/${timerID}`, timerData);
             return response.data;
         } catch (error) {
             throw error;
@@ -41,7 +41,7 @@ const timerService = {
 
     deleteTimer: async (timerID) => {
         try {
-            const response = await axios.delete(`${BASE_URL}/delete/${timerID}`);
+            const response = await axiosInstance.delete(`${BASE_URL}/delete/${timerID}`);
             return response.data;
         } catch (error) {
             throw error;
@@ -50,7 +50,7 @@ const timerService = {
 
     restartTimer: async (timerID) => {
         try {
-            const response = await axios.put(`${BASE_URL}/restart/${timerID}`);
+            const response = await axiosInstance.put(`${BASE_URL}/restart/${timerID}`);
             return response.data;
         } catch (error) {
             throw error;
@@ -59,7 +59,7 @@ const timerService = {
 
     getTimersByStudentId: async (studentId) => {
         try {
-            const response = await axios.get(`${BASE_URL}/getByStudent/${studentId}`);
+            const response = await axiosInstance.get(`${BASE_URL}/getByStudent/${studentId}`);
             return response.data;
         } catch (error) {
             throw error;
@@ -68,7 +68,7 @@ const timerService = {
 
     startTimer: async (timerID) => {
         try {
-            const response = await axios.post(`${BASE_URL}/start/${timerID}`);
+            const response = await axiosInstance.post(`${BASE_URL}/start/${timerID}`);
             return response.data;
         } catch (error) {
             throw error;

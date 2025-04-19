@@ -29,15 +29,27 @@ const axiosInstance = axios.create({
 axiosInstance.interceptors.request.use(
     (config) => {
         const token = getAuthToken();
+        console.log('Axios Interceptor: token from localStorage:', token);
         if (token) {
             config.headers['Authorization'] = `Bearer ${token}`;
+            console.log('Axios Interceptor: Authorization header set');
         } else {
             delete config.headers['Authorization'];
+            console.log('Axios Interceptor: Authorization header deleted');
         }
         return config;
     },
     (error) => Promise.reject(error)
 );
+
+// Wrapper function to make requests only if token exists
+export const axiosRequest = async (config) => {
+    const token = getAuthToken();
+    if (!token) {
+        throw new Error('No auth token found. Please login.');
+    }
+    return axiosInstance(config);
+};
 
 export const addStudent = async (studentData) => {
     try {

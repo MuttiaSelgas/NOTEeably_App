@@ -7,7 +7,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { axiosRequest } from '../studentService';
 import './TimerSetup.css';
 
 function TimerSetup() {
@@ -22,12 +22,22 @@ function TimerSetup() {
   const [minutes, setMinutes] = useState('00');
   const [seconds, setSeconds] = useState('00');
   const navigate = useNavigate();
-  const studentId = localStorage.getItem('studentId');
+  // const studentId = localStorage.getItem('studentId');
+  const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+  let studentId = null;
+  if (fullStudentInfo) {
+    try {
+      const studentObj = JSON.parse(fullStudentInfo);
+      studentId = studentObj.id;
+    } catch (error) {
+      console.error("Error parsing fullStudentInfo from localStorage", error);
+    }
+  }
 
   // CRUD
   const fetchTimers = async () => {
     try {
-        const response = await axios.get(`${url}/getByStudent/${studentId}`);
+        const response = await axiosRequest({ method: 'get', url: `${url}/getByStudent/${studentId}` });
         setTimerList(response.data);
     } catch (error) {
         console.error("Error fetching timers:", error);
@@ -40,10 +50,10 @@ function TimerSetup() {
       hours: parseInt(hours || '0', 10),
       minutes: parseInt(minutes || '0', 10),
       seconds: parseInt(seconds || '0', 10),
-      studentId: parseInt(studentId, 10)
+      studentId: studentId
   };
   try {
-      const response = await axios.post(`${url}/create`, formattedTimer);
+      const response = await axiosRequest({ method: 'post', url: `${url}/create`, data: formattedTimer });
       setTimerList([...timerList, response.data]);
   } catch (error) {
       console.error("Error adding timer:", error);
@@ -70,7 +80,7 @@ function TimerSetup() {
             studentId: parseInt(studentId, 10)
         };
         try {
-            const response = await axios.put(`${url}/update/${timerToEdit.timerID}`, updatedTimer);
+        const response = await axiosRequest({ method: 'put', url: `${url}/update/${timerToEdit.timerID}`, data: updatedTimer });
             setTimerList(timerList.map((timer) => 
                 timer.timerID === timerToEdit.timerID ? response.data : timer
             ));

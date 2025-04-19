@@ -43,6 +43,12 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         System.out.println("JWTAuthFilter: Request URI: " + path);
         System.out.println("JWTAuthFilter: Authorization header: " + authHeader);
 
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("Authorization header must be provided and start with Bearer");
+            return;
+        }
+
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwtToken = authHeader.substring(7);
             System.out.println("JWTAuthFilter: Token extracted from header: " + jwtToken);

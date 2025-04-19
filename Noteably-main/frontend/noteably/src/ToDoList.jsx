@@ -1,12 +1,22 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import axios from 'axios';
+import { axiosRequest } from './studentService';
 import { IconButton, Box, Typography, TextField, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import { Edit, Delete, Add } from '@mui/icons-material';
 
 const apiUrl = "http://localhost:8080/api/TodoList";
 
 function ToDoList() {
-  const studentId = localStorage.getItem('studentId'); // Get studentId from local storage
+  // const studentId = localStorage.getItem('studentId'); // Get studentId from local storage
+  const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+  let studentId = null;
+  if (fullStudentInfo) {
+    try {
+      const studentObj = JSON.parse(fullStudentInfo);
+      studentId = studentObj.id; // numeric ID expected by backend
+    } catch (error) {
+      console.error("Error parsing fullStudentInfo from localStorage", error);
+    }
+  }
   const [toDoItems, setToDoItems] = useState([]);
   const [schedules, setSchedules] = useState([]); // Added to manage schedules
   const [formData, setFormData] = useState({ title: "", description: "", scheduleId: "" }); // Added scheduleId
@@ -21,7 +31,7 @@ function ToDoList() {
       return;
     }
     try {
-      const response = await axios.get(`${apiUrl}/getByStudent/${studentId}`); // Fetch ToDo items by studentId
+      const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` }); // Fetch ToDo items by studentId
       setToDoItems(sortItems(response.data));
     } catch (error) {
       console.error("Error fetching ToDo items", error);
@@ -35,7 +45,7 @@ function ToDoList() {
       return;
     }
     try {
-      const response = await axios.get("http://localhost:8080/api/schedules/getByStudent/" + studentId); // Fetch schedules by studentId
+      const response = await axiosRequest({ method: 'get', url: "http://localhost:8080/api/schedules/getByStudent/" + studentId }); // Fetch schedules by studentId
       setSchedules(response.data);
     } catch (error) {
       console.error("Error fetching schedules", error);
@@ -58,9 +68,9 @@ function ToDoList() {
       const url = isUpdating ? `${apiUrl}/putList/${selectedId}` : `${apiUrl}/postListRecord`;
       const method = isUpdating ? "put" : "post";
 
-      const toDoData = { ...formData, studentId: parseInt(studentId, 10) }; // Include studentId
+      const toDoData = { ...formData, studentId: studentId }; // Include numeric studentId
 
-      await axios({
+      await axiosRequest({
         method,
         url,
         data: toDoData,
@@ -83,7 +93,7 @@ function ToDoList() {
         console.error("Cannot delete item: ID is undefined");
         return;
       }
-      await axios.delete(`${apiUrl}/deleteList/${id}`);
+      await axiosRequest({ method: 'delete', url: `${apiUrl}/deleteList/${id}` });
       fetchToDoItems();
     } catch (error) {
       console.error("Error deleting ToDo item:", error);

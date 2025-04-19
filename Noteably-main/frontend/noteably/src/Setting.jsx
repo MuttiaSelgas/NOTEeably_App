@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getImageUrl, uploadProfilePicture } from './studentService';
+import { getImageUrl, uploadProfilePicture, axiosRequest } from './studentService';
 import { IconButton, Box } from '@mui/material';
 import './Settings.css';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import Visibility from '@mui/icons-material/Visibility'; 
 import VisibilityOff from '@mui/icons-material/VisibilityOff'; 
 
@@ -36,13 +35,23 @@ function SettingsPage() {
 
     const fetchStudentData = useCallback(async () => {
         try {
-            const studentId = localStorage.getItem('studentId');
+            // const studentId = localStorage.getItem('studentId');
+            const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+            let studentId = null;
+            if (fullStudentInfo) {
+                try {
+                    const studentObj = JSON.parse(fullStudentInfo);
+                    studentId = studentObj.id;
+                } catch (error) {
+                    console.error("Error parsing fullStudentInfo from localStorage", error);
+                }
+            }
             if (!studentId) {
                 navigate('/login');
                 return;
             }
 
-            const response = await axios.get(`http://localhost:8080/api/students/${studentId}`);
+            const response = await axiosRequest({ method: 'get', url: `http://localhost:8080/api/students/${studentId}` });
             const studentData = response.data;
             setStudent((prevState) => ({
                 ...prevState,
@@ -74,7 +83,21 @@ function SettingsPage() {
         if (!file) return;
 
         try {
-            const studentId = localStorage.getItem('studentId');
+            // const studentId = localStorage.getItem('studentId');
+            const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+            let studentId = null;
+            if (fullStudentInfo) {
+                try {
+                    const studentObj = JSON.parse(fullStudentInfo);
+                    studentId = studentObj.id;
+                } catch (error) {
+                    console.error("Error parsing fullStudentInfo from localStorage", error);
+                }
+            }
+            if (!studentId) {
+                console.error('Student ID not found for profile picture upload');
+                return;
+            }
             const response = await uploadProfilePicture(studentId, file);
 
             setStudent(prev => ({
@@ -94,10 +117,26 @@ function SettingsPage() {
                 return;
             }
 
-            const studentId = localStorage.getItem('studentId');
-            await axios.put(
-                `http://localhost:8080/api/students/${studentId}`,
-                {
+            // const studentId = localStorage.getItem('studentId');
+            const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+            let studentId = null;
+            if (fullStudentInfo) {
+                try {
+                    const studentObj = JSON.parse(fullStudentInfo);
+                    studentId = studentObj.id;
+                } catch (error) {
+                    console.error("Error parsing fullStudentInfo from localStorage", error);
+                }
+            }
+            if (!studentId) {
+                setAlertMessage('Student ID not found. Please login again.');
+                setIsAlertVisible(true);
+                return;
+            }
+            await axiosRequest({
+                method: 'put',
+                url: `http://localhost:8080/api/students/${studentId}`,
+                data: {
                     name: student.name,
                     course: student.course,
                     contactNumber: student.contactNumber,
@@ -105,10 +144,8 @@ function SettingsPage() {
                     password: student.newPassword && student.newPassword.trim() !== '' ? student.newPassword : undefined,
                     profilePicture: student.profilePicture,
                 },
-                {
-                    headers: { 'Content-Type': 'application/json' },
-                }
-            );
+                headers: { 'Content-Type': 'application/json' },
+            });
 
             setAlertMessage('Changes saved successfully!');
             setIsAlertVisible(true);

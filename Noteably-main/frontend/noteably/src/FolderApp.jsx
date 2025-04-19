@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Axios from 'axios';
+import { axiosRequest } from './studentService';
 import { getAuthToken } from './studentService';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
@@ -8,7 +8,17 @@ import './FolderApp.css';
 function FolderApp() {
     const url = "http://localhost:8080/api/folders";
     const navigate = useNavigate();
-    const studentId = localStorage.getItem('studentId');
+    // const studentId = localStorage.getItem('studentId');
+    const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+    let studentId = null;
+    if (fullStudentInfo) {
+        try {
+            const studentObj = JSON.parse(fullStudentInfo);
+            studentId = studentObj.id;
+        } catch (error) {
+            console.error("Error parsing fullStudentInfo from localStorage", error);
+        }
+    }
 
     const [data, setData] = useState({
         folderId: "",
@@ -45,12 +55,7 @@ function FolderApp() {
 
     const fetchFolders = async () => {
         try {
-            const token = getAuthToken();
-            const res = await Axios.get(`${url}/getByStudent/${studentId}`, {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            });
+            const res = await axiosRequest({ method: 'get', url: `${url}/getByStudent/${studentId}` });
             setFolders(res.data);
         } catch (error) {
             console.error("Error fetching folders:", error);
@@ -60,16 +65,10 @@ function FolderApp() {
     const submit = async (e) => {
         e.preventDefault();
         try {
-            const token = getAuthToken();
             const postUrl = `${url}/postFolderRecord`;
-            const folderData = { ...data, studentId: parseInt(studentId, 10) };
+            const folderData = { ...data, studentId: studentId };
             
-            await Axios.post(postUrl, folderData, { 
-                headers: { 
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                } 
-            });
+            await axiosRequest({ method: 'post', url: postUrl, data: folderData });
             setData({ folderId: "", title: "", dashboardId: 1 });
             setIsModalOpen(false);
             fetchFolders();
@@ -81,16 +80,10 @@ function FolderApp() {
 
     const handleConfirmedUpdate = async () => {
         try {
-            const token = getAuthToken();
             const putUrl = `${url}/putFolderDetails/${data.folderId}`;
-            const folderData = { ...data, studentId: parseInt(studentId, 10) };
+            const folderData = { ...data, studentId: studentId };
             
-            await Axios.put(putUrl, folderData, { 
-                headers: { 
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${token}`,
-                } 
-            });
+            await axiosRequest({ method: 'put', url: putUrl, data: folderData });
             setData({ folderId: "", title: "", dashboardId: 1 });
             setShowRenameConfirm(false);
             setIsModalOpen(false);
