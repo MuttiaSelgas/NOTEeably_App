@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
+import { axiosRequest } from './studentService';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './NoteApp.css';
@@ -65,7 +66,7 @@ function NoteApp() {
 
     const fetchFolderDetails = async () => {
         try {
-            const response = await Axios.get(`${folderUrl}/${folderId}`);
+            const response = await axiosRequest({ method: 'get', url: `${folderUrl}/${folderId}` });
             setFolderTitle(response.data.title);
         } catch (error) {
             console.error("Error fetching folder details:", error);
@@ -75,7 +76,7 @@ function NoteApp() {
 
     const fetchNotes = async () => {
         try {
-            const response = await Axios.get(`${folderUrl}/${folderId}/notes`);
+            const response = await axiosRequest({ method: 'get', url: `${folderUrl}/${folderId}/notes` });
             setNotes(response.data);
         } catch (error) {
             console.error("Error fetching notes:", error);
@@ -102,7 +103,7 @@ function NoteApp() {
 
         // Only handle new note creation here
         try {
-            await Axios({
+            await axiosRequest({
                 method: "post",
                 url: `${url}/postnoterecord`,
                 data: {
@@ -151,7 +152,7 @@ function NoteApp() {
 
     const confirmEdit = async () => {
         try {
-            await Axios({
+            await axiosRequest({
                 method: "put",
                 url: `${url}/putNoteDetails/${editingNoteId}`,
                 data: {
@@ -173,7 +174,7 @@ function NoteApp() {
 
     const confirmDelete = async () => {
         try {
-            await Axios.delete(`${url}/deleteNoteDetails/${selectedNote.noteId}`);
+            await axiosRequest({ method: 'delete', url: `${url}/deleteNoteDetails/${selectedNote.noteId}` });
             fetchNotes();
             setShowDeleteConfirm(false);
             setSelectedNote(null);

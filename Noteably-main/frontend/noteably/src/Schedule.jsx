@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { axiosRequest } from './studentService';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -35,7 +36,7 @@ function Schedule() {
 
   const fetchSchedules = async () => {
     try {
-      const response = await axios.get(`${apiUrl}/getByStudent/${studentId}`); // Fetch schedules by studentId
+      const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` }); // Fetch schedules by studentId
       setSchedules(response.data);
     } catch (error) {
       console.error("Error fetching schedules", error);
@@ -44,7 +45,7 @@ function Schedule() {
 
   const fetchToDoItems = async () => {
     try {
-      const response = await axios.get("http://localhost:8080/api/TodoList/getByStudent/" + studentId); // Fetch ToDo items by studentId
+      const response = await axiosRequest({ method: 'get', url: "http://localhost:8080/api/TodoList/getByStudent/" + studentId }); // Fetch ToDo items by studentId
       setToDoItems(response.data);
     } catch (error) {
       console.error("Error fetching ToDo items", error);
@@ -76,7 +77,7 @@ function Schedule() {
   
       const scheduleData = { ...formData, studentId: parseInt(studentId, 10) }; // Include studentId
   
-      await axios({ method, url, data: scheduleData, headers: { "Content-Type": "application/json" } });
+      await axiosRequest({ method, url, data: scheduleData, headers: { "Content-Type": "application/json" } });
       setFormData({ title: "", priority: "moderate", startDate: "", endDate: "", colorCode: "", todoListIds: [] });
       setIsEditMode(false);
       setSelectedId(null);
@@ -95,7 +96,7 @@ function Schedule() {
 
   const deleteSchedule = async (id) => {
     try {
-      await axios.delete(`${apiUrl}/deleteSched/${id}`);
+      await axiosRequest({ method: 'delete', url: `${apiUrl}/deleteSched/${id}` });
       fetchSchedules();
       setOpenDeleteDialog(false);
       setScheduleToDelete(null);
@@ -140,7 +141,7 @@ const handleEdit = (schedule) => {
   const addNewToDo = async () => {
     try {
       const newToDoData = { ...newToDo, studentId: parseInt(studentId, 10) }; // Include studentId
-      const response = await axios.post("http://localhost:8080/api/TodoList/postListRecord", { ...newToDoData, scheduleId: selectedId });
+      const response = await axiosRequest({ method: 'post', url: "http://localhost:8080/api/TodoList/postListRecord", data: { ...newToDoData, scheduleId: selectedId } });
       setNewToDo({ title: "", description: "" });
       setOpenToDoDialog(false);
       fetchToDoItems();

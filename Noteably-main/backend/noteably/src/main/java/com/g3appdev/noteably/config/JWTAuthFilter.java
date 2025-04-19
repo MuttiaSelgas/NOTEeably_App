@@ -30,11 +30,13 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        // Skip JWT check for login and register endpoints
-        if (path.equals("/api/students/login") || path.equals("/api/students/register")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
+    // Skip JWT check for login and register endpoints and uploads static resources
+    if (path.equals("/api/students/login") || path.equals("/api/students/register") || path.startsWith("/uploads/")) {
+        filterChain.doFilter(request, response);
+        return;
+    }
+
+    // You can add other public endpoints here if needed, but currently all other endpoints require JWT auth
 
         final String authHeader = request.getHeader("Authorization");
         String jwtToken = null;

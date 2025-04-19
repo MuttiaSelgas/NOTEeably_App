@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
-import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText, TextField } from '@mui/material';
-import { Dashboard as DashboardIcon, Folder, Timer as TimerIcon, Assignment as ToDoIcon, Event as CalendarIcon, Settings ,CheckCircle,} from '@mui/icons-material';
+import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
+import { Dashboard as DashboardIcon, Folder, Timer as TimerIcon, Assignment as ToDoIcon, Event as CalendarIcon, Settings } from '@mui/icons-material';
 import Dashboard from './Dashboard';
 import Schedule from './Schedule';
 import FolderApp from './FolderApp';
@@ -9,10 +9,13 @@ import NoteApp from './NoteApp';
 import TimerSetup from './Timer/TimerSetup';
 import TimerRunning from './Timer/TimerRunning';
 import ToDoList from './ToDoList';
+/* eslint-disable no-unused-vars */
 import Login from './Login';
 import Register from './Register';
-import LandingPage from './LandingPage';
 import SettingsPage from './Setting';
+import PrivateRoute from './PrivateRoute';
+
+const LandingPage = React.lazy(() => import('./LandingPage'));
 
 // Define theme colors
 const themeColors = {
@@ -82,7 +85,6 @@ function App() {
               />
             </Link>
           </Box>
-
           <List>
             <SidebarItem to="/dashboard" icon={<DashboardIcon />} text="Dashboard" color={themeColors.primary} />
             <SidebarItem to="/folders" icon={<Folder />} text="Folders" color={themeColors.secondary} />
@@ -94,20 +96,41 @@ function App() {
         </Drawer>
       )}
       <Box component="main" sx={{ flexGrow: 1, p: 3, backgroundColor: '#f0f0f0' }}>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/folders" element={<FolderApp />} />
-          <Route path="/notes" element={<NoteApp />} />
-          <Route path="/schedule" element={<Schedule />} />
-          <Route path="/timer" element={<TimerSetup />} />
-          <Route path="/running" element={<TimerRunning />} />
-          <Route path="/todo" element={<ToDoList />} />
-          <Route path="/settings" element={<SettingsPage />} />
-          <Route path="/noteApp/:folderId" element={<NoteApp />} />
-        </Routes>
+        <Suspense fallback={<div>Loading...</div>}>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/dashboard" element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            } />
+            <Route path="/folders" element={
+              <PrivateRoute>
+                <FolderApp />
+              </PrivateRoute>
+            } />
+            <Route path="/todo" element={
+              <PrivateRoute>
+                <ToDoList />
+              </PrivateRoute>
+            } />
+            <Route path="/schedule" element={
+              <PrivateRoute>
+                <Schedule />
+              </PrivateRoute>
+            } />
+            <Route path="/timer" element={
+              <PrivateRoute>
+                <TimerSetup />
+              </PrivateRoute>
+            } />
+            <Route path="/running" element={<TimerRunning />} />
+            <Route path="/settings" element={<SettingsPage />} />
+            <Route path="/noteApp/:folderId" element={<NoteApp />} />
+          </Routes>
+        </Suspense>
       </Box>
     </Box>
   );
