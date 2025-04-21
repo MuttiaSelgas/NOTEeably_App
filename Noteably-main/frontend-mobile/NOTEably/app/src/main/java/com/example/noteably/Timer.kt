@@ -12,6 +12,7 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.noteably.databinding.ActivityTimerBinding
+import com.example.noteably.model.Student
 import com.example.noteably.network.APIClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -40,12 +41,15 @@ class Timer : AppCompatActivity() {
             .override(140, 140)
             .into(binding.imageView)
 
-        val studentId = intent.getStringExtra("STUDENT_ID") ?: ""
-        Log.d("Dashboard", "Received student ID: $studentId")
-        if (studentId.isNotEmpty()) {
-            fetchStudentData(studentId)
+        val student = intent.getParcelableExtra<Student>("student")
+        if (student != null) {
+            Log.d("Dashboard", "Loaded student: ${student?.name} (${student?.studentId})")
+            binding.studentName.text = student.name
+            binding.studentId.text = student.studentId
         } else {
-            Log.e("Dashboard", "No student ID found in intent.")
+            Log.e("Dashboard", "No student found in intent")
+            binding.studentName.text = "N/A"
+            binding.studentId.text = "N/A"
         }
 
         binding.moreSetting.setOnClickListener { view ->
@@ -54,25 +58,25 @@ class Timer : AppCompatActivity() {
 
         binding.dashboardbttn.setOnClickListener {
             val dashboardIntent = Intent(this, Dashboard::class.java)
-            dashboardIntent.putExtra("STUDENT_ID", intent.getStringExtra("STUDENT_ID"))
+            dashboardIntent.putExtra("student", student)
             startActivity(dashboardIntent)
         }
 
         binding.folderbttn.setOnClickListener {
             val folderIntent = Intent(this, Folder::class.java)
-            folderIntent.putExtra("STUDENT_ID", intent.getStringExtra("STUDENT_ID"))
+            folderIntent.putExtra("student", student)
             startActivity(folderIntent)
         }
 
         binding.todobttn.setOnClickListener {
             val todoIntent = Intent(this, ToDo::class.java)
-            todoIntent.putExtra("STUDENT_ID", intent.getStringExtra("STUDENT_ID"))
+            todoIntent.putExtra("student", student)
             startActivity(todoIntent)
         }
 
         binding.calendarbttn.setOnClickListener {
             val calendarIntent = Intent(this, Calendar::class.java)
-            calendarIntent.putExtra("STUDENT_ID", intent.getStringExtra("STUDENT_ID"))
+            calendarIntent.putExtra("student", student)
             startActivity(calendarIntent)
         }
 
@@ -82,7 +86,7 @@ class Timer : AppCompatActivity() {
 
         binding.settingsbttn.setOnClickListener {
             val settingsIntent = Intent(this, Settings::class.java)
-            settingsIntent.putExtra("STUDENT_ID", intent.getStringExtra("STUDENT_ID"))
+            settingsIntent.putExtra("student", student)
             startActivity(settingsIntent)
         }
     }

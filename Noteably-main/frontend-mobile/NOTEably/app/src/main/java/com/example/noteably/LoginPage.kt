@@ -8,6 +8,7 @@ import android.text.InputType
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.noteably.model.LoginResponse
 import com.example.noteably.model.Student
 import com.example.noteably.network.APIClient
 import retrofit2.Call
@@ -49,66 +50,93 @@ class LoginPage : AppCompatActivity() {
 
             val credentials = mapOf("email" to email, "password" to password)
 
-            APIClient.apiService.loginStudent(credentials).enqueue(object : Callback<Student> {
-                override fun onResponse(call: Call<Student>, response: Response<Student>) {
-                    if (response.isSuccessful) {
-                        val student = response.body()
+            APIClient.apiService.loginStudent(credentials)
+                .enqueue(object : Callback<LoginResponse> {
+                    override fun onResponse(
+                        call: Call<LoginResponse>,
+                        response: Response<LoginResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val loginResponse = response.body()
+                            val student = loginResponse?.student
 
-                        Log.d("LoginPage", "Login successful. Student ID: ${student?.studentId}")
+                            Log.d(
+                                "LoginPage",
+                                "Login successful. Student ID: ${student?.studentId}"
+                            )
+                            Toast.makeText(
+                                this@LoginPage,
+                                "Welcome ${student?.name}!",
+                                Toast.LENGTH_SHORT
+                            ).show()
 
-                        Toast.makeText(this@LoginPage, "Welcome ${student?.name}!", Toast.LENGTH_SHORT).show()
+                            if (student != null) {
+                                Log.d("LoginPage", "Login successful. Sending student: ${student.name} (${student.studentId})")
 
-                        // ✅ Intent + putExtra BEFORE starting the activity
-                        val intent = Intent(this@LoginPage, Dashboard::class.java)
-                        intent.putExtra("STUDENT_ID", student?.studentId ?: "")
-                        startActivity(intent)
-                        finish()
+                                val intent = Intent(this@LoginPage, Dashboard::class.java)
+                                intent.putExtra("student", student)  // sending full Student object
+                                startActivity(intent)
+                                finish()
+                            } else {
+                                Log.e("LoginPage", "Student object is null in login response")
+                                Toast.makeText(this@LoginPage, "Failed to load student data", Toast.LENGTH_SHORT).show()
+                            }
 
-                    } else {
-                        Log.e("LoginPage", "Login failed: ${response.code()}")
-                        Toast.makeText(this@LoginPage, "Invalid credentials", Toast.LENGTH_SHORT).show()
+                        } else {
+                            Log.e("LoginPage", "Login failed: ${response.code()}")
+                            Toast.makeText(
+                                this@LoginPage,
+                                "Invalid credentials",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                }
 
-                override fun onFailure(call: Call<Student>, t: Throwable) {
-                    Log.e("LoginPage", "Login error: ${t.message}")
-                    Toast.makeText(this@LoginPage, "Login failed: ${t.message}", Toast.LENGTH_LONG).show()
-                }
-            })
-        }
+                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                        Log.e("LoginPage", "Login error: ${t.message}")
+                        Toast.makeText(
+                            this@LoginPage,
+                            "Login failed: ${t.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
 
-        // Miku Password Toggle with Transitions
-        passwordLayout.setEndIconOnClickListener {
-            if (isPasswordVisible) {
-                mikuImage.setImageResource(R.drawable.mikushow)
-            } else {
-                mikuImage.setImageResource(R.drawable.mikuhide)
-            }
-
-            isPasswordVisible = !isPasswordVisible
-
-            handler.postDelayed({
+            // Miku Password Toggle with Transitions
+            passwordLayout.setEndIconOnClickListener {
                 if (isPasswordVisible) {
-                    mikuImage.setImageResource(R.drawable.mikuhidetransition)
-                } else {
-                    mikuImage.setImageResource(R.drawable.mikushowtransition)
-                }
-            }, 150)
-
-            handler.postDelayed({
-                mikuImage.setImageResource(R.drawable.mikuinbetween)
-            }, 300)
-
-            handler.postDelayed({
-                if (isPasswordVisible) {
-                    passwordField.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
                     mikuImage.setImageResource(R.drawable.mikushow)
                 } else {
-                    passwordField.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
                     mikuImage.setImageResource(R.drawable.mikuhide)
                 }
-                passwordField.setSelection(passwordField.text?.length ?: 0)
-            }, 500)
+
+                isPasswordVisible = !isPasswordVisible
+
+                handler.postDelayed({
+                    if (isPasswordVisible) {
+                        mikuImage.setImageResource(R.drawable.mikuhidetransition)
+                    } else {
+                        mikuImage.setImageResource(R.drawable.mikushowtransition)
+                    }
+                }, 150)
+
+                handler.postDelayed({
+                    mikuImage.setImageResource(R.drawable.mikuinbetween)
+                }, 300)
+
+                handler.postDelayed({
+                    if (isPasswordVisible) {
+                        passwordField.inputType =
+                            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                        mikuImage.setImageResource(R.drawable.mikushow)
+                    } else {
+                        passwordField.inputType =
+                            InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+                        mikuImage.setImageResource(R.drawable.mikuhide)
+                    }
+                    passwordField.setSelection(passwordField.text?.length ?: 0)
+                }, 500)
+            }
         }
     }
 }
