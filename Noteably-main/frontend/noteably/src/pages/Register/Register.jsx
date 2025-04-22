@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { addStudent } from './studentService';
+import { addStudent } from '../../services/studentService';
 import { Link } from 'react-router-dom';
 import './Register.css';
 import Visibility from '@mui/icons-material/Visibility'; // Import MUI icon for showing password

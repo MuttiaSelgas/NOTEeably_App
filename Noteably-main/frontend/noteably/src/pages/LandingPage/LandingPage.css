@@ -78,7 +78,7 @@ body, html {
     border: 1px solid lightgray; /* Border style */
     border-radius: 30px; /* Rounded corners */
     padding: 15px; /* Inner padding */
-    background-image: url('../public/ASSETS/polkadot.png');
+    background-image: url('/ASSETS/polkadot.png');
     background-size: cover; /* Ensure background image fills the area */
    
     box-sizing: border-box; /* Ensure padding and border are included in size */

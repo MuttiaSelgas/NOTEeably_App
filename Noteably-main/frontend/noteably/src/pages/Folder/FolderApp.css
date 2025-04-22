@@ -12,7 +12,7 @@ body {
     border: 1px solid lightgray;
     border-radius: 30px;
     padding: 20px;
-    background-image: url('../public/ASSETS/polkadot.png');
+    background-image: url('/ASSETS/polkadot.png');
     box-sizing: border-box;
     overflow: hidden;
     z-index: 0;

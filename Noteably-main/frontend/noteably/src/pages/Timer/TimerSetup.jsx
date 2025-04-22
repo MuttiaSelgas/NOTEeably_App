@@ -9,7 +9,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
-import { axiosRequest } from '../studentService';
+import { axiosRequest } from '../../services/studentService';
 import './TimerSetup.css';
 
 function TimerSetup() {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { getImageUrl, uploadProfilePicture, axiosRequest } from './studentService';
+import { getImageUrl, uploadProfilePicture, axiosRequest } from '../../services/studentService';
 import { IconButton, Box } from '@mui/material';
 import './Settings.css';
 import { useNavigate } from 'react-router-dom';

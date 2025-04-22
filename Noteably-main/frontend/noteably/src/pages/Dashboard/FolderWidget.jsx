@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { axiosRequest } from './studentService';
+import { axiosRequest } from '../../services/studentService';
 import { Box, Typography, Paper } from '@mui/material';
 import FolderIcon from '@mui/icons-material/Folder';
 import './FolderWidget.css'; // Ensure you have a CSS file for styling

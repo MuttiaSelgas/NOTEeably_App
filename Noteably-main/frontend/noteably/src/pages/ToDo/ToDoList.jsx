@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import { axiosRequest } from './studentService';
+import { axiosRequest } from '../../services/studentService';
 import { IconButton, Box, Typography, TextField, Button, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Select, MenuItem, InputLabel, FormControl } from '@mui/material';
 import { Edit, Delete, Add } from '@mui/icons-material';
 

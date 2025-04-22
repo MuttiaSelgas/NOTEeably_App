@@ -7,11 +7,11 @@ import TimerIcon from '@mui/icons-material/Timer';
 import FolderIcon from '@mui/icons-material/Folder';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EventNoteIcon from '@mui/icons-material/EventNote';
-import Calendar from './Calendar';
-import { API_ENDPOINTS, axiosConfig } from './config/api';
-import { getImageUrl } from './studentService';
-import { axiosRequest } from './studentService';
-import './antioverflow.css';
+import Calendar from '../Calendar/Calendar';
+import { API_ENDPOINTS, axiosConfig } from '../../config/api';
+import { getImageUrl } from '../../services/studentService';
+import { axiosRequest } from '../../services/studentService';
+import '../../antioverflow.css';
 
 // Define theme colors
 const themeColors = {

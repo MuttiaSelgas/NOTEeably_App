@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Axios from 'axios';
-import { axiosRequest } from './studentService';
+import { axiosRequest } from '../../services/studentService';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import './NoteApp.css';
 
-import './FolderApp.css'; // Import FolderApp styles for consistency
+import '../Folder/FolderApp.css'; // Import FolderApp styles for consistency
 
 // Confirmation Dialog Component
 const ConfirmationDialog = ({ isOpen, message, onConfirm, onCancel }) => {

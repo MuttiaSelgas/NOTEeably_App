@@ -154,7 +154,7 @@ body {
 .folder-container {
     height: 100px;
     border: 1px solid #ccc;
-    background-image: url('../public/ASSETS/polkadot.png');
+    background-image: url('/ASSETS/polkadot.png');
     background-size: cover;
     background-position: center;
     padding: 20px;

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { axiosRequest } from './studentService';
+import { axiosRequest } from '../../services/studentService';
 import { Box, Typography, List, ListItem, ListItemText, IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';

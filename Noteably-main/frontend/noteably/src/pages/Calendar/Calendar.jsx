@@ -4,7 +4,7 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import axios from 'axios';
-import KanbanBoard from './KanbanBoard';
+import KanbanBoard from '../../KanbanBoard';
 import { Box, Tabs, Tab } from '@mui/material';
 
 const apiUrl = "http://localhost:8080/api/schedules"; 

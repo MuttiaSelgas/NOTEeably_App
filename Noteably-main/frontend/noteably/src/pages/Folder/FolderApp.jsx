@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Axios from 'axios';
-import { axiosRequest } from './studentService';
-import { getAuthToken } from './studentService';
+import { axiosRequest } from '../../services/studentService';
+import { getAuthToken } from '../../services/studentService';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { useNavigate } from 'react-router-dom';
 import './FolderApp.css';

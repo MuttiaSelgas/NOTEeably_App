@@ -2,21 +2,21 @@ import React, { Suspense } from 'react';
 import { Routes, Route, Link, useLocation } from 'react-router-dom';
 import { Box, Drawer, List, ListItem, ListItemIcon, ListItemText } from '@mui/material';
 import { Dashboard as DashboardIcon, Folder, Timer as TimerIcon, Assignment as ToDoIcon, Event as CalendarIcon, Settings } from '@mui/icons-material';
-import Dashboard from './Dashboard';
-import Schedule from './Schedule';
-import FolderApp from './FolderApp';
-import NoteApp from './NoteApp';
-import TimerSetup from './Timer/TimerSetup';
-import TimerRunning from './Timer/TimerRunning';
-import ToDoList from './ToDoList';
-/* eslint-disable no-unused-vars */
-import Login from './Login';
-import Register from './Register';
-import SettingsPage from './Setting';
+
+// ✅ Updated imports based on your new folder structure
+import Dashboard from './pages/Dashboard/Dashboard';
+import Schedule from './pages/Calendar/Schedule';
+import FolderApp from './pages/Folder/FolderApp';
+import NoteApp from './pages/Notes/NoteApp';
+import TimerSetup from './pages/Timer/TimerSetup';
+import TimerRunning from './pages/Timer/TimerRunning';
+import ToDoList from './pages/Dashboard/ToDoListWidget';
+import Login from './pages/Login/Login';
+import Register from './pages/Register/Register';
+import SettingsPage from './pages/Setting/Setting';
 import PrivateRoute from './PrivateRoute';
 
-const LandingPage = React.lazy(() => import('./LandingPage'));
-
+const LandingPage = React.lazy(() => import('./pages/LandingPage/LandingPage'));
 // Define theme colors
 const themeColors = {
   primary: "#EF476F",

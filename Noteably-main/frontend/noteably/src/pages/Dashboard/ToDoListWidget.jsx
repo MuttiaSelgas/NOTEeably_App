@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { axiosRequest } from './studentService';
+import { axiosRequest } from '../../services/studentService';
 import { Box, Typography, Checkbox } from '@mui/material';
 
 const apiUrl = "http://localhost:8080/api/TodoList";
