@@ -6,34 +6,41 @@ import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
-import com.example.noteably.databinding.ActivityCalendarBinding
+import com.example.noteably.databinding.ActivityAddToDoBinding
 import com.example.noteably.model.Student
+import com.example.noteably.model.ToDoRequest
 import com.example.noteably.api_client.APIClient
+import com.example.noteably.api_client.ToDoAPIClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class Calendar : AppCompatActivity() {
+class AddToDo : AppCompatActivity() {
 
-    private lateinit var binding: ActivityCalendarBinding
+    private lateinit var binding: ActivityAddToDoBinding
+    private var student: Student? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-
-        binding = ActivityCalendarBinding.inflate(layoutInflater)
+        binding = ActivityAddToDoBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+        // Get student data from intent
+        student = intent.getParcelableExtra("student")
+        if (student != null) {
+            binding.studentName.text = student?.name
+            binding.studentId.text = student?.studentId
+        } else {
+            binding.studentName.text = "N/A"
+            binding.studentId.text = "N/A"
         }
 
         Glide.with(this)
@@ -41,54 +48,108 @@ class Calendar : AppCompatActivity() {
             .override(140, 140)
             .into(binding.imageView)
 
-        val student = intent.getParcelableExtra<Student>("student")
-        if (student != null) {
-            Log.d("Dashboard", "Loaded student: ${student?.name} (${student?.studentId})")
-            binding.studentName.text = student.name
-            binding.studentId.text = student.studentId
-        } else {
-            Log.e("Dashboard", "No student found in intent")
-            binding.studentName.text = "N/A"
-            binding.studentId.text = "N/A"
+        ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
         }
 
-        binding.moreSetting.setOnClickListener { view ->
-            showPopupMenu(view)
+        // Handle create task button
+        binding.addTaskBttn.setOnClickListener {
+            createTask()
         }
 
+        // Back button
+        binding.backTask.setOnClickListener {
+            finish()
+        }
+
+        // Navigation buttons
         binding.dashboardbttn.setOnClickListener {
             val dashboardIntent = Intent(this, Dashboard::class.java)
             dashboardIntent.putExtra("student", student)
             startActivity(dashboardIntent)
         }
-
         binding.folderbttn.setOnClickListener {
             val folderIntent = Intent(this, Folder::class.java)
             folderIntent.putExtra("student", student)
             startActivity(folderIntent)
         }
-
         binding.todobttn.setOnClickListener {
-            val todoIntent = Intent(this, ToDo::class.java)
-            todoIntent.putExtra("student", student)
-            startActivity(todoIntent)
+            // Stay in current activity
         }
-
         binding.calendarbttn.setOnClickListener {
-
+            val calendarIntent = Intent(this, Calendar::class.java)
+            calendarIntent.putExtra("student", student)
+            startActivity(calendarIntent)
         }
-
         binding.timerbttn.setOnClickListener {
             val timerIntent = Intent(this, Timer::class.java)
             timerIntent.putExtra("student", student)
             startActivity(timerIntent)
         }
-
         binding.settingsbttn.setOnClickListener {
             val settingsIntent = Intent(this, Settings::class.java)
             settingsIntent.putExtra("student", student)
             startActivity(settingsIntent)
         }
+
+        binding.moreSetting.setOnClickListener { view ->
+            showPopupMenu(view)
+        }
+    }
+
+    private fun createTask() {
+        val title = binding.inputTitle.text.toString().trim()
+        val schedule = binding.inputSchedule.text.toString().trim()
+        val description = binding.inputDescription.text.toString().trim()
+
+        if (title.isEmpty() || description.isEmpty()) {
+            Toast.makeText(this, "Please fill in the title and description", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val studentId = student?.studentId ?: run {
+            Toast.makeText(this, "Missing student ID", Toast.LENGTH_SHORT).show()
+            return
+        }
+
+        val dummySchedule = if (schedule.isEmpty()) "2025-01-01" else schedule
+
+        val request = ToDoRequest(
+            studentId = studentId,
+            title = title,
+            schedule = dummySchedule,
+            description = description
+        )
+
+        CoroutineScope(Dispatchers.IO).launch {
+            try {
+                // Use ToDoAPIClient that includes AuthInterceptor with token
+                val response = ToDoAPIClient.getApiService(this@AddToDo).addTask(request)
+
+                withContext(Dispatchers.Main) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(this@AddToDo, "Task added successfully!", Toast.LENGTH_SHORT).show()
+                        finish()
+                    } else {
+                        Toast.makeText(this@AddToDo, "Failed to add task: ${response.code()}", Toast.LENGTH_SHORT).show()
+                        Log.e("AddToDo", "Error response: ${response.errorBody()?.string()}")
+                    }
+                }
+            } catch (e: Exception) {
+                withContext(Dispatchers.Main) {
+                    Toast.makeText(this@AddToDo, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+                }
+                Log.e("AddToDo", "Exception during task creation", e)
+            }
+        }
+    }
+
+    private fun goToActivity(cls: Class<*>) {
+        val intent = Intent(this, cls)
+        intent.putExtra("student", student)
+        startActivity(intent)
     }
 
     private fun showPopupMenu(view: View) {

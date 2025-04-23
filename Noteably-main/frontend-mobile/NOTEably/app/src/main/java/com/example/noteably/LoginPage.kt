@@ -9,8 +9,8 @@ import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.noteably.model.LoginResponse
+import com.example.noteably.api_client.APIClient
 import com.example.noteably.model.Student
-import com.example.noteably.network.APIClient
 import com.google.android.material.textfield.TextInputEditText
 import retrofit2.Call
 import retrofit2.Callback
@@ -40,26 +40,23 @@ class LoginPage : AppCompatActivity() {
             finish()
         }
 
+        // Password visibility toggle logic
         passwordLayout.setEndIconOnClickListener {
             // First, show the initial image depending on the current state
             if (isPasswordVisible) {
-                // Password is currently visible, going to hide it
-                mikuImage.setImageResource(R.drawable.mikushow)  // Show initial image (mikushow)
+                mikuImage.setImageResource(R.drawable.mikushow)  // Show mikushow initially
             } else {
-                // Password is currently hidden, going to unhide it
-                mikuImage.setImageResource(R.drawable.mikuhide)  // Show initial image (mikuhide)
+                mikuImage.setImageResource(R.drawable.mikuhide)  // Show mikuhide initially
             }
 
             // Toggle the visibility flag
             isPasswordVisible = !isPasswordVisible
 
-            // Transition sequence with images (adding transition images)
+            // Transition sequence with images (keeping transition intact)
             handler.postDelayed({
                 if (isPasswordVisible) {
-                    // If unhide action
                     mikuImage.setImageResource(R.drawable.mikuhidetransition)  // Transition to in-between
                 } else {
-                    // If hide action
                     mikuImage.setImageResource(R.drawable.mikushowtransition)  // Transition to in-between
                 }
             }, 150)
@@ -84,79 +81,67 @@ class LoginPage : AppCompatActivity() {
                 // Move the cursor to the end of the text
                 passwordEditText.setSelection(passwordEditText.text?.length ?: 0)
             }, 500)
+        }
 
-            // Login Button Clicked
-            loginButton.setOnClickListener {
-                val email = emailField.text.toString().trim()
-                val password = passwordField.text.toString().trim()
+        // Login Button Clicked
+        loginButton.setOnClickListener {
+            val email = emailField.text.toString().trim()
+            val password = passwordField.text.toString().trim()
 
-                if (email.isEmpty() || password.isEmpty()) {
-                    Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT)
-                        .show()
-                    return@setOnClickListener
-                }
+            if (email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT)
+                    .show()
+                return@setOnClickListener
+            }
 
-                val credentials = mapOf("email" to email, "password" to password)
+            val credentials = mapOf("email" to email, "password" to password)
 
-                APIClient.apiService.loginStudent(credentials)
-                    .enqueue(object : Callback<LoginResponse> {
-                        override fun onResponse(
-                            call: Call<LoginResponse>,
-                            response: Response<LoginResponse>
-                        ) {
-                            if (response.isSuccessful) {
-                                val loginResponse = response.body()
-                                val student = loginResponse?.student
+            APIClient.apiService.loginStudent(credentials)
+                .enqueue(object : Callback<LoginResponse> {
+                    override fun onResponse(
+                        call: Call<LoginResponse>,
+                        response: Response<LoginResponse>
+                    ) {
+                        if (response.isSuccessful) {
+                            val loginResponse = response.body()
 
-                                Log.d(
-                                    "LoginPage",
-                                    "Login successful. Student ID: ${student?.studentId}"
+                            if (loginResponse != null && loginResponse.student != null) {
+                                val student = loginResponse.student
+                                val jwtToken = loginResponse.jwtToken
+
+                                Log.d("LoginPage", "Login successful. Student ID: ${student.studentId}")
+                                Toast.makeText(this@LoginPage, "Welcome ${student.name}!", Toast.LENGTH_SHORT).show()
+
+                                val studentWithToken = Student(
+                                    studentId = student.studentId,
+                                    name = student.name,
+                                    course = student.course,
+                                    contactNumber = student.contactNumber,
+                                    email = student.email,
+                                    profilePicture = student.profilePicture,
+                                    jwtToken = jwtToken
                                 )
-                                Toast.makeText(
-                                    this@LoginPage,
-                                    "Welcome ${student?.name}!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
 
-                                if (student != null) {
-                                    Log.d(
-                                        "LoginPage",
-                                        "Login successful. Sending student: ${student.name} (${student.studentId})"
-                                    )
-
-                                    val intent = Intent(this@LoginPage, Dashboard::class.java)
-                                    intent.putExtra("student", student)
-                                    startActivity(intent)
-                                    finish()
-                                } else {
-                                    Log.e("LoginPage", "Student object is null in login response")
-                                    Toast.makeText(
-                                        this@LoginPage,
-                                        "Failed to load student data",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-
+                                val intent = Intent(this@LoginPage, Dashboard::class.java)
+                                intent.putExtra("student", studentWithToken)
+                                startActivity(intent)
+                                finish()
                             } else {
-                                Log.e("LoginPage", "Login failed: ${response.code()}")
-                                Toast.makeText(
-                                    this@LoginPage,
-                                    "Invalid credentials",
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                Log.e("LoginPage", "Student object is null in login response")
+                                Toast.makeText(this@LoginPage, "Failed to load student data", Toast.LENGTH_SHORT).show()
                             }
                         }
+                    }
 
-                        override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                            Log.e("LoginPage", "Login error: ${t.message}")
-                            Toast.makeText(
-                                this@LoginPage,
-                                "Login failed: ${t.message}",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    })
-            }
+                    override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
+                        Log.e("LoginPage", "Login error: ${t.message}")
+                        Toast.makeText(
+                            this@LoginPage,
+                            "Login failed: ${t.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                })
         }
     }
 }

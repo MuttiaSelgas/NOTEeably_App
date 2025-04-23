@@ -1,4 +1,4 @@
-package com.example.noteably.network
+package com.example.noteably.api_service
 
 import com.example.noteably.model.LoginResponse
 import com.example.noteably.model.RegisterRequest

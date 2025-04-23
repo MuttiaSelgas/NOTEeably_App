@@ -1,10 +1,11 @@
-package com.example.noteably.network
+package com.example.noteably.api_client
 
+import com.example.noteably.api_service.APIService
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object APIClient {
-    private const val BASE_URL = "http://10.0.2.2:8080/api/students/"
+    internal const val BASE_URL = "http://10.0.2.2:8080/api/students/"
 
     val apiService: APIService by lazy {
         Retrofit.Builder()
@@ -12,13 +13,5 @@ object APIClient {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(APIService::class.java)
-    }
-
-    val todoApiService: ToDoAPIService by lazy {
-        Retrofit.Builder()
-            .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(ToDoAPIService::class.java)
     }
 }

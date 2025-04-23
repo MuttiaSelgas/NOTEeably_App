@@ -11,10 +11,9 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
-import com.example.noteably.databinding.ActivityDashboardBinding
 import com.example.noteably.databinding.ActivityFolderBinding
 import com.example.noteably.model.Student
-import com.example.noteably.network.APIClient
+import com.example.noteably.api_client.APIClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -6,7 +6,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.noteably.model.RegisterRequest
 import com.example.noteably.model.Student
-import com.example.noteably.network.APIClient
+import com.example.noteably.api_client.APIClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response

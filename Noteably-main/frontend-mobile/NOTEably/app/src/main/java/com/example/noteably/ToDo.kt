@@ -5,16 +5,16 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.PopupMenu
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
-import com.example.noteably.databinding.ActivityDashboardBinding
 import com.example.noteably.databinding.ActivityToDoBinding
 import com.example.noteably.model.Student
-import com.example.noteably.network.APIClient
+import com.example.noteably.api_client.APIClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -89,6 +89,13 @@ class ToDo : AppCompatActivity() {
             val settingsIntent = Intent(this, Settings::class.java)
             settingsIntent.putExtra("student", student)
             startActivity(settingsIntent)
+        }
+
+        val addTaskButton = findViewById<Button>(R.id.addTaskBttn)
+        addTaskButton.setOnClickListener {
+            val addTaskIntent = Intent(this, AddToDo::class.java)
+            addTaskIntent.putExtra("student", student)
+            startActivity(addTaskIntent)
         }
     }
 

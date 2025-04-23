@@ -1,6 +1,6 @@
 package com.example.noteably.model
 
 data class LoginResponse(
-    val token: String,
+    val jwtToken: String,
     val student: Student
 )

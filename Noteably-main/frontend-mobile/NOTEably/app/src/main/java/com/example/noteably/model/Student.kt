@@ -10,5 +10,6 @@ data class Student(
     val course: String,
     val contactNumber: String,
     val email: String,
-    val profilePicture: String? = null
+    val profilePicture: String? = null,
+    val jwtToken: String? = null
 ) : Parcelable
