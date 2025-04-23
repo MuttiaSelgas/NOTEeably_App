@@ -62,6 +62,8 @@ class Dashboard : AppCompatActivity() {
         binding.calendarbttn.setOnClickListener { putExtra(Intent(this, Calendar::class.java)) }
         binding.timerbttn.setOnClickListener { putExtra(Intent(this, Timer::class.java)) }
         binding.settingsbttn.setOnClickListener { putExtra(Intent(this, Settings::class.java)) }
+
+        binding.todoIcon.setOnClickListener { putExtra(Intent(this, ToDo::class.java)) }
     }
 
     private fun showPopupMenu(view: View) {
