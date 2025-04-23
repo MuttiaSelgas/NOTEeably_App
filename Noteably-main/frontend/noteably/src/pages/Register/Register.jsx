@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { addStudent } from '../../services/studentService';
 import { Link } from 'react-router-dom';
 import './Register.css';
+import Header from '../../components/Header';
+
 import Visibility from '@mui/icons-material/Visibility'; // Import MUI icon for showing password
 import VisibilityOff from '@mui/icons-material/VisibilityOff'; // Import MUI icon for hiding password
 
@@ -47,19 +49,7 @@ const Register = () => {
 
     return (
         <div className="register-page">
-            <header className="header">
-                <Link to="/">
-                    <img src="/ASSETS/noteably_logo.png" alt="Noteably Logo" className="logo" />
-                </Link>
-                <div className="auth-buttons">
-                    <Link to="/register">
-                        <button className="auth-button register">Register</button>
-                    </Link>
-                    <Link to="/login">
-                        <button className="auth-button login">Log In</button>
-                    </Link>
-                </div>
-            </header>
+            <Header />
 
             <main className="main-content">
                 <div className="auth-container">
@@ -69,7 +59,7 @@ const Register = () => {
                         </div>
                         <div className="register-form">
                             <h1 className="auth-title">Register</h1>
-                            <p>Existing User? <Link to="/login">Sign in</Link></p>
+                            <p>Existing User? <Link to="/login" className="signin">Sign in</Link></p>
                             <form onSubmit={handleSubmit} className="auth-form">
                                 <input
                                     type="text"
@@ -113,7 +103,7 @@ const Register = () => {
                                         <VisibilityOff onClick={handleTogglePassword} className="toggle-password-icon" style={{ color: 'gray', position: 'absolute', right: '10px', top: '50%', transform: 'translateY(-50%)' }} />
                                     )}
                                 </div>
-                                <button type="submit" className="auth-button">Register</button>
+                                <button type="submit" className="register-button">Register</button>
                             </form>
                         </div>
                     </div>

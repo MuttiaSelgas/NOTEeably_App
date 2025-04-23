@@ -1,0 +1,60 @@
+.dashboard-container {
+    min-height: 100vh;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid lightgray;
+    border-radius: 30px;
+    padding: 24px;
+    background-image: url("/ASSETS/polkadot.png");
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box;
+  }
+  
+  .dashboard-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 32px;
+  }
+  
+  .dashboard-profile {
+    width: 100px;
+    height: 100px;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-right: 24px;
+    border: 2px solid #073B4C; /* themeColors.dark */
+  }
+  
+  .dashboard-profile img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .dashboard-widget {
+    padding: 16px;
+    border-radius: 20px;
+    background-color: white;
+    box-shadow: 0 3px 2px rgba(0, 0, 0, 0.15);
+  }
+  
+  .dashboard-widget-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .dashboard-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 8px;
+  }
+  
+  .dashboard-calendar {
+    margin-top: 24px;
+  }
+  

@@ -1,75 +1,8 @@
-
-
-/* Reset default styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-
-body, html {
-    height: 90%;
-    width: 100%;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.header {
-    width: 80%;
-    padding: 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: rgba(247, 248, 252, 0.8);
-    margin-top: 10px;
-}
-
-.logo {
-    width: 100px;
-    height: auto;
-}
-
-.auth-buttons {
-    display: flex;
-    gap: 10px;
-}
-
-.auth-button {
-    padding: 10px 20px;
-    font-size: 16px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.auth-button.register {
-    background-color: #ff6b6b;
-    color: #fff;
-}
-
-.auth-button.register:hover {
-    background-color: #ff5252;
-}
-
-.auth-button.login {
-    background-color: #4caf50;
-    color: #fff;
-}
-
-.auth-button.login:hover {
-    background-color: #45a049;
-}
-
 .login-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
     border: 1px solid lightgray; /* Border style */
     border-radius: 30px; /* Rounded corners */
     padding: 20px; /* Inner padding */
@@ -79,11 +12,11 @@ body, html {
     overflow: hidden; /* Prevent overflow */
     z-index: 0; /* Ensure it's behind other elements */
     position: relative;
-    min-height: 87vh;
+    min-height: 85vh;
 }
 
 .login-card {
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: white;
     padding: 50px;
     border-radius: 12px;
     width: 350px;
@@ -97,17 +30,17 @@ body, html {
     gap: 15px;
     justify-content: center;
     align-items: center;
-    color: #073B4C;
+    color: var(--darkblue);
 }
 
 .login-card p {
     font-size: 14px;
-    color:#1b8eb1;
+    color: var(--blue);
 }
 
 .login-card a {
     text-decoration: none;
-    color: #44d49c;
+    color: var(--green);
     font-weight: bold;
 }
 
@@ -130,7 +63,7 @@ body, html {
 .login-form input {
     padding: 10px;
     width: 100%;
-    border: 1px solid #ddd;
+    border: 1px solid gray;
     border-radius: 25px;
     font-size: 14px;
     box-sizing: border-box;
@@ -166,8 +99,8 @@ body, html {
 }
 
 .login-button {
-    background-color: #ffd966;
-    color: #333;
+    background-color: var(--yellow);
+    color: white;
     border-radius: 25px;
     padding: 10px;
     font-weight: bold;
@@ -178,8 +111,8 @@ body, html {
 }
 
 .login-button:hover {
-    background-color: #ffc107;
-    background-color: #ffc107;
+    background-color: var(--orange);
+    color: white;
 }
 
 

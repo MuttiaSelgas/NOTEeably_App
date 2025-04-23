@@ -1,95 +1,6 @@
-/* Reset default styles */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
-body, html {
-    font-family: 'Arial', sans-serif;
-    background-color: #f7f8fc;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 40vh;
-    color: #ffffff;
-}
-
-/* Header */
-.header {
-    display: flex;
-    justify-content: space-between; /* Ensures logo and buttons are spaced apart */
-    align-items: center;
-    width: 100%; /* Make sure the header spans the full container */
-    padding: 5px 15px 5px; /* Adjust padding for more consistent spacing */
-    background: transparent; /* Remove background */
-}
-
-.logo {
-    width: 110px;
-    height: auto;
-    margin-right: auto; /* Push the logo away from the buttons */
-}
-
-.auth-buttons {
-    display: flex;
-    gap: 15px;
-    margin-left: auto; /* Prevent buttons from sticking to the logo */
-}
-
-
-.auth-button {
-    padding: 10px 25px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border: none;
-    border-radius: 20px;
-    font-size: 14px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-}
-
-.auth-button.register {
-    background-color: #EF476F;
-    color: #fff;
-}
-
-.auth-button.login {
-    background-color: #4CAF50;
-    color: #fff;
-}
-
-.auth-button.register:hover {
-    background-color: #ff5252;
-}
-
-.auth-button.login:hover {
-    background-color: #45a049;
-}
-
 /* Main Content */
-.main-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-
-    background-color: rgba(255, 255, 255, 0.5); /* Semi-transparent background */
-    border: 1px solid lightgray; /* Border style */
-    border-radius: 30px; /* Rounded corners */
-    padding: 15px; /* Inner padding */
-    background-image: url('/ASSETS/polkadot.png');
-    background-size: cover; /* Ensure background image fills the area */
-   
-    box-sizing: border-box; /* Ensure padding and border are included in size */
-    overflow: hidden; /* Prevent overflow */
-    z-index: 0; /* Ensure it's behind other elements */
-    position: relative;
-    min-height: 90vh;
-}
-
 .content-box {
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: white;
     padding: 0px 0px 30px 0px;
     border-radius: 12px;
     max-width: 700px;
@@ -105,20 +16,8 @@ body, html {
     max-width: 100%; /* Prevent the image from exceeding the container width */
     height: auto; /* Maintain aspect ratio */
     margin-bottom: 20px; /* Add space between the image and the text */
-    border-top-left-radius: 30px;
-    border-top-right-radius: 30px;
-}
-
-.main-logo {
-    width: 120px;
-    height: auto;
-}
-
-.main-heading {
-    font-size: 2.5rem;
-    font-weight: bold;
-    margin-bottom: 20px;
-    color: #333;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
 }
 
 .subtext {
@@ -134,22 +33,22 @@ body, html {
     color: #333;
 }
 
-.register-button {
+.Lregister-button {
     padding: 15px 40px;
     font-size: 1.2rem;
     font-weight: bold;
     color: #fff;
-    background-color: #f58c6c;
+    background-color: var(--orange);
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.3s;
 
     margin-top: -10px;
 }
 
-.register-button:hover {
-    background-color: #febd59;
+.Lregister-button:hover {
+    background-color: var(--yellow);
 }
 
 /* Responsive Design for Smaller Screens */
