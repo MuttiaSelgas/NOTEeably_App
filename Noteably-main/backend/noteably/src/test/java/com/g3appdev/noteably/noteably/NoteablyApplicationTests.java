@@ -1,4 +1,4 @@
-package com.g3appdev.noteably.noteably;
+package com.g3appdev.noteably;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
