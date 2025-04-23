@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import FolderWidget from './FolderWidget';
-import ToDoListWidget from './ToDoListWidget'; // Import the ToDoListWidget
-import TimerListWidget from './TimerListWidget'; // Import the TimerListWidget
+import ToDoListWidget from './ToDoListWidget';
+import TimerListWidget from './TimerListWidget';
 import { Box, Grid, Typography, Paper } from '@mui/material';
 import TimerIcon from '@mui/icons-material/Timer';
 import FolderIcon from '@mui/icons-material/Folder';
@@ -12,23 +12,14 @@ import { API_ENDPOINTS, axiosConfig } from '../../config/api';
 import { getImageUrl } from '../../services/studentService';
 import { axiosRequest } from '../../services/studentService';
 import '../../antioverflow.css';
+import './Dashboard.css'; // ✅ New CSS import
 
-// Define theme colors
-const themeColors = {
-  primary: "#EF476F",
-  secondary: "#F78C6B",
-  accent: "#FFD166",
-  green: "#06D6A0",
-  blue: "#118AB2",
-  dark: "#073B4C",
-};
 
 function Dashboard() {
   const [studentData, setStudentData] = useState({ studentId: '', studentName: '' });
 
   useEffect(() => {
     const fetchStudentData = async () => {
-      // const studentId = localStorage.getItem('studentId');
       const fullStudentInfo = localStorage.getItem('fullStudentInfo');
       let studentId = null;
       if (fullStudentInfo) {
@@ -59,161 +50,65 @@ function Dashboard() {
   }, []);
 
   return (
-    <Box
-      sx={{
-        minHeight: '100vh',
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-        border: '1px solid lightgray',
-        borderRadius: '30px',
-        padding: 3,
-        backgroundImage: 'url("/ASSETS/polkadot.png")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        boxSizing: 'border-box',
-        marginTop: '50px',
-      }}
-    >
-      {/* Header Section */}
-      <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
-        <Box
-          sx={{
-            width: 100,
-            height: 100,
-            borderRadius: '10px',
-            overflow: 'hidden',
-            mr: 3,
-            border: `2px solid ${themeColors.dark}`,
-          }}
-        >
-          <img
-            src={getImageUrl(studentData.profilePicture)}
-            alt="Profile"
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-            }}
-          />
+    <Box className="dashboard-container">
+      <Box className="dashboard-header">
+        <Box className="dashboard-profile">
+          <img src={getImageUrl(studentData.profilePicture)} alt="Profile" />
         </Box>
         <Box>
-          <Typography variant="h4" sx={{ color: themeColors.dark, mb: 1 }}>
+          <Typography variant="h4" sx={{ color: 'var(--darkblue)', mb: 1 }}>
             Hello, {studentData.studentName || 'Student'}!
           </Typography>
-          <Typography variant="subtitle1" sx={{ color: themeColors.blue, mb: 1 }}>
+          <Typography variant="subtitle1" sx={{ color: 'var(--blue)', mb: 1 }}>
             Student ID: {studentData.studentId || 'Unknown ID'}
           </Typography>
-          <Typography variant="subtitle2" sx={{ color: themeColors.green }}>
+          <Typography variant="subtitle2" sx={{ color: 'var(--green)' }}>
             Stay organized, stay ahead!
           </Typography>
         </Box>
       </Box>
 
-      {/* Grid Layout for Widgets */}
       <Grid container spacing={3}>
-        {/* To-Do List Widget */}
         <Grid item xs={10} md={4}>
-          <Paper
-            elevation={3}
-            sx={{
-              p: 2,
-              borderRadius: '20px',
-              backgroundColor: 'white',
-              border: `2px solid ${themeColors.accent}`,
-              boxShadow: '0 3px 2px rgba(0, 0, 0, 0.15)',
-            }}
-          >
-            <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
-              <Box
-                sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  backgroundColor: themeColors.accent,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  mr: 1,
-                }}
-              >
+          <Paper className="dashboard-widget" sx={{ border: `2px solid ${'var(--yellow)'}` }}>
+            <Box className="dashboard-widget-header">
+              <Box className="dashboard-icon-box" sx={{ backgroundColor: 'var(--yellow)' }}>
                 <CheckCircleIcon sx={{ color: 'white' }} />
               </Box>
-              <Typography variant="h6" sx={{ color: themeColors.accent }}>
+              <Typography variant="h6" sx={{ color: 'var(--yellow)' }}>
                 To-Do List
               </Typography>
             </Box>
-            <ToDoListWidget /> 
+            <ToDoListWidget />
           </Paper>
         </Grid>
 
-        {/* Timer Widget */}
         <Grid item xs={10} md={4}>
-          <Paper
-            elevation={3}
-            sx={{
-              p: 2,
-              borderRadius: '20px',
-              backgroundColor: 'white',
-              border: `2px solid ${themeColors.blue}`,
-              boxShadow: '0 3px 2px rgba(0, 0, 0, 0.15)',
-            }}
-          >
-            <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
-              <Box
-                sx={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  backgroundColor: themeColors.blue,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  mr: 1,
-                }}
-              >
+          <Paper className="dashboard-widget" sx={{ border: `2px solid ${'var(--blue)'}` }}>
+            <Box className="dashboard-widget-header">
+              <Box className="dashboard-icon-box" sx={{ backgroundColor: 'var(--blue)' }}>
                 <TimerIcon sx={{ color: 'white' }} />
               </Box>
-              <Typography variant="h6" sx={{ color: themeColors.blue }}>
+              <Typography variant="h6" sx={{ color: 'var(--blue)' }}>
                 Timer
               </Typography>
             </Box>
-            <TimerListWidget /> {/* Add the TimerListWidget here */}
+            <TimerListWidget />
           </Paper>
         </Grid>
 
-        {/* Folders Widget */}
         <Grid item xs={10} md={4}>
-          <FolderWidget /> 
+          <FolderWidget />
         </Grid>
       </Grid>
 
-      {/* Calendar Widget */}
-      <Grid item xs={12} sx={{ mt: 3 }}>
-        <Paper
-          elevation={3}
-          sx={{
-            p: 2,
-            borderRadius: '20px',
-            backgroundColor: 'white',
-            border: `2px solid ${themeColors.green}`,
-            boxShadow: '0 3px 2px rgba(0, 0, 0, 0.15)',
-          }}
-        >
-          <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
-            <Box
-              sx={{
-                width: 40,
-                height: 40,
-                borderRadius: '50%',
-                backgroundColor: themeColors.green,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                mr: 1,
-              }}
-            >
+      <Grid item xs={12} className="dashboard-calendar">
+        <Paper className="dashboard-widget" sx={{ border: `2px solid ${'var(--green)'}` }}>
+          <Box className="dashboard-widget-header">
+            <Box className="dashboard-icon-box" sx={{ backgroundColor: 'var(--green)'}}>
               <EventNoteIcon sx={{ color: 'white' }} />
             </Box>
-            <Typography variant="h6" sx={{ color: themeColors.green }}>
+            <Typography variant="h6" sx={{ color: 'var(--green)' }}>
               Schedule
             </Typography>
           </Box>
