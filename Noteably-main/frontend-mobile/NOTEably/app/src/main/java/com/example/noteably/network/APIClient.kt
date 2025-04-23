@@ -13,4 +13,12 @@ object APIClient {
             .build()
             .create(APIService::class.java)
     }
+
+    val todoApiService: ToDoAPIService by lazy {
+        Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(ToDoAPIService::class.java)
+    }
 }

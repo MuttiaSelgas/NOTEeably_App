@@ -60,4 +60,18 @@ dependencies {
     // Glide
     implementation(libs.glide)
     kapt(libs.compiler)
+
+    // RecyclerView
+    implementation(libs.androidx.recyclerview)
+
+    // CardView (for nice-looking task cards)
+    implementation(libs.androidx.cardview)
+
+    // Lifecycle components for ViewModel + LiveData (optional but recommended)
+    implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.lifecycle.viewmodel.ktx)
+
+    // Gson (just in case Retrofit converter needs it directly)
+    implementation(libs.gson)
+
 }
