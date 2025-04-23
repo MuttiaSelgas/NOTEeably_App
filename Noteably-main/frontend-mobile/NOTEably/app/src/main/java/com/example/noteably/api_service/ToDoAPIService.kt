@@ -1,7 +1,9 @@
 package com.example.noteably.network
 
 import com.example.noteably.model.ToDo
+import com.example.noteably.model.ToDoRequest
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.GET
@@ -15,7 +17,7 @@ interface ToDoAPIService {
     fun getTasks(@Path("studentId") studentId: Int): Call<List<ToDo>>
 
     @POST("api/TodoList/postListRecord")
-    fun addTask(@Body task: ToDo): Call<ToDo>
+    suspend fun addTask(@Body task: ToDoRequest): Response<Void>
 
     @PUT("api/TodoList/putList/{id}")
     fun updateTask(@Path("id") id: Int, @Body task: ToDo): Call<ToDo>
