@@ -4,6 +4,8 @@ import axios from 'axios';
 import { API_ENDPOINTS } from '../../config/api';
 import { getStudentByStudentId } from '../../services/studentService';
 import './Login.css';
+import Header from '../../components/Header';
+
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -110,19 +112,7 @@ const Login = () => {
 
     return (
         <div className="login-page">
-            <header className="header">
-                <Link to="/">
-                    <img src="/ASSETS/noteably_logo.png" alt="Noteably Logo" className="logo" />
-                </Link>
-                <div className="auth-buttons">
-                    <Link to="/register">
-                        <button className="auth-button register">Register</button>
-                    </Link>
-                    <Link to="/login">
-                        <button className="auth-button login">Log In</button>
-                    </Link>
-                </div>
-            </header>
+            <Header />
 
             <div className="login-container">
                 <img
