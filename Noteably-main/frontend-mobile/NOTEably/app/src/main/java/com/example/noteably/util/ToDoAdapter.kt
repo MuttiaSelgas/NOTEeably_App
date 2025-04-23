@@ -1,4 +1,4 @@
-package com.example.noteably.adapter
+package com.example.noteably.util
 
 import android.view.LayoutInflater
 import android.view.View
