@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.Button
 import android.widget.PopupMenu
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -88,6 +89,13 @@ class Calendar : AppCompatActivity() {
             val settingsIntent = Intent(this, Settings::class.java)
             settingsIntent.putExtra("student", student)
             startActivity(settingsIntent)
+        }
+
+        val addScheduleButton = findViewById<Button>(R.id.addScheduleBttn)
+        addScheduleButton.setOnClickListener {
+            val addScheduleIntent = Intent(this, AddSchedule::class.java)
+            addScheduleIntent.putExtra("student", student)
+            startActivity(addScheduleIntent)
         }
     }
 

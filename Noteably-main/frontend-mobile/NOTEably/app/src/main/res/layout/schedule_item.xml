@@ -1,0 +1,69 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="8dp"
+    app:cardCornerRadius="10dp">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/scheduleTitle"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:text="Schedule"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/darkblue"/>
+
+            <TextView
+                android:id="@+id/schedulePriority"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="priority"
+                android:textColor="@color/darkblue" />
+
+            <TextView
+                android:id="@+id/scheduleStart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="start date"
+                android:layout_marginTop="10dp"
+                android:textColor="@color/darkblue"/>
+
+            <TextView
+                android:id="@+id/scheduleEnd"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="end date"
+                android:textColor="@color/darkblue"/>
+        </LinearLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/moreActions"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginTop="15dp"
+            android:background="@android:color/transparent"
+            android:contentDescription="More Option"
+            android:padding="4dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/more_icon" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
