@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 import com.example.noteably.databinding.ActivityAddToDoBinding
 import com.example.noteably.model.Student
 import com.example.noteably.model.ToDoRequest
-import com.example.noteably.api_client.APIClient
+import com.example.noteably.network.APIClient
 import com.example.noteably.api_client.ToDoAPIClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -177,7 +177,7 @@ class AddToDo : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 Log.d("Dashboard", "Calling API with studentId: $studentId")
-                val response = APIClient.apiService.getStudent(studentId)
+                val response = APIClient.api.getStudent(studentId)
 
                 if (response.isSuccessful && response.body() != null) {
                     val student = response.body()

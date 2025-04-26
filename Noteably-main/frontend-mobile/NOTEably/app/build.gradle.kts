@@ -56,6 +56,8 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.retrofit2.converter.gson)
+    implementation (libs.logging.interceptor)
+    implementation (libs.androidx.security.crypto)
 
     // Glide
     implementation(libs.glide)
@@ -73,5 +75,4 @@ dependencies {
 
     // Gson (just in case Retrofit converter needs it directly)
     implementation(libs.gson)
-
 }

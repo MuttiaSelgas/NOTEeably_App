@@ -8,140 +8,149 @@ import android.text.InputType
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.noteably.model.LoginRequest
 import com.example.noteably.model.LoginResponse
-import com.example.noteably.api_client.APIClient
 import com.example.noteably.model.Student
+import com.example.noteably.network.APIClient
 import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import com.google.android.material.textfield.TextInputLayout
 
 class LoginPage : AppCompatActivity() {
 
     private var isPasswordVisible = false
     private val handler = Handler(Looper.getMainLooper())
 
+    private lateinit var emailField: EditText
+    private lateinit var passwordField: TextInputEditText
+    private lateinit var loginButton: Button
+    private lateinit var signupLink: TextView
+    private lateinit var passwordLayout: TextInputLayout
+    private lateinit var mikuImage: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login_page)
 
-        val emailField = findViewById<EditText>(R.id.email)
-        val passwordField = findViewById<EditText>(R.id.password)
-        val loginButton = findViewById<Button>(R.id.loginbttn1)
-        val signupLink = findViewById<TextView>(R.id.signuplink)
-        val passwordLayout = findViewById<TextInputLayout>(R.id.passwordLayout)
-        val mikuImage = findViewById<ImageView>(R.id.imageView4)
-        val passwordEditText = findViewById<TextInputEditText>(R.id.password)
+        initViews()
+        setupSignupNavigation()
+        setupPasswordVisibilityToggle()
+        setupLogin()
+    }
 
-        // Navigate to Register Page
+    private fun initViews() {
+        emailField = findViewById(R.id.email)
+        passwordField = findViewById(R.id.password)
+        loginButton = findViewById(R.id.loginbttn1)
+        signupLink = findViewById(R.id.signuplink)
+        passwordLayout = findViewById(R.id.passwordLayout)
+        mikuImage = findViewById(R.id.imageView4)
+    }
+
+    private fun setupSignupNavigation() {
         signupLink.setOnClickListener {
             startActivity(Intent(this, RegisterPage::class.java))
             finish()
         }
+    }
 
-        // Password visibility toggle logic
+    private fun setupPasswordVisibilityToggle() {
         passwordLayout.setEndIconOnClickListener {
-            // First, show the initial image depending on the current state
             if (isPasswordVisible) {
-                mikuImage.setImageResource(R.drawable.mikushow)  // Show mikushow initially
+                mikuImage.setImageResource(R.drawable.mikushow)
             } else {
-                mikuImage.setImageResource(R.drawable.mikuhide)  // Show mikuhide initially
+                mikuImage.setImageResource(R.drawable.mikuhide)
             }
 
-            // Toggle the visibility flag
             isPasswordVisible = !isPasswordVisible
 
-            // Transition sequence with images (keeping transition intact)
             handler.postDelayed({
-                if (isPasswordVisible) {
-                    mikuImage.setImageResource(R.drawable.mikuhidetransition)  // Transition to in-between
-                } else {
-                    mikuImage.setImageResource(R.drawable.mikushowtransition)  // Transition to in-between
-                }
+                mikuImage.setImageResource(
+                    if (isPasswordVisible) R.drawable.mikuhidetransition else R.drawable.mikushowtransition
+                )
             }, 150)
 
-            // Delay to switch to the in-between image and finally show the target image
             handler.postDelayed({
-                mikuImage.setImageResource(R.drawable.mikuinbetween)  // Show in-between image
+                mikuImage.setImageResource(R.drawable.mikuinbetween)
             }, 300)
 
-            // Delay to switch to the final image (either mikuhide or mikushow)
             handler.postDelayed({
                 if (isPasswordVisible) {
-                    passwordEditText.inputType =
+                    passwordField.inputType =
                         InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
-                    mikuImage.setImageResource(R.drawable.mikushow)  // Show mikushow after transition
+                    mikuImage.setImageResource(R.drawable.mikushow)
                 } else {
-                    passwordEditText.inputType =
+                    passwordField.inputType =
                         InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-                    mikuImage.setImageResource(R.drawable.mikuhide)  // Show mikuhide after transition
+                    mikuImage.setImageResource(R.drawable.mikuhide)
                 }
-
-                // Move the cursor to the end of the text
-                passwordEditText.setSelection(passwordEditText.text?.length ?: 0)
+                passwordField.setSelection(passwordField.text?.length ?: 0)
             }, 500)
         }
+    }
 
-        // Login Button Clicked
+    private fun setupLogin() {
         loginButton.setOnClickListener {
             val email = emailField.text.toString().trim()
             val password = passwordField.text.toString().trim()
 
             if (email.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(this, "Please enter email and password", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 
-            val credentials = mapOf("email" to email, "password" to password)
+            val loginRequest = LoginRequest(email, password)
 
-            APIClient.apiService.loginStudent(credentials)
+            APIClient.api.loginStudent(loginRequest)
                 .enqueue(object : Callback<LoginResponse> {
-                    override fun onResponse(
-                        call: Call<LoginResponse>,
-                        response: Response<LoginResponse>
-                    ) {
+                    override fun onResponse(call: Call<LoginResponse>, response: Response<LoginResponse>) {
                         if (response.isSuccessful) {
                             val loginResponse = response.body()
-
-                            if (loginResponse != null && loginResponse.student != null) {
-                                val student = loginResponse.student
-                                val jwtToken = loginResponse.jwtToken
-
-                                Log.d("LoginPage", "Login successful. Student ID: ${student.studentId}")
-                                Toast.makeText(this@LoginPage, "Welcome ${student.name}!", Toast.LENGTH_SHORT).show()
-
-                                val studentWithToken = Student(
-                                    studentId = student.studentId,
-                                    name = student.name,
-                                    course = student.course,
-                                    contactNumber = student.contactNumber,
-                                    email = student.email,
-                                    profilePicture = student.profilePicture,
-                                    jwtToken = jwtToken
-                                )
-
-                                val intent = Intent(this@LoginPage, Dashboard::class.java)
-                                intent.putExtra("student", studentWithToken)
-                                startActivity(intent)
-                                finish()
+                            if (loginResponse?.student != null) {
+                                handleSuccessfulLogin(loginResponse)
                             } else {
+                                showToast("Failed to load student data")
                                 Log.e("LoginPage", "Student object is null in login response")
-                                Toast.makeText(this@LoginPage, "Failed to load student data", Toast.LENGTH_SHORT).show()
                             }
+                        } else {
+                            showToast("Login failed: ${response.message()}")
+                            Log.e("LoginPage", "Login failed: ${response.errorBody()?.string()}")
                         }
                     }
 
                     override fun onFailure(call: Call<LoginResponse>, t: Throwable) {
-                        Log.e("LoginPage", "Login error: ${t.message}")
-                        Toast.makeText(
-                            this@LoginPage,
-                            "Login failed: ${t.message}",
-                            Toast.LENGTH_LONG
-                        ).show()
+                        showToast("Login failed: ${t.message}")
+                        Log.e("LoginPage", "Login error: ${t.message}", t)
                     }
                 })
         }
+    }
+
+    private fun handleSuccessfulLogin(loginResponse: LoginResponse) {
+        val student = loginResponse.student
+        val jwtToken = loginResponse.jwtToken
+
+        Log.d("LoginPage", "Login successful. Student ID: ${student.studentId}")
+        Toast.makeText(this, "Welcome ${student.name}!", Toast.LENGTH_SHORT).show()
+
+        // 🌟 SAVE JWT Token to SharedPreferences here
+        val sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putString("jwt_token", jwtToken)
+        editor.apply() // Save the changes
+
+        val studentWithToken = student.copy(jwtToken = jwtToken)
+
+        val intent = Intent(this, Dashboard::class.java).apply {
+            putExtra("student", studentWithToken)
+        }
+        startActivity(intent)
+        finish()
+    }
+
+    private fun showToast(message: String) {
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
     }
 }

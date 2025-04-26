@@ -13,7 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.example.noteably.databinding.ActivityFolderBinding
 import com.example.noteably.model.Student
-import com.example.noteably.api_client.APIClient
+import com.example.noteably.network.APIClient
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -124,7 +124,7 @@ class Folder : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 Log.d("Folder", "Calling API with studentId: $studentId")
-                val response = APIClient.apiService.getStudent(studentId)
+                val response = APIClient.api.getStudent(studentId)
 
                 if (response.isSuccessful && response.body() != null) {
                     val student = response.body()

@@ -6,7 +6,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.example.noteably.model.RegisterRequest
 import com.example.noteably.model.Student
-import com.example.noteably.api_client.APIClient
+import com.example.noteably.network.APIClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -41,7 +41,7 @@ class RegisterPage : AppCompatActivity() {
                 contactNumber = ""     // Optional
             )
 
-            APIClient.apiService.register(registerRequest).enqueue(object : Callback<Student> {
+            APIClient.api.register(registerRequest).enqueue(object : Callback<Student> {
                 override fun onResponse(call: Call<Student>, response: Response<Student>) {
                     if (response.isSuccessful) {
                         Toast.makeText(this@RegisterPage, "Registration successful!", Toast.LENGTH_SHORT).show()
