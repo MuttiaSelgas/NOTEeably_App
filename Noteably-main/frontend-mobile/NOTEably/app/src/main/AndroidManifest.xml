@@ -15,6 +15,9 @@
         android:theme="@style/Theme.NOTEably"
         tools:targetApi="31">
         <activity
+            android:name=".FolderPage"
+            android:exported="false" />
+        <activity
             android:name=".AddSchedule"
             android:exported="false" />
         <activity
