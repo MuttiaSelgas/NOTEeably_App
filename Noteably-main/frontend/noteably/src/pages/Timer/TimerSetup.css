@@ -1,128 +1,172 @@
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5);
+
+/* Main container */
+.timer-container {
     display: flex;
-    align-items: center;
     justify-content: center;
-    z-index: 2000;
-}
-
-.modal-content {
-    background-color: white;
+    align-items: center;
+    min-height: 93vh;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: 1px solid lightgray;
+    border-radius: 30px;
     padding: 20px;
-    border-radius: 10px;
-    text-align: center;
-    width: 300px;
-    z-index: 2001;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.modal-content form {
+    background-image: url("/ASSETS/polkadot.png");
+    background-size: cover;
+    background-position: center;
+    box-sizing: border-box;
+  }
+  
+  /* Grid container */
+  .timer-grid-container {
+    width: 90%;
+    height: 100%;
+    padding: 30px;
+  }
+  
+  /* Box styles for setup and list sections */
+  .timer-box {
+    padding: 20px;
+    border-radius: 30px;
     background-color: white;
+    border: 1px solid lightgray;
+    box-shadow: inset 0 2px 2px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-}
+    height: 100%;
+    min-height: 500px;
+    max-height: calc(100vh - 100px);
+    max-width: 500px;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: auto;
+  }
 
-.modal-content input {
-    background-color: white;
-    padding: 10px;
-    margin-bottom: 10px;
-}
-
-.modal-content button[type="submit"] {
-    padding: 10px;
-    background-color: #118AB2;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-bottom: 10px;
-}
-
-.confirm-modal {
-    display: flex;
+  .timer-setup {
     justify-content: center;
     align-items: center;
-    position: fixed;
-    top: 50%;
-    left: 55%;
-    transform: translate(-50%, -50%);
-    width: 500px; /* Adjust width as needed */
-    z-index: 2001; /* Ensure it appears above other elements */
+  }
+
+  .timer-setup .timer-title {
+    align-self: flex-start;
+    text-align: center;
+    width: 100%;
+    margin-bottom: 70px;
+  }
+  
+  .timer-scrollable::-webkit-scrollbar {
+    width: 1px;
+  }
+  .timer-scrollable::-webkit-scrollbar-thumb {
+    background-color: #d3d3d3;
+    border-radius: 4px;
+  }
+  .timer-scrollable::-webkit-scrollbar-thumb:hover {
+    background-color: #6a6a6a;
+  }
+  
+  /* Typography */
+  .timer-title {
+    text-align: center;
+    margin-bottom: 40px;
+    color: var(--darkblue);
+  }
+  
+  .timer-subtitle {
+    color: var(--blue);
+  }
+  
+  /* Inputs */
+  .timer-textfield {
+    background-color: #fff;
+    width: 38%;
+  }
+  
+  .timer-textfield:hover .MuiOutlinedInput-notchedOutline,
+  .timer-textfield.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-width: 2px;
+  }
+  
+  /* Time inputs */
+  .input-hours .MuiOutlinedInput-notchedOutline {
+    border-color: var(--red);
+  }
+  .input-minutes .MuiOutlinedInput-notchedOutline {
+    border-color: var(--yellow);
+  }
+  .input-seconds .MuiOutlinedInput-notchedOutline {
+    border-color: var(--green);
+  }
+  
+  /* Buttons */
+  .timer-button {
+    color: #fff;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+  }
+  
+  .timer-start {
+    background-color: var(--green) !important;
+  }
+  .timer-start:hover {
+    background-color: var(--blue) !important;
+  }
+  .timer-start:disabled {
+    background-color: #ccc !important;
+  }
+  
+  .timer-reset {
+    background-color: var(--red) !important;
+  }
+  .timer-reset:hover {
+    background-color: var(--orange) !important;
+  }
+  
+  /* List styling */
+  .list-item {
+    border-radius: 15px;
+    margin-bottom: 15px;
+    padding: 15px;
+    color: var(--darkblue) !important;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* color for list */
+  .color-0 {
+    background-color: var(--red);
+  }
+  .color-1 {
+    background-color: var(--orange);
+  }
+  .color-2 {
+    background-color: var(--yellow);
+  }
+  .color-3 {
+    background-color: var(--green);
+  }
+  .color-4 {
+    background-color: var(--blue);
+  }
+  
+
+  /* Title input styling */
+  .timer-title-input {
+    width: 100%;
 }
-
-
-.confirm-content {
-    background: white;
-    border: 2px solid lightgray; /* Border style */
-    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    border-radius: 10px;
-    animation: slideIn 0.3s ease-out;
+  
+  /* Row for Hours, Minutes, Seconds */
+  .timer-input-row {
     display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.confirm-content img {
+    margin-top: 5px;
+    margin-bottom: 20px;
+  }
+  
+  /* Labels above time inputs */
+  .timer-input-row .timer-subtitle {
+    text-align: center;
+    margin-bottom: 5px;
+  }
+  
+  /* Time inputs equal width */
+  .timer-input-row .timer-textfield {
     width: 100px;
-    height: 100px;
-    object-fit: contain;
-}
-
-.confirm-content .confirm-text {
-    flex: 1;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translateY(100px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
-}
-
-.confirm-content h3 {
-    margin: 0 0 15px 0;
-    color: #333;
-}
-
-.confirm-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-}
-
-.confirm-buttons button {
-    padding: 8px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease;
-}
-
-.ok-btn {
-    background-color: #06D6A0;
-    color: white;
-}
-
-.ok-btn:hover {
-    background-color: #05bf8f;
-}
-
-.cancel-btn {
-    background-color: #ef476f;
-    color: white;
-}
-
-.cancel-btn:hover {
-    background-color: #d63d63;
-}
+  }

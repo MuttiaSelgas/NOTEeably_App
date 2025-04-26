@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import {
-    Button,TextField,Typography,Grid,Box,List,ListItem,ListItemText,IconButton,Dialog,DialogTitle,DialogContent,DialogActions,
+    TextField,Typography,Grid,Box,List,ListItem,ListItemText,IconButton
   } from '@mui/material';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import RefreshIcon from '@mui/icons-material/Refresh';
@@ -11,6 +11,10 @@ import EditIcon from '@mui/icons-material/Edit';
 import { useNavigate } from 'react-router-dom';
 import { axiosRequest } from '../../services/studentService';
 import './TimerSetup.css';
+
+import EditDialog from '../../dialogs/EditDialog';
+import ConfirmEditDialog from '../../dialogs/ConfirmEditDialog';
+import ConfirmDeleteDialog from '../../dialogs/ConfirmDeleteDialog';
 
 function TimerSetup() {
   const url = "http://localhost:8080/api/timer";
@@ -64,8 +68,9 @@ function TimerSetup() {
 
   const deleteTimer = async (timerID) => {
     try {
-      await axios.delete(`${url}/delete/${timerID}`);
-      setTimerList(timerList.filter((timer) => timer.timerID !== timerID));
+      console.log("Deleting timer:", timerID); // added recently
+      await axiosRequest({ method: 'delete', url: `${url}/delete/${timerID}` });
+setTimerList(timerList.filter((timer) => String(timer.timerID) !== String(timerID)));
     } catch (error) {
       console.error("Error deleting timer:", error);
     }
@@ -176,498 +181,143 @@ function TimerSetup() {
     const handleEditCancel = () => {
       setConfirmEditDialogOpen(false);
     };
+    
 
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        minHeight: '100vh',
-        backgroundColor: 'rgba(255, 255, 255, 0.5)',
-        border: '1px solid lightgray',
-        borderRadius: '30px',
-        padding: '20px',
-        backgroundImage: 'url("/ASSETS/polkadot.png")',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        boxSizing: 'border-box',
-        marginTop: '50px',
-      }}
-    >
-      <Grid container spacing={3} sx={{ width: '90%', height: '100%' }}>
-        {/* Timer Setup */}
-        <Grid item xs={12} md={6}>
-          <Box
-            sx={{
-              padding: '20px',
-              borderRadius: '30px',
-              backgroundColor: 'white',
-              border: '1px solid lightgray',
-              boxShadow: 'inset 0 2px 2px rgba(0, 0, 0, 0.1)',
-              overflow: 'auto',
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
-              minHeight: '500px',
-              maxHeight: 'calc(100vh - 100px)',
-              maxWidth: '500px',
-              width: '100%',
-              boxSizing: 'border-box',
-            }}
-          >
-            <Typography variant="h5" textAlign="center" marginBottom="80px" color="#073B4C">
-              Timer
-            </Typography>
+    return (
+      <Box className="timer-container">
+        <Grid container spacing={3} className="timer-grid-container">
+          {/* Timer Setup */}
+          <Grid item xs={12} md={6} display="flex" justifyContent="center">
 
-            <Grid item sx={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-            <Typography variant="h6" style={{ color: '#118AB2', marginBottom: '10px' }}>
-              Timer Title
-            </Typography>
-            <TextField
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              inputProps={{ maxLength: 20 }}
-              placeholder="Enter Timer Title"
-              variant="outlined"
-              sx={{
-                width: '38%',
-                backgroundColor: '#fff', // Set background color
-                '&:hover .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#118AB2', // Hover border color
-                  borderWidth: '2px',
-                },
-                '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                  borderColor: '#118AB2', // Focus border color
-                  borderWidth: '2px',
-                },
-              }}
-            />
-          </Grid>
-
-          {/* Hours, Minutes, and Seconds Inputs */}
-          <Grid container spacing={2} justifyContent="center" alignItems="center" sx={{ marginTop: '10px' }}>
-            {/* Hours */}
-            <Grid item>
-              <Typography variant="h6" style={{ color: '#EF476F' }}>Hours</Typography>
-              <TextField
-                value={hours}
-                onChange={(e) => setHours(e.target.value)}
-                inputProps={{ maxLength: 2 }}
-                variant="outlined"
-                sx={{
-                  width: '80px',
-                  backgroundColor: '#fff', // Set background color
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#EF476F', // Hover border color
-                    borderWidth: '2px',
-                  },
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#EF476F', // Focus border color
-                    borderWidth: '2px',
-                  },
-                }}
-              />
-            </Grid>
-
-            {/* Minutes */}
-            <Grid item>
-              <Typography variant="h6" style={{ color: '#FFD166' }}>Minutes</Typography>
-              <TextField
-                value={minutes}
-                onChange={(e) => setMinutes(e.target.value)}
-                inputProps={{ maxLength: 2 }}
-                variant="outlined"
-                sx={{
-                  width: '80px',
-                  backgroundColor: '#fff', // Set background color
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#FFD166', // Hover border color
-                    borderWidth: '2px',
-                  },
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#FFD166', // Focus border color
-                    borderWidth: '2px',
-                  },
-                }}
-              />
-            </Grid>
-
-            {/* Seconds */}
-            <Grid item>
-              <Typography variant="h6" style={{ color: '#06D6A0' }}>Seconds</Typography>
-              <TextField
-                value={seconds}
-                onChange={(e) => setSeconds(e.target.value)}
-                inputProps={{ maxLength: 2 }}
-                variant="outlined"
-                sx={{
-                  width: '80px',
-                  backgroundColor: '#fff', // Set background color
-                  '&:hover .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#06D6A0', // Hover border color
-                    borderWidth: '2px',
-                  },
-                  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                    borderColor: '#06D6A0', // Focus border color
-                    borderWidth: '2px',
-                  },
-                }}
-              />
-            </Grid>
-          </Grid>
-
-
-            {/* Action Buttons */}
-            <Grid container justifyContent="center" spacing={2} sx={{ marginTop: '20px' }}>
-              {/* Start Button */}
-              <Grid item>
-                <IconButton
-                  onClick={handleStart}
-                  disabled={isStartDisabled}
-                  sx={{
-                    backgroundColor: isStartDisabled ? '#CCC' : '#06D6A0',
-                    color: '#FFF',
-                    width: 55,
-                    height: 55,
-                    borderRadius: '50%',
-                    '&:hover': {
-                      backgroundColor: isStartDisabled ? '#CCC' : '#04B58D',
-                    },
-                  }}
-                >
-                  <PlayArrowIcon sx={{ fontSize: '30px' }} />
-                </IconButton>
+            <Box className="timer-box timer-setup">
+              <Typography variant="h5" className="timer-title">Timer</Typography>
+    
+              <Grid item className="timer-title-input-container">
+                <Typography variant="h6" className="timer-subtitle title">Timer Title</Typography>
+                <TextField
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  inputProps={{ maxLength: 20 }}
+                  placeholder="Enter Timer Title"
+                  variant="outlined"
+                  className="timer-title-input"
+                />
               </Grid>
-
-              {/* Reset Button */}
-              <Grid item>
-                <IconButton
-                  onClick={resetFields}
-                  sx={{
-                    backgroundColor: '#EF476F',
-                    color: '#FFF',
-                    width: 55,
-                    height: 55,
-                    borderRadius: '50%',
-                    '&:hover': {
-                      backgroundColor: '#D94262',
-                    },
-                  }}
-                >
-                  <RefreshIcon sx={{ fontSize: '30px' }} />
-                </IconButton>
-              </Grid>
-            </Grid>
-          </Box>
-        </Grid>
-
-        {/* Timer List */}
-        <Grid item xs={12} md={6}>
-          <Box
-            sx={{
-              padding: '20px',
-              borderRadius: '30px',
-              backgroundColor: 'white',
-              border: '1px solid lightgray',
-              boxShadow: 'inset 0 2px 2px rgba(0, 0, 0, 0.1)',
-              overflow: 'auto',
-              display: 'flex',
-              flexDirection: 'column',
-              height: '100%',
-              minHeight: '500px',
-              maxHeight: 'calc(100vh - 100px)',
-              maxWidth: '500px',
-              width: '100%',
-              boxSizing: 'border-box',
-              '&::-webkit-scrollbar': {
-                width: '1px',
-              },
-              '&::-webkit-scrollbar-thumb': {
-                backgroundColor: '#D3D3D3',
-                borderRadius: '4px',
-              },
-              '&::-webkit-scrollbar-thumb:hover': {
-                backgroundColor: '#6A6A6A',
-              },
-            }}
-          >
-            <Typography variant="h5" textAlign="center" marginBottom="25px" color="#073B4C">
-              List
-            </Typography>
-            <List>
-              {timerList.map((timer, index) => (
-                <ListItem
-                  key={timer.timerID}
-                  sx={{
-                    borderRadius: '15px',
-                    marginBottom: '15px',
-                    padding: '15px',
-                    backgroundColor: ['#EF476F', '#F78C6B', '#FFD166', '#06D6A0', '#118AB2'][index % 5],
-                    color: 'white',
-                    boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-                  }}
-                >
-                  <ListItemText
-                    primary={timer.title}
-                    secondary={`${timer.hours}h ${timer.minutes}m ${timer.seconds}s`}
-                    primaryTypographyProps={{ style: { color: 'white', fontWeight: 'bold' } }}
-                    secondaryTypographyProps={{ style: { color: 'white' } }}
+    
+              <Grid container spacing={2} justifyContent="center" alignItems="center" className="timer-input-row">
+                <Grid item>
+                  <Typography variant="h6" className="timer-subtitle hours">Hours</Typography>
+                  <TextField
+                    value={hours}
+                    onChange={(e) => setHours(e.target.value)}
+                    inputProps={{ maxLength: 2 }}
+                    variant="outlined"
+                    className="timer-textfield input-hours"
                   />
-                  <IconButton onClick={() => handleEditClick(timer)} sx={{ color: 'white' }}>
-                    <EditIcon />
+                </Grid>
+                <Grid item>
+                  <Typography variant="h6" className="timer-subtitle minutes">Minutes</Typography>
+                  <TextField
+                    value={minutes}
+                    onChange={(e) => setMinutes(e.target.value)}
+                    inputProps={{ maxLength: 2 }}
+                    variant="outlined"
+                    className="timer-textfield input-minutes"
+                  />
+                </Grid>
+                <Grid item>
+                  <Typography variant="h6" className="timer-subtitle seconds">Seconds</Typography>
+                  <TextField
+                    value={seconds}
+                    onChange={(e) => setSeconds(e.target.value)}
+                    inputProps={{ maxLength: 2 }}
+                    variant="outlined"
+                    className="timer-textfield input-seconds"
+                  />
+                </Grid>
+              </Grid>
+    
+              <Grid container justifyContent="center" spacing={2} className="timer-action-buttons">
+                <Grid item>
+                  <IconButton
+                    onClick={handleStart}
+                    disabled={isStartDisabled}
+                    className={`timer-button timer-start ${isStartDisabled ? 'disabled' : ''}`}
+                  >
+                    <PlayArrowIcon className="timer-icon" />
                   </IconButton>
-                  <IconButton onClick={() => handleDeleteClick(timer.timerID)} sx={{ color: 'white' }}>
-                    <DeleteIcon />
+                </Grid>
+                <Grid item>
+                  <IconButton
+                    onClick={resetFields}
+                    className="timer-button timer-reset"
+                  >
+                    <RefreshIcon className="timer-icon" />
                   </IconButton>
-                  <IconButton onClick={() => handlePlayClick(timer)} sx={{ color: 'white' }}>
-                    <PlayArrowIcon />
-                  </IconButton>
-                </ListItem>
-              ))}
-            </List>
-          </Box>
-
-          {/* Edit Dialog */}
-          <Dialog 
-          open={editDialogOpen} 
-          onClose={() => setEditDialogOpen(false)} 
-          style={{
-            border: '2px solid lightgray', /* Border style */
-            boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)' 
-          }}
-        >
-
-        <DialogTitle>Edit Timer</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Title"
-            fullWidth
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            inputProps={{ maxLength: 20 }}
-            sx={{
-              marginBottom: '10px',
-              marginTop: '10px',
-              '& .MuiOutlinedInput-root': {
-                '& fieldset': {
-                  borderColor: '#118AB2', // Default border color
-                },
-                '&:hover fieldset': {
-                  borderColor: '#FFD166', // Hover border color
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#06D6A0', // Focused border color
-                },
-              },
-            }}
-          />
-          <Grid container justifyContent="center" alignItems="center" spacing={2}>
-            <Grid item>
-              <TextField
-                label="Hours"
-                value={hours}
-                onChange={(e) => setHours(e.target.value)}
-                inputProps={{ maxLength: 2 }}
-                sx={{
-                  width: '100px',
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderColor: '#118AB2', // Default border color
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#FFD166', // Hover border color
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#06D6A0', // Focused border color
-                    },
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                label="Minutes"
-                value={minutes}
-                onChange={(e) => setMinutes(e.target.value)}
-                inputProps={{ maxLength: 2 }}
-                sx={{
-                  width: '100px',
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderColor: '#118AB2', // Default border color
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#FFD166', // Hover border color
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#06D6A0', // Focused border color
-                    },
-                  },
-                }}
-              />
-            </Grid>
-            <Grid item>
-              <TextField
-                label="Seconds"
-                value={seconds}
-                onChange={(e) => setSeconds(e.target.value)}
-                inputProps={{ maxLength: 2 }}
-                sx={{
-                  width: '100px',
-                  '& .MuiOutlinedInput-root': {
-                    '& fieldset': {
-                      borderColor: '#118AB2', // Default border color
-                    },
-                    '&:hover fieldset': {
-                      borderColor: '#FFD166', // Hover border color
-                    },
-                    '&.Mui-focused fieldset': {
-                      borderColor: '#06D6A0', // Focused border color
-                    },
-                  },
-                }}
-              />
-            </Grid>
+                </Grid>
+              </Grid>
+            </Box>
           </Grid>
-        </DialogContent>
+    
+          {/* Timer List */}
+          <Grid item xs={12} md={6} display="flex" justifyContent="center">
+            <Box className="timer-box">
+              <Typography variant="h5" className="timer-list-title">List</Typography>
+              <List>
+                {timerList.map((timer, index) => (
+                  <ListItem
+                  key={timer.timerID}
+                  >                
+                    <ListItemText
+                      primary={timer.title}
+                      secondary={`${timer.hours}h ${timer.minutes}m ${timer.seconds}s`}
+                      primaryTypographyProps={{ className: 'timer-list-text-primary' }}
+                      secondaryTypographyProps={{ className: 'timer-list-text-secondary' }}
+                    />
+                    <IconButton onClick={() => handleEditClick(timer)} className="timer-icon-button">
+                      <EditIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handleDeleteClick(timer.timerID)} className="timer-icon-button">
+                      <DeleteIcon />
+                    </IconButton>
+                    <IconButton onClick={() => handlePlayClick(timer)} className="timer-icon-button">
+                      <PlayArrowIcon />
+                    </IconButton>
+                  </ListItem>
+                ))}
+              </List>
+            </Box>
 
-            <DialogActions>
-              <Button onClick={() => setEditDialogOpen(false)}
-                sx={{
-                  textTransform: 'none', // Prevent text from being auto-capitalized
-                  color: '#fff',
-                  backgroundColor: '#EF476F',
-                  borderRadius: '8px',
-                  padding: '5px 20px',
-                  fontWeight: 'bold',
-                  marginBottom: '10px',
-                  '&:hover': {
-                    backgroundColor: '#F78C6B',
-                  },
-                }}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleEditSaveClick}
-                sx={{
-                  textTransform: 'none', // Prevent text from being auto-capitalized
-                  color: '#fff',
-                  backgroundColor: '#118AB2',
-                  borderRadius: '8px',
-                  padding: '5px 20px',
-                  fontWeight: 'bold',
-                  marginBottom: '10px',
-                  '&:hover': {
-                    backgroundColor: '#F78C6B',
-                  },
-                }}
-                >
-                Save
-              </Button>
-            </DialogActions>
-          </Dialog>
-
-
-          {/* Confirm Update Dialog*/}
-
-          <Dialog open={confirmEditDialogOpen} onClose={handleEditCancel} style={{border: '2px solid lightgray', /* Border style */
-          boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)'}}>
-          <div style={{ display: 'flex', alignItems: 'center', padding: '20px' }}>
-            {/* Left side image */}
-            <img
-              src="/ASSETS/popup-alert.png"
-              alt="Alert Icon"
-              style={{ marginRight: '15px', width: '60px', height: '60px'}}
+            {/* Dialog */}
+            <EditDialog
+              open={editDialogOpen}
+              onClose={() => setEditDialogOpen(false)}
+              title={title}
+              setTitle={setTitle}
+              hours={hours}
+              setHours={setHours}
+              minutes={minutes}
+              setMinutes={setMinutes}
+              seconds={seconds}
+              setSeconds={setSeconds}
+              onSave={handleEditSaveClick}
             />
 
-            {/* Text and buttons */}
-            <div style={{ flexGrow: 1 }}>
-            <DialogTitle style={{ margin: 0, padding: 0, fontSize: '17px' }}>
-              Are you sure you want to edit this?
-            </DialogTitle>
-
-            <DialogActions style={{ marginTop: '10px', padding: 0 }}>
-                    <Button
-                      onClick={handleEditConfirm}
-                      style={{
-                        backgroundColor: '#06D6A0',
-                        color: '#ffffff',
-                        marginRight: '10px',
-                        textTransform: 'none',
-                        padding: '5px 20px',
-                      }}
-                    >
-                      Ok
-                    </Button>
-                    <Button
-                      onClick={handleEditCancel}
-                      style={{
-                        backgroundColor: '#EF476F',
-                        color: '#ffffff',
-                        textTransform: 'none',
-                        padding: '5px 20px',
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </DialogActions>
-                </div>
-              </div>
-            </Dialog>
-
-
-          {/* Confirm Delete Dialog */}
-          <Dialog open={confirmDialogOpen} onClose={handleDeleteCancel} style={{border: '2px solid lightgray', /* Border style */
-          boxShadow: '0 2px 2px rgba(0, 0, 0, 0.1)'}}>
-          <div style={{ display: 'flex', alignItems: 'center', padding: '20px' }}>
-            {/* Left side image */}
-            <img
-              src="/ASSETS/popup-delete.png"
-              alt="Delete Icon"
-              style={{ marginRight: '15px', width: '60px', height: '60px'}}
+            <ConfirmEditDialog
+              open={confirmEditDialogOpen}
+              onConfirm={handleEditConfirm}
+              onCancel={handleEditCancel}
             />
 
-          {/* Text and buttons */}
-          <div style={{ flexGrow: 1 }}>
-            <DialogTitle style={{ margin: 0, padding: 0, fontSize: '17px' }}>
-              Are you sure you want to delete this?
-            </DialogTitle>
-
-            <DialogActions style={{ marginTop: '10px', padding: 0 }}>
-                    <Button
-                      onClick={handleDeleteConfirm}
-                      style={{
-                        backgroundColor: '#06D6A0',
-                        color: '#ffffff',
-                        marginRight: '10px',
-                        textTransform: 'none',
-                        padding: '5px 20px',
-                      }}
-                    >
-                      Ok
-                    </Button>
-                    <Button
-                      onClick={handleDeleteCancel}
-                      style={{
-                        backgroundColor: '#EF476F',
-                        color: '#ffffff',
-                        textTransform: 'none',
-                        padding: '5px 20px',
-                      }}
-                    >
-                      Cancel
-                    </Button>
-                  </DialogActions>
-                </div>
-              </div>
-            </Dialog>
-
-
+            <ConfirmDeleteDialog
+              open={confirmDialogOpen}
+              onConfirm={handleDeleteConfirm}
+              onCancel={handleDeleteCancel}
+            />
+          </Grid>
         </Grid>
-      </Grid>
-    </Box>
-  );
+      </Box>
+    );
 }
 
 export default TimerSetup;

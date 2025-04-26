@@ -17,10 +17,7 @@ body {
     overflow: hidden;
     z-index: 0;
     position: relative;
-    min-height: 100vh;
-    margin-top: 50px;
-    
-    
+    min-height: 93vh;    
 }
 
 .top-section {
