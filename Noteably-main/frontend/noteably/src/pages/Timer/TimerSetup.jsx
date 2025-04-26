@@ -182,7 +182,6 @@ setTimerList(timerList.filter((timer) => String(timer.timerID) !== String(timerI
       setConfirmEditDialogOpen(false);
     };
     
-
     return (
       <Box className="timer-container">
         <Grid container spacing={3} className="timer-grid-container">
@@ -266,13 +265,16 @@ setTimerList(timerList.filter((timer) => String(timer.timerID) !== String(timerI
               <List>
                 {timerList.map((timer, index) => (
                   <ListItem
-                  key={timer.timerID}
-                  >                
+                    key={timer.timerID}
+                    disableGutters
+                    className={`timer-item-box color-${index % 7}`}
+                    sx={{ flex: 1 }}
+                  >
                     <ListItemText
-                      primary={timer.title}
-                      secondary={`${timer.hours}h ${timer.minutes}m ${timer.seconds}s`}
-                      primaryTypographyProps={{ className: 'timer-list-text-primary' }}
-                      secondaryTypographyProps={{ className: 'timer-list-text-secondary' }}
+                    primary={timer.title}
+                    secondary={`${timer.hours}h ${timer.minutes}m ${timer.seconds}s`}
+                    primaryTypographyProps={{ className: 'timer-list-text-primary' }}
+                    secondaryTypographyProps={{ className: 'timer-list-text-secondary' }}
                     />
                     <IconButton onClick={() => handleEditClick(timer)} className="timer-icon-button">
                       <EditIcon />
