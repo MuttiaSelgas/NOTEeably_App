@@ -1,0 +1,5 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#FFFFFF"/> <!-- Fill color, change as needed -->
+    <corners android:radius="500dp"/> <!-- Use a fixed dp value for circular shape -->
+    <stroke android:color="#000000" android:width="2dp"/> <!-- Border color and width -->
+</shape>
