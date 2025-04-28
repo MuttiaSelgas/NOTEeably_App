@@ -6,7 +6,7 @@
     border: 1px solid lightgray; /* Border style */
     border-radius: 30px; /* Rounded corners */
     padding: 20px; /* Inner padding */
-    background-image: url('/ASSETS/polkadot.png');
+    background-image: url('../../assets/polkadot.png');
     background-size: cover; /*  Ensure background image fills the area */
     box-sizing: border-box; /* Ensure padding and border are included in size */
     overflow: hidden; /* Prevent overflow */

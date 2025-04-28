@@ -1,6 +1,5 @@
 import axios from 'axios';
 
-const BASE_URL = 'http://localhost:8080/api/students';
 const API_BASE_URL = 'http://localhost:8080/api';
 
 // Utility function to get complete image URL

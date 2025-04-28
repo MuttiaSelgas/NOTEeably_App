@@ -9,7 +9,7 @@
     border: 1px solid lightgray;
     border-radius: 30px;
     padding: 20px;
-    background-image: url("/ASSETS/polkadot.png");
+    background-image: url('../../assets/polkadot.png');
     background-size: cover;
     background-position: center;
     box-sizing: border-box;
