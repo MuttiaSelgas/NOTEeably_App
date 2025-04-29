@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { axiosRequest } from '../../services/studentService';
-import { Box, Typography, Checkbox } from '@mui/material';
+import { Box, Typography, Checkbox, Fab, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
+import { Add } from '@mui/icons-material';
 
 const apiUrl = "http://localhost:8080/api/TodoList";
 
 const ToDoListWidget = () => {
     const [toDoItems, setToDoItems] = useState([]);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [newItem, setNewItem] = useState({ title: "", description: "" });
 
     // Fetch ToDo Items
     const fetchToDoItems = async () => {
-        // const studentId = localStorage.getItem('studentId');
         const fullStudentInfo = localStorage.getItem('fullStudentInfo');
         let studentId = null;
         if (fullStudentInfo) {
@@ -32,6 +34,30 @@ const ToDoListWidget = () => {
         }
     };
 
+    // Create new To-Do item
+    const createToDoItem = async () => {
+        const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+        const studentObj = JSON.parse(fullStudentInfo);
+        const studentId = studentObj.id;
+        if (!newItem.title.trim()) {
+            alert("Title is required.");
+            return;
+        }
+        try {
+            await axiosRequest({
+                method: 'post',
+                url: `${apiUrl}/postListRecord`,
+                data: { ...newItem, studentId, completed: false },
+                headers: { "Content-Type": "application/json" }
+            });
+            setNewItem({ title: "", description: "" });
+            setModalOpen(false);
+            fetchToDoItems(); // refresh
+        } catch (error) {
+            console.error("Error creating ToDo", error);
+        }
+    };
+
     // Handle Checkbox Toggle
     const handleCheckboxToggle = async (taskId) => {
         const updatedItems = toDoItems.map(item =>
@@ -45,53 +71,104 @@ const ToDoListWidget = () => {
     }, []);
 
     return (
-        <Box sx={{
-            padding: '20px',
-            borderRadius: '10px',
-            backgroundColor: '#FFFFFF', 
-            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-            width: '400px',
-            height: '300px',
-            overflowY: 'auto',
-        }}>
-            {toDoItems.length === 0 ? (
-                <Typography style={{ textAlign: 'center', color: '#999' }}>
-                    No tasks added yet.
-                </Typography>
-            ) : (
-                toDoItems.map((item) => (
-                    <Box
-                        key={item.toDoListID}
-                        sx={{
-                            width: '100%',
-                            marginBottom: '15px',
-                            padding: '10px',
-                            borderRadius: '5px',
-                            backgroundColor: item.completed ? '#D3D3D3' : '#FFFFE0', 
-                            display: 'flex',
-                            alignItems: 'center',
-                        }}
-                    >
-                        <Checkbox
-                            checked={item.completed}
-                            onChange={() => handleCheckboxToggle(item.toDoListID)}
+        <Box sx={{ position: 'relative', padding: 2 }}>
+            {/* ToDo List Container */}
+            <Box sx={{
+                padding: '20px',
+                borderRadius: '10px',
+                backgroundColor: '#FFFFFF',
+                boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                width: '400px',
+                height: '300px',
+                overflowY: 'auto',
+            }}>
+                {toDoItems.length === 0 ? (
+                    <Typography sx={{ textAlign: 'center', color: '#999' }}>
+                        No tasks added yet.
+                    </Typography>
+                ) : (
+                    toDoItems.map((item) => (
+                        <Box
+                            key={item.toDoListID}
                             sx={{
-                                color: item.completed ? '#FFBF00' : '#FFBF00',
-                                '&.Mui-checked': { color: '#06D6A0' },
-                            }}
-                        />
-                        <Typography
-                            variant="body1"
-                            style={{
-                                textDecoration: item.completed ? 'line-through' : 'none',
-                                color: item.completed ? '#999' : '#000',
+                                width: '100%',
+                                marginBottom: '15px',
+                                padding: '10px',
+                                borderRadius: '5px',
+                                backgroundColor: item.completed ? '#D3D3D3' : '#FFFFE0',
+                                display: 'flex',
+                                alignItems: 'center',
                             }}
                         >
-                            {item.title}
-                        </Typography>
-                    </Box>
-                ))
-            )}
+                            <Checkbox
+                                checked={item.completed}
+                                onChange={() => handleCheckboxToggle(item.toDoListID)}
+                                sx={{
+                                    color: '#FFD166',
+                                    '&.Mui-checked': { color: '#06D6A0' },
+                                }}
+                            />
+                            <Typography
+                                variant="body1"
+                                sx={{
+                                    textDecoration: item.completed ? 'line-through' : 'none',
+                                    color: item.completed ? '#999' : '#000',
+                                }}
+                            >
+                                {item.title}
+                            </Typography>
+                        </Box>
+                    ))
+                )}
+            </Box>
+
+            {/* Floating Add Button (OUTSIDE the container) */}
+            <Fab
+                color="primary"
+                aria-label="add"
+                onClick={() => setModalOpen(true)}
+                sx={{
+                    position: 'fixed',
+                    bottom: 30,
+                    right: 30,
+                    backgroundColor: '#FFD166',
+                    color: '#fff',
+                    zIndex: 2000,
+                    '&:hover': { backgroundColor: '#EF476F' },
+                    boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.3)',
+                }}
+            >
+                <Add />
+            </Fab>
+
+            {/* Modal for Creating Task */}
+            <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+                <DialogTitle>Create New Task</DialogTitle>
+                <DialogContent>
+                    <TextField
+                        autoFocus
+                        margin="dense"
+                        label="Title"
+                        name="title"
+                        fullWidth
+                        value={newItem.title}
+                        onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+                        sx={{ marginBottom: 2 }}
+                    />
+                    <TextField
+                        margin="dense"
+                        label="Description"
+                        name="description"
+                        fullWidth
+                        value={newItem.description}
+                        onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+                    />
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setModalOpen(false)}>Cancel</Button>
+                    <Button variant="contained" onClick={createToDoItem}>Create</Button>
+                </DialogActions>
+            </Dialog>
         </Box>
     );
 };
