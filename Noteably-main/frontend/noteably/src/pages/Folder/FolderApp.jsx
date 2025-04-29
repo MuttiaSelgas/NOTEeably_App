@@ -176,7 +176,12 @@ function FolderApp() {
             </h2>
             <form onSubmit={(e) => {
               e.preventDefault();
-              data.folderId ? (setShowRenameConfirm(true), setIsModalOpen(false)) : submit(e);
+              if (data.folderId) {
+                setShowRenameConfirm(true);
+                setIsModalOpen(false);
+              } else {
+                submit(e);
+              }
             }}>
               <input type="hidden" id="folderId" value={data.folderId} />
               <input

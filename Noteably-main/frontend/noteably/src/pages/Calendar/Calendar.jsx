@@ -5,6 +5,7 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
 import KanbanBoard from '../../KanbanBoard';
 import { Box, Tabs, Tab } from '@mui/material';
+import { axiosRequest } from '../../services/studentService';
 
 const apiUrl = "http://localhost:8080/api/schedules";
 
@@ -15,7 +16,7 @@ function Calendar() {
 
   const fetchSchedules = useCallback(async () => {
     try {
-      const response = await axios.get(`${apiUrl}/getByStudent/${studentId}`);
+      const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
       setSchedules(response.data);
     } catch (error) {
       console.error("Error fetching schedules", error);
