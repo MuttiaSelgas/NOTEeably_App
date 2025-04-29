@@ -9,15 +9,13 @@ function FolderApp() {
   const navigate = useNavigate();
 
   const fullStudentInfo = localStorage.getItem('fullStudentInfo');
-  let studentId = null;
-  if (fullStudentInfo) {
+  const studentId = (() => {
     try {
-      const studentObj = JSON.parse(fullStudentInfo);
-      studentId = studentObj.id;
-    } catch (error) {
-      console.error("Error parsing fullStudentInfo from localStorage", error);
+      return fullStudentInfo ? JSON.parse(fullStudentInfo).id : null;
+    } catch {
+      return null;
     }
-  }
+  })();
 
   const [data, setData] = useState({ folderId: "", title: "", dashboardId: 1 });
   const [folders, setFolders] = useState([]);
@@ -30,6 +28,7 @@ function FolderApp() {
   const [selectedFolder, setSelectedFolder] = useState(null);
 
   const fetchFolders = useCallback(async () => {
+    if (!studentId) return;
     try {
       const res = await axiosRequest({ method: 'get', url: `${url}/getByStudent/${studentId}` });
       setFolders(res.data);
@@ -54,6 +53,7 @@ function FolderApp() {
 
   const submit = async (e) => {
     e.preventDefault();
+    if (!studentId) return;
     try {
       const folderData = { ...data, studentId };
       await axiosRequest({ method: 'post', url: `${url}/postFolderRecord`, data: folderData });
@@ -61,12 +61,13 @@ function FolderApp() {
       setIsModalOpen(false);
       fetchFolders();
     } catch (error) {
-      console.error("Error details:", error.response?.data || error.message);
+      console.error("Error creating folder:", error);
       alert("Failed to create folder.");
     }
   };
 
   const handleConfirmedUpdate = async () => {
+    if (!studentId) return;
     try {
       const folderData = { ...data, studentId };
       await axiosRequest({ method: 'put', url: `${url}/putFolderDetails/${data.folderId}`, data: folderData });
@@ -117,151 +118,127 @@ function FolderApp() {
   );
 
   const closeModal = () => setIsModalOpen(false);
-  const toggleDropdown = (id) => setOpenDropdown(prev => prev === id ? null : id);
+  const toggleDropdown = (id) => setOpenDropdown(prev => (prev === id ? null : id));
   const openFolder = (id) => navigate(`/noteApp/${id}`, { state: { folderId: id } });
 
   return (
     <main className='folder-app'>
-        <div className="top-section">
-            <input
-                type="text"
-                placeholder="Look for a folder"
-                className="search-bar"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+      <div className="top-section">
+        <input
+          type="text"
+          placeholder="Look for a folder"
+          className="search-bar"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
+        <button onClick={() => setIsModalOpen(true)} className="add-btn">+</button>
+      </div>
+
+      <div className="folder-grid">
+        {filteredFolders.map((folder, index) => (
+          <div key={folder.folderId} className="folder-item" onClick={(e) => {
+            if (!e.target.closest('.options-dropdown') && !e.target.closest('.options-icon')) {
+              openFolder(folder.folderId);
+            }
+          }}>
+            <img
+              src={`./ASSETS/folder-${['blue', 'green', 'orange', 'red', 'yellow'][index % 5]}.png`}
+              alt="Folder Icon"
+              className="folder-icon"
             />
-            <button onClick={() => setIsModalOpen(true)} className="add-btn">+</button>
+            <div className="folder-title" style={{ justifyContent: 'space-between' }}>
+              <span>{folder.title}</span>
+              <MoreVertIcon
+                className="options-icon"
+                style={{ marginLeft: 'auto' }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleDropdown(folder.folderId);
+                }}
+              />
+            </div>
+            {openDropdown === folder.folderId && (
+              <div ref={dropdownRef} className="options-dropdown">
+                <button onClick={(e) => { e.stopPropagation(); editFolder(folder); }}>Rename</button>
+                <button onClick={(e) => { e.stopPropagation(); confirmDelete(folder); }}>Delete</button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Modal */}
+      {isModalOpen && (
+        <div className="modal-overlay" onClick={closeModal}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h2 style={{ marginBottom: '10px', color: '#073B4C', fontWeight: 'bold' }}>
+              {data.folderId ? 'Edit Folder' : 'Create Folder'}
+            </h2>
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              data.folderId ? (setShowRenameConfirm(true), setIsModalOpen(false)) : submit(e);
+            }}>
+              <input type="hidden" id="folderId" value={data.folderId} />
+              <input
+                type="text"
+                id="title"
+                value={data.title}
+                onChange={handle}
+                placeholder="Enter folder title"
+                required
+                style={{
+                  padding: '12px',
+                  borderRadius: '12px',
+                  border: '1px solid #ccc',
+                  fontSize: '15px',
+                  backgroundColor: '#fff',
+                  marginBottom: '15px'
+                }}
+              />
+              <button type="submit" className="submit-folder-btn">
+                {data.folderId ? 'Update' : 'Create'}
+              </button>
+            </form>
+          </div>
         </div>
+      )}
 
-        <div className="folder-grid">
-            {filteredFolders.map((folder, index) => (
-                <div key={folder.folderId} className="folder-item" onClick={(e) => {
-                    if (!e.target.closest('.options-dropdown') && !e.target.closest('.options-icon')) {
-                        openFolder(folder.folderId);
-                    }
-                }}>
-                    <img
-                        src={`./ASSETS/folder-${['blue', 'green', 'orange', 'red', 'yellow'][index % 5]}.png`}
-                        alt="Folder Icon"
-                        className="folder-icon"
-                    />
-                    <div className="folder-title" style={{ justifyContent: 'space-between' }}>
-                        <span>{folder.title}</span>
-                        <MoreVertIcon
-                            className="options-icon"
-                            style={{ marginLeft: 'auto' }}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                toggleDropdown(folder.folderId);
-                            }}
-                        />
-                    </div>
-                    {openDropdown === folder.folderId && (
-                        <div ref={dropdownRef} className="options-dropdown">
-                            <button onClick={(e) => { e.stopPropagation(); editFolder(folder); }}>Rename</button>
-                            <button onClick={(e) => { e.stopPropagation(); confirmDelete(folder); }}>Delete</button>
-                        </div>
-                    )}
-                </div>
-            ))}
+      {/* Confirm Rename */}
+      {showRenameConfirm && (
+        <div className="confirm-modal">
+          <div className="confirm-content">
+            <img src="./ASSETS/popup-alert.png" alt="Edit Icon" />
+            <div className="confirm-text">
+              <h3>Are you sure you want to rename this?</h3>
+              <div className="confirm-buttons">
+                <button onClick={handleConfirmedUpdate} className="ok-btn">Ok</button>
+                <button onClick={() => {
+                  setShowRenameConfirm(false);
+                  setIsModalOpen(true);
+                }} className="cancel-btn">Cancel</button>
+              </div>
+            </div>
+          </div>
         </div>
+      )}
 
-        {/* ✅ THEME-ALIGNED MODAL BELOW */}
-        {isModalOpen && (
-            <div className="modal-overlay" onClick={closeModal}>
-                <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-                    <h2 style={{ marginBottom: '10px', color: '#073B4C', fontWeight: 'bold' }}>
-                        {data.folderId ? 'Edit Folder' : 'Create Folder'}
-                    </h2>
-                    <form onSubmit={(e) => {
-                        e.preventDefault();
-                        if (data.folderId) {
-                            setShowRenameConfirm(true);
-                            setIsModalOpen(false);
-                        } else {
-                            submit(e);
-                        }
-                    }}>
-                        <input
-                            type="hidden"
-                            id="folderId"
-                            value={data.folderId}
-                        />
-                        <input
-                            type="text"
-                            id="title"
-                            value={data.title}
-                            onChange={handle}
-                            placeholder="Enter folder title"
-                            required
-                            style={{
-                                padding: '12px',
-                                borderRadius: '12px',
-                                border: '1px solid #ccc',
-                                fontSize: '15px',
-                                outline: 'none',
-                                backgroundColor: '#fff',
-                                marginBottom: '15px'
-                            }}
-                        />
-                        <button
-                            type="submit"
-                            style={{
-                                backgroundColor: '#FFD166',
-                                color: 'white',
-                                border: 'none',
-                                padding: '12px',
-                                borderRadius: '10px',
-                                fontSize: '16px',
-                                fontWeight: 'bold',
-                                cursor: 'pointer',
-                                transition: 'background-color 0.3s ease'
-                            }}
-                            onMouseOver={(e) => e.target.style.backgroundColor = '#EF476F'}
-                            onMouseOut={(e) => e.target.style.backgroundColor = '#FFD166'}
-                        >
-                            {data.folderId ? 'Update' : 'Create'}
-                        </button>
-                    </form>
-                </div>
+      {/* Confirm Delete */}
+      {showDeleteConfirm && (
+        <div className="confirm-modal">
+          <div className="confirm-content">
+            <div className="dialog-content-with-image">
+              <img src="./ASSETS/popup-delete.png" alt="Delete Icon" className="dialog-icon" />
+              <span>Are you sure you want to delete this?</span>
             </div>
-        )}
-
-        {/* Confirmation modals (optional cleanup later) */}
-        {showRenameConfirm && (
-            <div className="confirm-modal">
-                <div className="confirm-content">
-                    <img src="./ASSETS/popup-alert.png" alt="Edit Icon" />
-                    <div className="confirm-text">
-                        <h3>Are you sure you want to rename this?</h3>
-                        <div className="confirm-buttons">
-                            <button onClick={handleConfirmedUpdate} className="ok-btn">Ok</button>
-                            <button onClick={() => {
-                                setShowRenameConfirm(false);
-                                setIsModalOpen(true);
-                            }} className="cancel-btn">Cancel</button>
-                        </div>
-                    </div>
-                </div>
+            <div className="confirm-buttons">
+              <button onClick={handleDelete} className="ok-btn">Ok</button>
+              <button onClick={() => setShowDeleteConfirm(false)} className="cancel-btn">Cancel</button>
             </div>
-        )}
-
-        {showDeleteConfirm && (
-            <div className="confirm-modal">
-                <div className="confirm-content">
-                    <div className="dialog-content-with-image">
-                        <img src="./ASSETS/popup-delete.png" alt="Delete Icon" className="dialog-icon" />
-                        <span>Are you sure you want to delete this?</span>
-                    </div>
-                    <div className="confirm-buttons">
-                        <button onClick={handleDelete} className="ok-btn">Ok</button>
-                        <button onClick={() => setShowDeleteConfirm(false)} className="cancel-btn">Cancel</button>
-                    </div>
-                </div>
-            </div>
-        )}
+          </div>
+        </div>
+      )}
     </main>
-);
+  );
 }
 
 export default FolderApp;
