@@ -117,15 +117,14 @@ function SettingsPage() {
 
   return (
     <Box sx={{
-        height: 'vh', // instead of minHeight
+        height: '100vh', // <- Fix here
         overflow: 'hidden', // prevent scroll
         padding: '40px',
-        marginTop: '0px', // center perfectly
         backgroundImage: 'url("/ASSETS/polkadot.png")',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         display: 'flex',
-
+        borderRadius: '20px',
       }}>
       
       <div className="settings-container" style={{
@@ -154,7 +153,6 @@ function SettingsPage() {
           </div>
 
           <div className="settings-footer" style={{ display: 'flex', gap: '1rem', marginTop: '2rem' }}>
-            <button className="save-button" onClick={handleSaveChanges}>Save Changes</button>
             <button className="logout-button" onClick={handleLogout}>Logout</button>
           </div>
         </div>

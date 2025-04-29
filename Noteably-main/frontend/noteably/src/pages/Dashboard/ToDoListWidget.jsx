@@ -270,76 +270,33 @@ const ToDoListWidget = () => {
       </Fab>
 
       {/* Modal for Create/Edit */}
-      <Dialog
-  open={modalOpen}
-  onClose={() => setModalOpen(false)}
-  PaperProps={{
-    sx: {
-      borderRadius: 4,
-      padding: 2,
-      backgroundColor: '#FFF8F0', // soft background
-      width: '100%',
-      maxWidth: '500px',
-    }
-  }}
->
-  <DialogTitle sx={{ fontWeight: 'bold', color: '#333' }}>
-    {editMode ? "Edit Task" : "Create New Task"}
-  </DialogTitle>
-
-  <DialogContent>
-    <TextField
-      autoFocus
-      margin="dense"
-      label="Title"
-      fullWidth
-      variant="outlined"
-      value={newItem.title}
-      onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
-      sx={{
-        marginBottom: 2,
-        backgroundColor: '#fff',
-        borderRadius: 1,
-      }}
-    />
-    <TextField
-      margin="dense"
-      label="Description"
-      fullWidth
-      variant="outlined"
-      value={newItem.description}
-      onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
-      sx={{
-        backgroundColor: '#fff',
-        borderRadius: 1,
-      }}
-    />
-  </DialogContent>
-
-  <DialogActions sx={{ padding: '16px 24px' }}>
-    <Button
-      onClick={() => setModalOpen(false)}
-      sx={{ color: '#999', fontWeight: 600 }}
-    >
-      Cancel
-    </Button>
-    <Button
-      variant="contained"
-      onClick={saveToDoItem}
-      sx={{
-        backgroundColor: '#FFD166',
-        color: '#fff',
-        fontWeight: 'bold',
-        '&:hover': {
-          backgroundColor: '#EF476F',
-        },
-      }}
-    >
-      {editMode ? "Update" : "Create"}
-    </Button>
-  </DialogActions>
-</Dialog>
-
+      <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
+        <DialogTitle>{editMode ? "Edit Task" : "Create New Task"}</DialogTitle>
+        <DialogContent>
+          <TextField
+            autoFocus
+            margin="dense"
+            label="Title"
+            fullWidth
+            value={newItem.title}
+            onChange={(e) => setNewItem({ ...newItem, title: e.target.value })}
+            sx={{ marginBottom: 2 }}
+          />
+          <TextField
+            margin="dense"
+            label="Description"
+            fullWidth
+            value={newItem.description}
+            onChange={(e) => setNewItem({ ...newItem, description: e.target.value })}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setModalOpen(false)}>Cancel</Button>
+          <Button variant="contained" onClick={saveToDoItem}>
+            {editMode ? "Update" : "Create"}
+          </Button>
+        </DialogActions>
+      </Dialog>
 
       {/* Confirm Edit Dialog */}
       <ConfirmEditDialog
