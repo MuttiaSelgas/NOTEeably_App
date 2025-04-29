@@ -3,7 +3,6 @@ import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import listPlugin from '@fullcalendar/list';
-import axios from 'axios';
 import KanbanBoard from '../../KanbanBoard';
 import { Box, Tabs, Tab } from '@mui/material';
 
