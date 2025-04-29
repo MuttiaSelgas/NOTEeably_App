@@ -9,7 +9,5 @@ class AuthInterceptor(private val token: String) : Interceptor {
             .addHeader("Authorization", "Bearer $token")
             .build()
         return chain.proceed(request)
-
-
     }
 }
