@@ -13,7 +13,6 @@ const apiUrl = "http://localhost:8080/api/schedules";
 function Schedule() {
   const studentId = localStorage.getItem('studentId');
   const [schedules, setSchedules] = useState([]);
-  const [toDoItems, setToDoItems] = useState([]);
   const [formData, setFormData] = useState({ title: "", priority: "moderate", startDate: "", endDate: "", colorCode: "", todoListIds: [] });
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -28,26 +27,16 @@ function Schedule() {
 
   const fetchSchedules = useCallback(async () => {
     try {
-      const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
-      setSchedules(response.data);
+      const res = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
+      setSchedules(res.data);
     } catch (error) {
       console.error("Error fetching schedules", error);
     }
   }, [studentId]);
 
-  const fetchToDoItems = useCallback(async () => {
-    try {
-      const response = await axiosRequest({ method: 'get', url: `http://localhost:8080/api/TodoList/getByStudent/${studentId}` });
-      setToDoItems(response.data);
-    } catch (error) {
-      console.error("Error fetching ToDo items", error);
-    }
-  }, [studentId]);
-
   useEffect(() => {
     fetchSchedules();
-    fetchToDoItems();
-  }, [fetchSchedules, fetchToDoItems]);
+  }, [fetchSchedules]);
 
   const groupedSchedules = {
     high: schedules.filter(schedule => schedule.priority === 'high'),
@@ -105,7 +94,7 @@ function Schedule() {
       startDate: schedule.startDate,
       endDate: schedule.endDate,
       colorCode: schedule.colorCode,
-      todoListIds: schedule.tasks.map((task) => task.toDoListID),
+      todoListIds: schedule.tasks?.map((task) => task.toDoListID) || [],
     });
     setIsEditMode(true);
     setSelectedId(schedule.scheduleID);
@@ -133,7 +122,6 @@ function Schedule() {
       await axiosRequest({ method: 'post', url: "http://localhost:8080/api/TodoList/postListRecord", data: { ...newToDoData, scheduleId: selectedId } });
       setNewToDo({ title: "", description: "" });
       setOpenToDoDialog(false);
-      fetchToDoItems();
     } catch (error) {
       console.error("Error adding ToDo item", error);
     }
@@ -147,6 +135,7 @@ function Schedule() {
       default: return <Event />;
     }
   };
+
 
   return (
     <div style={{
