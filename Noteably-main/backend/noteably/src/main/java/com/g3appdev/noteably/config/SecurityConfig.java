@@ -40,12 +40,17 @@ public class SecurityConfig {
                     return corsConfig;
                 }))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/public/**", "/api/students/register", "/api/students/login").permitAll()
-                        .requestMatchers("/admin/**").hasAuthority("ADMIN")
-                        .requestMatchers("/user/**").hasAuthority("USER")
-                        .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN", "USER")
-                        .anyRequest().authenticated()
-                )
+                .requestMatchers("/auth/**", "/public/**", "/api/students/register", "/api/students/login").permitAll()
+                .requestMatchers("/admin/**").hasAuthority("ADMIN")
+                .requestMatchers("/user/**").hasAuthority("USER")
+                .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN", "USER")
+                
+                // ✅ Add this line:
+                .requestMatchers("/api/TodoList/**").hasAuthority("USER")
+
+                .anyRequest().authenticated()
+            )
+
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

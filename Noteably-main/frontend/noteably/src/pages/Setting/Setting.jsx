@@ -270,40 +270,179 @@ function SettingsPage() {
 
 
       {/* Information Modal */}
-      <Modal open={openInfoModal} onClose={() => setOpenInfoModal(false)}>
-        <Box sx={{
-          background: 'white', padding: '2rem', borderRadius: '20px',
-          margin: 'auto', marginTop: '10vh', maxWidth: '400px', boxShadow: 24
-        }}>
-          <h2 style={{ color: '#118AB2' }}>Edit Information</h2>
-          <input id="name" placeholder="Name" value={student.name} onChange={handleInputChange} style={{ width: '100%', marginBottom: '1rem' }} />
-          <input id="course" placeholder="Course" value={student.course} onChange={handleInputChange} style={{ width: '100%', marginBottom: '1rem' }} />
-          <input id="contactNumber" placeholder="Contact Number" value={student.contactNumber} onChange={handleInputChange} style={{ width: '100%', marginBottom: '1rem' }} />
-          <input id="email" placeholder="Email" value={student.email} onChange={handleInputChange} style={{ width: '100%', marginBottom: '1rem' }} />
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <Button onClick={() => { handleSaveChanges(); setOpenInfoModal(false); }} variant="contained" color="success">Save</Button>
-            <Button onClick={() => setOpenInfoModal(false)} variant="outlined" color="error">Cancel</Button>
-          </div>
-        </Box>
-      </Modal>
+<Modal open={openInfoModal} onClose={() => setOpenInfoModal(false)}>
+  <Box sx={{
+    backgroundColor: 'white',
+    padding: '2rem',
+    borderRadius: '20px',
+    margin: 'auto',
+    marginTop: '10vh',
+    maxWidth: '420px',
+    width: '90%',
+    boxShadow: 24,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.2rem',
+    alignItems: 'center'
+  }}>
+    <h2 style={{ color: '#118AB2', marginBottom: '0.5rem' }}>📝 Edit Information</h2>
+
+    <input
+      id="name"
+      placeholder="Name"
+      value={student.name}
+      onChange={handleInputChange}
+      style={{
+        width: '100%',
+        padding: '10px 12px',
+        borderRadius: '10px',
+        border: '1px solid #ccc',
+        fontSize: '14px'
+      }}
+    />
+    <input
+      id="course"
+      placeholder="Course"
+      value={student.course}
+      onChange={handleInputChange}
+      style={{
+        width: '100%',
+        padding: '10px 12px',
+        borderRadius: '10px',
+        border: '1px solid #ccc',
+        fontSize: '14px'
+      }}
+    />
+    <input
+      id="contactNumber"
+      placeholder="Contact Number"
+      value={student.contactNumber}
+      onChange={handleInputChange}
+      style={{
+        width: '100%',
+        padding: '10px 12px',
+        borderRadius: '10px',
+        border: '1px solid #ccc',
+        fontSize: '14px'
+      }}
+    />
+    <input
+      id="email"
+      placeholder="Email"
+      value={student.email}
+      onChange={handleInputChange}
+      style={{
+        width: '100%',
+        padding: '10px 12px',
+        borderRadius: '10px',
+        border: '1px solid #ccc',
+        fontSize: '14px'
+      }}
+    />
+
+    <Box sx={{ display: 'flex', justifyContent: 'center', gap: '1rem', width: '100%' }}>
+      <Button
+        onClick={() => { handleSaveChanges(); setOpenInfoModal(false); }}
+        variant="contained"
+        sx={{ backgroundColor: '#06D6A0', '&:hover': { backgroundColor: '#04b886' }, borderRadius: '10px', minWidth: '100px' }}
+      >
+        Save
+      </Button>
+      <Button
+        onClick={() => setOpenInfoModal(false)}
+        variant="outlined"
+        sx={{ color: '#EF476F', borderColor: '#EF476F', '&:hover': { borderColor: '#d03a5a', backgroundColor: '#fce8ec' }, borderRadius: '10px', minWidth: '100px' }}
+      >
+        Cancel
+      </Button>
+    </Box>
+  </Box>
+</Modal>
+
 
       {/* Password Modal */}
-      <Modal open={openPasswordModal} onClose={() => setOpenPasswordModal(false)}>
-        <Box sx={{
-          background: 'white', padding: '2rem', borderRadius: '20px',
-          margin: 'auto', marginTop: '10vh', maxWidth: '400px', boxShadow: 24
-        }}>
-          <h2 style={{ color: '#118AB2' }}>Change Password</h2>
-          <input id="newPassword" placeholder="New Password" type={showNewPassword ? 'text' : 'password'} value={student.newPassword} onChange={handleInputChange} style={{ width: '100%', marginBottom: '1rem' }} />
-          <IconButton onClick={() => setShowNewPassword(!showNewPassword)}>{showNewPassword ? <Visibility /> : <VisibilityOff />}</IconButton>
-          <input id="confirmPassword" placeholder="Confirm Password" type={showConfirmPassword ? 'text' : 'password'} value={student.confirmPassword} onChange={handleInputChange} style={{ width: '100%', marginBottom: '1rem' }} />
-          <IconButton onClick={() => setShowConfirmPassword(!showConfirmPassword)}>{showConfirmPassword ? <Visibility /> : <VisibilityOff />}</IconButton>
-          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-            <Button onClick={() => { handleSaveChanges(); setOpenPasswordModal(false); }} variant="contained" color="success">Save</Button>
-            <Button onClick={() => setOpenPasswordModal(false)} variant="outlined" color="error">Cancel</Button>
-          </div>
-        </Box>
-      </Modal>
+<Modal open={openPasswordModal} onClose={() => setOpenPasswordModal(false)}>
+  <Box sx={{
+    backgroundColor: 'white',
+    padding: '2rem',
+    borderRadius: '20px',
+    margin: 'auto',
+    marginTop: '10vh',
+    maxWidth: '420px',
+    width: '90%',
+    boxShadow: 24,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1.5rem',
+    alignItems: 'center'
+  }}>
+    <h2 style={{ color: '#118AB2', marginBottom: '0.5rem' }}>🔐 Change Password</h2>
+
+    <Box sx={{ width: '100%', position: 'relative' }}>
+      <input
+        id="newPassword"
+        placeholder="New Password"
+        type={showNewPassword ? 'text' : 'password'}
+        value={student.newPassword}
+        onChange={handleInputChange}
+        style={{
+          width: '100%',
+          padding: '10px 40px 10px 12px',
+          borderRadius: '10px',
+          border: '1px solid #ccc',
+          fontSize: '14px',
+        }}
+      />
+      <IconButton
+        onClick={() => setShowNewPassword(!showNewPassword)}
+        sx={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)' }}
+      >
+        {showNewPassword ? <Visibility /> : <VisibilityOff />}
+      </IconButton>
+    </Box>
+
+    <Box sx={{ width: '100%', position: 'relative' }}>
+      <input
+        id="confirmPassword"
+        placeholder="Confirm Password"
+        type={showConfirmPassword ? 'text' : 'password'}
+        value={student.confirmPassword}
+        onChange={handleInputChange}
+        style={{
+          width: '100%',
+          padding: '10px 40px 10px 12px',
+          borderRadius: '10px',
+          border: '1px solid #ccc',
+          fontSize: '14px',
+        }}
+      />
+      <IconButton
+        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+        sx={{ position: 'absolute', right: '8px', top: '50%', transform: 'translateY(-50%)' }}
+      >
+        {showConfirmPassword ? <Visibility /> : <VisibilityOff />}
+      </IconButton>
+    </Box>
+
+    <Box sx={{ display: 'flex', justifyContent: 'center', gap: '1rem', width: '100%' }}>
+      <Button
+        onClick={() => { handleSaveChanges(); setOpenPasswordModal(false); }}
+        variant="contained"
+        sx={{ backgroundColor: '#06D6A0', '&:hover': { backgroundColor: '#04b886' }, borderRadius: '10px', minWidth: '100px' }}
+      >
+        Save
+      </Button>
+      <Button
+        onClick={() => setOpenPasswordModal(false)}
+        variant="outlined"
+        sx={{ color: '#EF476F', borderColor: '#EF476F', '&:hover': { borderColor: '#d03a5a', backgroundColor: '#fce8ec' }, borderRadius: '10px', minWidth: '100px' }}
+      >
+        Cancel
+      </Button>
+    </Box>
+  </Box>
+</Modal>
+
 
       {isAlertVisible && (
         <div className="custom-alert">
