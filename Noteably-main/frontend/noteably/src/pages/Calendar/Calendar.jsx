@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -7,27 +7,27 @@ import axios from 'axios';
 import KanbanBoard from '../../KanbanBoard';
 import { Box, Tabs, Tab } from '@mui/material';
 
-const apiUrl = "http://localhost:8080/api/schedules"; 
+const apiUrl = "http://localhost:8080/api/schedules";
 
-function Calendar() { 
-  const studentId = localStorage.getItem('studentId'); // Get studentId from local storage
+function Calendar() {
+  const studentId = localStorage.getItem('studentId');
   const [schedules, setSchedules] = useState([]);
   const [currentView, setCurrentView] = useState("calendar");
 
-  useEffect(() => {
-    if (studentId) {
-      fetchSchedules(studentId); // Fetch schedules for the specific student
-    }
-  }, [studentId]);
-
-  const fetchSchedules = async (studentId) => {
+  const fetchSchedules = useCallback(async () => {
     try {
       const response = await axios.get(`${apiUrl}/getByStudent/${studentId}`);
       setSchedules(response.data);
     } catch (error) {
       console.error("Error fetching schedules", error);
     }
-  };
+  }, [studentId]);
+
+  useEffect(() => {
+    if (studentId) {
+      fetchSchedules();
+    }
+  }, [studentId, fetchSchedules]); // ✅ Hook dependencies
 
   const handleViewChange = (event, newValue) => {
     setCurrentView(newValue);
@@ -35,26 +35,22 @@ function Calendar() {
 
   return (
     <Box sx={{ padding: '20px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-      {/* Navigation Tabs */}
       <Box sx={{ width: '100%', maxWidth: '1000px', mb: 4 }}>
-      <Tabs
-            value={currentView}
-            onChange={handleViewChange}
-            centered
-            indicatorColor="#06D6A0"
-            textColor="primary"
-            sx={{
-              '& .MuiTab-root': {
-                '&:hover': {
-                  backgroundColor: '#FFFFF', 
-                },
-              },
-            }}
-          >
-            <Tab value="calendar" label="Calendar View" />
-            <Tab value="board" label="Board View" />
-      </Tabs>
-
+        <Tabs
+          value={currentView}
+          onChange={handleViewChange}
+          centered
+          textColor="primary"
+          indicatorColor="primary"
+          sx={{
+            '& .MuiTab-root:hover': {
+              backgroundColor: '#F8F9FA',
+            },
+          }}
+        >
+          <Tab value="calendar" label="Calendar View" />
+          <Tab value="board" label="Board View" />
+        </Tabs>
       </Box>
 
       {currentView === "calendar" && (
@@ -79,7 +75,7 @@ function Calendar() {
               month: 'Month',
               week: 'Week',
               day: 'Day',
-              list: 'List'
+              list: 'List',
             }}
           />
         </Box>

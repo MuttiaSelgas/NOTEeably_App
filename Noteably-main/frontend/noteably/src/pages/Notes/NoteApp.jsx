@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import Axios from 'axios';
 import { axiosRequest } from '../../services/studentService';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
