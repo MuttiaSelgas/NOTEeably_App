@@ -166,7 +166,6 @@ body {
     min-height: 100vh;
     box-sizing: border-box;
     overflow: hidden;
-    margin-top:50px;
 }
 
 .form-container {

@@ -9,11 +9,9 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EventNoteIcon from '@mui/icons-material/EventNote';
 import Calendar from '../Calendar/Calendar';
 import { API_ENDPOINTS, axiosConfig } from '../../config/api';
-import { getImageUrl } from '../../services/studentService';
-import { axiosRequest } from '../../services/studentService';
+import { getImageUrl, axiosRequest } from '../../services/studentService';
 import '../../antioverflow.css';
-import './Dashboard.css'; // ✅ New CSS import
-
+import './Dashboard.css';
 
 function Dashboard() {
   const [studentData, setStudentData] = useState({ studentId: '', studentName: '' });
@@ -56,10 +54,10 @@ function Dashboard() {
           <img src={getImageUrl(studentData.profilePicture)} alt="Profile" />
         </Box>
         <Box>
-          <Typography variant="h4" sx={{ color: 'var(--darkblue)', mb: 1 }}>
+          <Typography variant="h4" sx={{ color: 'var(--darkblue)', mb: 0.5 }}>
             Hello, {studentData.studentName || 'Student'}!
           </Typography>
-          <Typography variant="subtitle1" sx={{ color: 'var(--blue)', mb: 1 }}>
+          <Typography variant="subtitle1" sx={{ color: 'var(--blue)', mb: 0.5 }}>
             Student ID: {studentData.studentId || 'Unknown ID'}
           </Typography>
           <Typography variant="subtitle2" sx={{ color: 'var(--green)' }}>
@@ -68,52 +66,72 @@ function Dashboard() {
         </Box>
       </Box>
 
-      <Grid container spacing={3}>
-        <Grid item xs={10} md={4}>
-          <Paper className="dashboard-widget" sx={{ border: `2px solid ${'var(--yellow)'}` }}>
+      {/* --- Small Compact Widgets --- */}
+      <Grid container spacing={2}>
+        <Grid item xs={12} md={4}>
+          <Paper className="dashboard-widget compact-widget" sx={{ border: '2px solid var(--yellow)' }}>
             <Box className="dashboard-widget-header">
-              <Box className="dashboard-icon-box" sx={{ backgroundColor: 'var(--yellow)' }}>
+              <Box className="dashboard-icon-box yellow-bg">
                 <CheckCircleIcon sx={{ color: 'white' }} />
               </Box>
-              <Typography variant="h6" sx={{ color: 'var(--yellow)' }}>
+              <Typography variant="h6" sx={{ color: 'var(--yellow)', ml: 1 }}>
                 To-Do List
               </Typography>
             </Box>
-            <ToDoListWidget />
+            <Box className="dashboard-widget-content no-scroll-x">
+              <ToDoListWidget />
+            </Box>
           </Paper>
         </Grid>
 
-        <Grid item xs={10} md={4}>
-          <Paper className="dashboard-widget" sx={{ border: `2px solid ${'var(--blue)'}` }}>
+        <Grid item xs={12} md={4}>
+          <Paper className="dashboard-widget compact-widget" sx={{ border: '2px solid var(--blue)' }}>
             <Box className="dashboard-widget-header">
-              <Box className="dashboard-icon-box" sx={{ backgroundColor: 'var(--blue)' }}>
+              <Box className="dashboard-icon-box blue-bg">
                 <TimerIcon sx={{ color: 'white' }} />
               </Box>
-              <Typography variant="h6" sx={{ color: 'var(--blue)' }}>
+              <Typography variant="h6" sx={{ color: 'var(--blue)', ml: 1 }}>
                 Timer
               </Typography>
             </Box>
-            <TimerListWidget />
+            <Box className="dashboard-widget-content no-scroll-x">
+              <TimerListWidget />
+            </Box>
           </Paper>
         </Grid>
 
-        <Grid item xs={10} md={4}>
-          <FolderWidget />
+        <Grid item xs={12} md={4}>
+          <Paper className="dashboard-widget compact-widget" sx={{ border: '2px solid var(--orange)' }}>
+            <Box className="dashboard-widget-header">
+              <Box className="dashboard-icon-box orange-bg">
+                <FolderIcon sx={{ color: 'white' }} />
+              </Box>
+              <Typography variant="h6" sx={{ color: 'var(--orange)', ml: 1 }}>
+                Folders
+              </Typography>
+            </Box>
+            <Box className="dashboard-widget-content no-scroll-x">
+              <FolderWidget />
+            </Box>
+          </Paper>
         </Grid>
       </Grid>
 
-      <Grid item xs={12} className="dashboard-calendar">
-        <Paper className="dashboard-widget" sx={{ border: `2px solid ${'var(--green)'}` }}>
-          <Box className="dashboard-widget-header">
-            <Box className="dashboard-icon-box" sx={{ backgroundColor: 'var(--green)'}}>
+      {/* --- Calendar below --- */}
+      <Grid container spacing={2} sx={{ marginTop: '20px' }}>
+        <Grid item xs={12}>
+          <Paper className="dashboard-widget">
+            <Box className="dashboard-widget-header green-bg">
               <EventNoteIcon sx={{ color: 'white' }} />
+              <Typography variant="h6" sx={{ color: 'var(--green)', ml: 1 }}>
+                Schedule
+              </Typography>
             </Box>
-            <Typography variant="h6" sx={{ color: 'var(--green)' }}>
-              Schedule
-            </Typography>
-          </Box>
-          <Calendar />
-        </Paper>
+            <Box className="dashboard-widget-content">
+              <Calendar />
+            </Box>
+          </Paper>
+        </Grid>
       </Grid>
     </Box>
   );

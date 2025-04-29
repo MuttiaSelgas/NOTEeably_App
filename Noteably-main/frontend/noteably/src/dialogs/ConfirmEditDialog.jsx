@@ -15,5 +15,5 @@ const ConfirmEditDialog = ({ open, onConfirm, onCancel }) => (
     </div>
   </Dialog>
 );
-
+  
 export default ConfirmEditDialog;

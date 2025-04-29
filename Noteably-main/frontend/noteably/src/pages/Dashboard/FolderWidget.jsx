@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { axiosRequest } from '../../services/studentService';
-import { Box, Typography, Paper } from '@mui/material';
-import FolderIcon from '@mui/icons-material/Folder';
-import './FolderWidget.css'; // Ensure you have a CSS file for styling
-
+import { Box, Typography } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import './FolderWidget.css';
 
 const FolderWidget = () => {
     const navigate = useNavigate();
@@ -12,8 +10,8 @@ const FolderWidget = () => {
     const openFolder = (folderId) => {
         navigate(`/noteApp/${folderId}`);
     };
+
     const url = "http://localhost:8080/api/folders";
-    // const studentId = localStorage.getItem('studentId');
     const fullStudentInfo = localStorage.getItem('fullStudentInfo');
     let studentId = null;
     if (fullStudentInfo) {
@@ -24,6 +22,7 @@ const FolderWidget = () => {
             console.error("Error parsing fullStudentInfo from localStorage", error);
         }
     }
+
     const [folders, setFolders] = useState([]);
 
     useEffect(() => {
@@ -40,56 +39,32 @@ const FolderWidget = () => {
     }, [studentId]);
 
     return (
-        <Paper
-            elevation={3}
+        <Box
             sx={{
-                p: 2,
-                borderRadius: '20px',
-                backgroundColor: 'white',
-                border: '2px solid #F78C6B', 
-                boxShadow: '0 3px 2px rgba(0, 0, 0, 0.15)',
+                display: 'flex',
+                flexWrap: 'wrap',
+                gap: 2,
+                ml: '8px',
+                overflowY: 'auto',
+                maxHeight: '200px', // Adjust for compact height
             }}
         >
-            <Box display="flex" alignItems="center" sx={{ mb: 1 }}>
+            {folders.map((folder, index) => (
                 <Box
-                    sx={{
-                        width: 40,
-                        height: 40,
-                        borderRadius: '50%',
-                        backgroundColor: '#F78C6B', 
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        mr: 2,
-                        
-                    }}
+                    key={folder.folderId}
+                    className="folder-item"
+                    sx={{ width: '120px', textAlign: 'center', cursor: 'pointer' }}
+                    onClick={() => openFolder(folder.folderId)}
                 >
-                    <FolderIcon sx={{ color: 'white' }} />
+                    <img
+                        src={`./ASSETS/folder-${['blue', 'green', 'orange', 'red', 'yellow'][index % 5]}.png`}
+                        alt="Folder Icon"
+                        className="folder-icon"
+                    />
+                    <Typography variant="body2">{folder.title}</Typography>
                 </Box>
-                <Typography variant="h6" sx={{ color: '#F78C6B' }}>
-                    Folders
-                </Typography>
-            </Box>
-            <Box sx={{
-                    display: 'flex',
-                    flexWrap: 'wrap',
-                    gap: 2,
-                    ml: '16px',
-                    overflow: 'auto',
-                    maxHeight: '300px',
-                }}>
-                {folders.map((folder, index) => (
-                    <Box key={folder.folderId} className="folder-item" sx={{ width: '150px', textAlign: 'center' }} onClick={() => openFolder(folder.folderId)}>
-                        <img
-                            src={`./ASSETS/folder-${['blue', 'green', 'orange', 'red', 'yellow'][index % 5]}.png`}
-                            alt="Folder Icon"
-                            className="folder-icon"
-                        />
-                        <Typography variant="body2" >{folder.title}</Typography>
-                    </Box>
-                ))}
-            </Box>
-        </Paper>
+            ))}
+        </Box>
     );
 };
 

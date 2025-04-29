@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { axiosRequest } from '../../services/studentService';
-import { Box, Typography, Checkbox, Fab, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from '@mui/material';
-import { Add } from '@mui/icons-material';
+import { Box, Typography, Checkbox, Fab, Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField, IconButton } from '@mui/material';
+import { Add, Edit, Delete } from '@mui/icons-material';
+import ConfirmEditDialog from '../../dialogs/ConfirmEditDialog';
 
 const apiUrl = "http://localhost:8080/api/TodoList";
 
@@ -9,8 +10,10 @@ const ToDoListWidget = () => {
     const [toDoItems, setToDoItems] = useState([]);
     const [modalOpen, setModalOpen] = useState(false);
     const [newItem, setNewItem] = useState({ title: "", description: "" });
+    const [editMode, setEditMode] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
+    const [confirmEditOpen, setConfirmEditOpen] = useState(false);
 
-    // Fetch ToDo Items
     const fetchToDoItems = async () => {
         const fullStudentInfo = localStorage.getItem('fullStudentInfo');
         let studentId = null;
@@ -27,15 +30,26 @@ const ToDoListWidget = () => {
             return;
         }
         try {
-            const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
+            const response = await axiosRequest({
+                method: 'get',
+                url: `${apiUrl}/getByStudent/${studentId}`,
+                headers: { "Content-Type": "application/json" }
+            });
             setToDoItems(response.data);
         } catch (error) {
             console.error("Error fetching ToDo items", error);
         }
     };
 
-    // Create new To-Do item
-    const createToDoItem = async () => {
+    const saveToDoItem = async () => {
+        if (editMode && selectedItem) {
+            setConfirmEditOpen(true);
+        } else {
+            await createNewTask();
+        }
+    };
+
+    const createNewTask = async () => {
         const fullStudentInfo = localStorage.getItem('fullStudentInfo');
         const studentObj = JSON.parse(fullStudentInfo);
         const studentId = studentObj.id;
@@ -52,18 +66,81 @@ const ToDoListWidget = () => {
             });
             setNewItem({ title: "", description: "" });
             setModalOpen(false);
-            fetchToDoItems(); // refresh
+            fetchToDoItems();
         } catch (error) {
-            console.error("Error creating ToDo", error);
+            console.error("Error creating task", error);
         }
     };
 
-    // Handle Checkbox Toggle
+    const confirmUpdateTask = async () => {
+        const fullStudentInfo = localStorage.getItem('fullStudentInfo');
+        const studentObj = JSON.parse(fullStudentInfo);
+        const studentId = studentObj.id;
+        if (!newItem.title.trim()) {
+            alert("Title is required.");
+            return;
+        }
+        try {
+            await axiosRequest({
+                method: 'put',
+                url: `${apiUrl}/updateList/${selectedItem.toDoListID}`,
+                data: {
+                    ...newItem,
+                    studentId,
+                    completed: selectedItem.completed,
+                },
+                headers: { "Content-Type": "application/json" }
+            });
+            setNewItem({ title: "", description: "" });
+            setSelectedItem(null);
+            setEditMode(false);
+            setModalOpen(false);
+            setConfirmEditOpen(false);
+            fetchToDoItems();
+        } catch (error) {
+            console.error("Error updating task", error);
+        }
+    };
+
+    const deleteToDoItem = async (id) => {
+        try {
+            await axiosRequest({
+                method: 'delete',
+                url: `${apiUrl}/deleteList/${id}`,
+                headers: { "Content-Type": "application/json" }
+            });
+            fetchToDoItems();
+        } catch (error) {
+            console.error("Error deleting ToDo item", error);
+        }
+    };
+
     const handleCheckboxToggle = async (taskId) => {
         const updatedItems = toDoItems.map(item =>
             item.toDoListID === taskId ? { ...item, completed: !item.completed } : item
         );
         setToDoItems(updatedItems);
+
+        const itemToUpdate = toDoItems.find(item => item.toDoListID === taskId);
+        if (itemToUpdate) {
+            try {
+                await axiosRequest({
+                    method: 'put',
+                    url: `${apiUrl}/updateList/${taskId}`,
+                    data: { ...itemToUpdate, completed: !itemToUpdate.completed },
+                    headers: { "Content-Type": "application/json" }
+                });
+            } catch (error) {
+                console.error("Error updating completion status", error);
+            }
+        }
+    };
+
+    const openEditModal = (item) => {
+        setSelectedItem(item);
+        setNewItem({ title: item.title, description: item.description });
+        setEditMode(true);
+        setModalOpen(true);
     };
 
     useEffect(() => {
@@ -98,35 +175,50 @@ const ToDoListWidget = () => {
                                 backgroundColor: item.completed ? '#D3D3D3' : '#FFFFE0',
                                 display: 'flex',
                                 alignItems: 'center',
+                                justifyContent: 'space-between',
                             }}
                         >
-                            <Checkbox
-                                checked={item.completed}
-                                onChange={() => handleCheckboxToggle(item.toDoListID)}
-                                sx={{
-                                    color: '#FFD166',
-                                    '&.Mui-checked': { color: '#06D6A0' },
-                                }}
-                            />
-                            <Typography
-                                variant="body1"
-                                sx={{
-                                    textDecoration: item.completed ? 'line-through' : 'none',
-                                    color: item.completed ? '#999' : '#000',
-                                }}
-                            >
-                                {item.title}
-                            </Typography>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Checkbox
+                                    checked={item.completed}
+                                    onChange={() => handleCheckboxToggle(item.toDoListID)}
+                                    sx={{
+                                        color: '#FFD166',
+                                        '&.Mui-checked': { color: '#06D6A0' },
+                                    }}
+                                />
+                                <Typography
+                                    variant="body1"
+                                    sx={{
+                                        textDecoration: item.completed ? 'line-through' : 'none',
+                                        color: item.completed ? '#999' : '#000',
+                                    }}
+                                >
+                                    {item.title}
+                                </Typography>
+                            </Box>
+                            <Box>
+                                <IconButton onClick={() => openEditModal(item)} size="small">
+                                    <Edit fontSize="small" />
+                                </IconButton>
+                                <IconButton onClick={() => deleteToDoItem(item.toDoListID)} size="small">
+                                    <Delete fontSize="small" />
+                                </IconButton>
+                            </Box>
                         </Box>
                     ))
                 )}
             </Box>
 
-            {/* Floating Add Button (OUTSIDE the container) */}
+            {/* Floating Add Button */}
             <Fab
                 color="primary"
                 aria-label="add"
-                onClick={() => setModalOpen(true)}
+                onClick={() => {
+                    setModalOpen(true);
+                    setEditMode(false);
+                    setNewItem({ title: "", description: "" });
+                }}
                 sx={{
                     position: 'fixed',
                     bottom: 30,
@@ -141,9 +233,9 @@ const ToDoListWidget = () => {
                 <Add />
             </Fab>
 
-            {/* Modal for Creating Task */}
+            {/* Modal for Create/Edit */}
             <Dialog open={modalOpen} onClose={() => setModalOpen(false)}>
-                <DialogTitle>Create New Task</DialogTitle>
+                <DialogTitle>{editMode ? "Edit Task" : "Create New Task"}</DialogTitle>
                 <DialogContent>
                     <TextField
                         autoFocus
@@ -166,9 +258,18 @@ const ToDoListWidget = () => {
                 </DialogContent>
                 <DialogActions>
                     <Button onClick={() => setModalOpen(false)}>Cancel</Button>
-                    <Button variant="contained" onClick={createToDoItem}>Create</Button>
+                    <Button variant="contained" onClick={saveToDoItem}>
+                        {editMode ? "Update" : "Create"}
+                    </Button>
                 </DialogActions>
             </Dialog>
+
+            {/* Confirm Edit Dialog */}
+            <ConfirmEditDialog
+                open={confirmEditOpen}
+                onConfirm={confirmUpdateTask}
+                onCancel={() => setConfirmEditOpen(false)}
+            />
         </Box>
     );
 };

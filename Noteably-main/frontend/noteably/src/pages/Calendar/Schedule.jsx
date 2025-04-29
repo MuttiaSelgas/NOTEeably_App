@@ -174,7 +174,6 @@ const handleEdit = (schedule) => {
         backgroundPosition: 'center',
         border: '1px solid lightgray',
         borderRadius: '30px',
-        marginTop: '50px',
       }}
     >
       <Box sx={{ width: '100%', maxWidth: '1000px', textAlign: 'left', mb: 4, p: 3, backgroundColor: '#f9f9f9', borderRadius: '12px', boxShadow: 'inset 0px 2px 2px 0px rgba(0, 0, 0, 0.1)', border: '1px solid lightgray'}}>
