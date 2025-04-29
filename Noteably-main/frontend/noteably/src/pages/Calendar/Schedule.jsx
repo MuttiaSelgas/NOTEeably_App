@@ -8,7 +8,7 @@ import { Button, TextField, Select, MenuItem, Typography, Box, Dialog, DialogAct
 import { Edit, Delete, Event, PriorityHigh, LowPriority, Star, EventNote, Add } from '@mui/icons-material';
 import './Fullcalendar.css';
 
-const apiUrl = "http://localhost:8080/api/schedules";
+const apiUrl = "https://noteably.onrender.com/api/schedules";
 
 function Schedule() {
   const studentId = localStorage.getItem('studentId');
@@ -119,7 +119,7 @@ function Schedule() {
   const addNewToDo = async () => {
     try {
       const newToDoData = { ...newToDo, studentId: parseInt(studentId, 10) };
-      await axiosRequest({ method: 'post', url: "http://localhost:8080/api/TodoList/postListRecord", data: { ...newToDoData, scheduleId: selectedId } });
+      await axiosRequest({ method: 'post', url: "https://noteably.onrender.com/api/TodoList/postListRecord", data: { ...newToDoData, scheduleId: selectedId } });
       setNewToDo({ title: "", description: "" });
       setOpenToDoDialog(false);
     } catch (error) {

@@ -3,7 +3,7 @@ import { axiosRequest } from '../../services/studentService';
 import { IconButton, Box, Typography, TextField, Button, Checkbox, Dialog, DialogContent, DialogTitle, DialogActions, FormControl, InputLabel, Select, MenuItem, Fab } from '@mui/material';
 import { Edit, Delete, Add, Search } from '@mui/icons-material';
 
-const apiUrl = "http://localhost:8080/api/TodoList";
+const apiUrl = "https://noteably.onrender.com/api/TodoList";
 
 function ToDoList() {
   const fullStudentInfo = localStorage.getItem('fullStudentInfo');
@@ -37,7 +37,7 @@ function ToDoList() {
   const fetchSchedules = async () => {
     if (!studentId) return;
     try {
-      const response = await axiosRequest({ method: 'get', url: `http://localhost:8080/api/schedules/getByStudent/${studentId}` });
+      const response = await axiosRequest({ method: 'get', url: `https://noteably.onrender.com/api/schedules/getByStudent/${studentId}` });
       setSchedules(response.data);
     } catch (error) {
       console.error("Error fetching schedules", error);

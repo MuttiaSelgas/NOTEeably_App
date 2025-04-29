@@ -42,7 +42,7 @@ function SettingsPage() {
       const fullStudentInfo = localStorage.getItem('fullStudentInfo');
       if (!fullStudentInfo) return navigate('/login');
       const { id } = JSON.parse(fullStudentInfo);
-      const response = await axiosRequest({ method: 'get', url: `http://localhost:8080/api/students/${id}` });
+      const response = await axiosRequest({ method: 'get', url: `https://noteably.onrender.com/api/students/${id}` });
       const data = response.data;
       setStudent(prev => ({
         ...prev,
@@ -76,7 +76,7 @@ function SettingsPage() {
       const { id } = JSON.parse(localStorage.getItem('fullStudentInfo'));
       await axiosRequest({
         method: 'put',
-        url: `http://localhost:8080/api/students/${id}`,
+        url: `https://noteably.onrender.com/api/students/${id}`,
         data: {
           name: student.name,
           course: student.course,
