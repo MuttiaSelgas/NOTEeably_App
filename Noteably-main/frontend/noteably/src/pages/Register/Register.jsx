@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import './Register.css';
 import Header from '../../components/Header';
 
-import Visibility from '@mui/icons-material/Visibility'; // Import MUI icon for showing password
-import VisibilityOff from '@mui/icons-material/VisibilityOff'; // Import MUI icon for hiding password
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 
 const Register = () => {
     const [student, setStudent] = useState({
@@ -16,7 +16,7 @@ const Register = () => {
         email: '',
         password: ''
     });
-    const [showPassword, setShowPassword] = useState(false); // New state for password visibility
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
     const handleChange = (e) => {
@@ -25,13 +25,12 @@ const Register = () => {
     };
 
     const handleTogglePassword = () => {
-        setShowPassword(!showPassword); // Toggle password visibility
+        setShowPassword(!showPassword);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        // Validation check to ensure no empty fields
         if (!student.name || !student.course || !student.contactNumber || !student.email || !student.password) {
             alert('All fields are required');
             return;
@@ -43,7 +42,7 @@ const Register = () => {
             })
             .catch((error) => {
                 console.error('Registration failed:', error);
-                alert('Registration failed: ' + error.response?.data?.message || error.message);
+                alert('Registration failed: ' + (error.response?.data?.message || error.message));
             });
     };
 
@@ -91,7 +90,7 @@ const Register = () => {
                                 />
                                 <div className="password-container">
                                     <input
-                                        type={showPassword ? "text" : "password"} // Toggle input type
+                                        type={showPassword ? "text" : "password"}
                                         name="password"
                                         placeholder="Password"
                                         onChange={handleChange}

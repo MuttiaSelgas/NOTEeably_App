@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const API_BASE_URL = 'https://noteably.onrender.com/api';
 
-// Utility function to get complete image URL
+// 🔧 Utility: Get fallback or full image URL
 export const getImageUrl = (imagePath) => {
     if (!imagePath) return '/ASSETS/Profile_blue.png';
     if (imagePath.startsWith('/ASSETS/') || imagePath.startsWith('http')) {
@@ -12,6 +12,7 @@ export const getImageUrl = (imagePath) => {
     return '/ASSETS/Profile_blue.png';
 };
 
+// 🔐 Token utility
 export const getAuthToken = () => {
     const token = localStorage.getItem('token');
     if (!token || token === 'null' || token === 'undefined') {
@@ -21,15 +22,15 @@ export const getAuthToken = () => {
     return token;
 };
 
+// 🔄 Create Axios instance
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
 });
 
-// ✅ Axios interceptor: Skip Authorization for public endpoints
+// ✅ Interceptor: Add Authorization header to protected routes only
 axiosInstance.interceptors.request.use(
     (config) => {
         const publicEndpoints = ['/students/register', '/students/login'];
-
         const isPublic = publicEndpoints.some((endpoint) =>
             config.url?.includes(endpoint)
         );
@@ -51,16 +52,7 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// ✅ Wrapper for authenticated requests (optional use)
-export const axiosRequest = async (config) => {
-    const token = getAuthToken();
-    if (!token) {
-        throw new Error('No auth token found. Please login.');
-    }
-    return axiosInstance(config);
-};
-
-// ✅ Registration - Public (no token)
+// 📌 Auth-Free Endpoints (Public)
 export const addStudent = async (studentData) => {
     try {
         const response = await axiosInstance.post(`/students/register`, studentData);
@@ -70,7 +62,6 @@ export const addStudent = async (studentData) => {
     }
 };
 
-// ✅ Login - Public (no token)
 export const loginStudent = async (credentials) => {
     try {
         const response = await axiosInstance.post(`/students/login`, credentials);
@@ -80,7 +71,7 @@ export const loginStudent = async (credentials) => {
     }
 };
 
-// ✅ Authenticated routes below
+// ✅ Authenticated API Calls
 export const getStudentById = async (id) => {
     try {
         const response = await axiosInstance.get(`/students/${id}`);
