@@ -11,7 +11,11 @@ import com.g3appdev.noteably.Entity.NoteEntity;
 import com.g3appdev.noteably.Service.FolderService;
 import com.g3appdev.noteably.Service.NoteService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(
+    origins = {
+        "http://localhost:3000",
+        "https://noteably-poa59jjve-muttia-selgas-projects.vercel.app"
+    },
 @RestController
 @RequestMapping("/api/folders")
 public class FolderController {

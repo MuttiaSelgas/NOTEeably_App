@@ -12,7 +12,11 @@ import com.g3appdev.noteably.Entity.FolderEntity;
 import com.g3appdev.noteably.Service.NoteService;
 import com.g3appdev.noteably.Service.FolderService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(
+    origins = {
+        "http://localhost:3000",
+        "https://noteably-poa59jjve-muttia-selgas-projects.vercel.app"
+    },
 @RestController
 @RequestMapping("/api/note")
 public class NoteController {

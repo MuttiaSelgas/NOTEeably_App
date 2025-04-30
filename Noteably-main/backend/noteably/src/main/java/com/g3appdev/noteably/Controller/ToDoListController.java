@@ -9,7 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import com.g3appdev.noteably.Entity.ToDoListEntity;
 import com.g3appdev.noteably.Service.ToDoListService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(
+    origins = {
+        "http://localhost:3000",
+        "https://noteably-poa59jjve-muttia-selgas-projects.vercel.app"
+    },
 @RestController
 @RequestMapping("/api/TodoList")
 public class ToDoListController {

@@ -14,7 +14,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(
+    origins = {
+        "http://localhost:3000",
+        "https://noteably-poa59jjve-muttia-selgas-projects.vercel.app"
+    },
 @RequestMapping("/uploads")
 public class FileController {
 
