@@ -30,13 +30,17 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String path = request.getRequestURI();
 
-    // Skip JWT check for login and register endpoints and uploads static resources
-    if (path.equals("/api/students/login") || path.equals("/api/students/register") || path.startsWith("/uploads/")) {
-        filterChain.doFilter(request, response);
-        return;
-    }
-
-    // You can add other public endpoints here if needed, but currently all other endpoints require JWT auth
+        // 🔓 Skip JWT check for public endpoints
+        if (
+            path.equals("/api/students/login") ||
+            path.equals("/api/students/register") ||
+            path.equals("/manifest.json") ||
+            path.startsWith("/uploads/") ||
+            path.startsWith("/favicon.ico")
+        ) {
+            filterChain.doFilter(request, response);
+            return;
+        }
 
         final String authHeader = request.getHeader("Authorization");
         String jwtToken = null;
@@ -45,15 +49,8 @@ public class JWTAuthFilter extends OncePerRequestFilter {
         System.out.println("JWTAuthFilter: Request URI: " + path);
         System.out.println("JWTAuthFilter: Authorization header: " + authHeader);
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            response.getWriter().write("Authorization header must be provided and start with Bearer");
-            return;
-        }
-
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwtToken = authHeader.substring(7);
-            System.out.println("JWTAuthFilter: Token extracted from header: " + jwtToken);
             try {
                 userEmail = jwtUtils.extractUsername(jwtToken);
             } catch (Exception e) {
@@ -70,6 +67,7 @@ public class JWTAuthFilter extends OncePerRequestFilter {
                 SecurityContextHolder.getContext().setAuthentication(token);
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }
