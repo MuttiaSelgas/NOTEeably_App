@@ -25,23 +25,33 @@ const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
 });
 
+// ✅ Axios interceptor: Skip Authorization for public endpoints
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = getAuthToken();
-        console.log('Axios Interceptor: token from localStorage:', token);
-        if (token) {
-            config.headers['Authorization'] = `Bearer ${token}`;
-            console.log('Axios Interceptor: Authorization header set');
-        } else {
-            delete config.headers['Authorization'];
-            console.log('Axios Interceptor: Authorization header deleted');
+        const publicEndpoints = ['/students/register', '/students/login'];
+
+        const isPublic = publicEndpoints.some((endpoint) =>
+            config.url?.includes(endpoint)
+        );
+
+        if (!isPublic) {
+            const token = getAuthToken();
+            console.log('Axios Interceptor: token from localStorage:', token);
+            if (token) {
+                config.headers['Authorization'] = `Bearer ${token}`;
+                console.log('Axios Interceptor: Authorization header set');
+            } else {
+                delete config.headers['Authorization'];
+                console.log('Axios Interceptor: Authorization header deleted');
+            }
         }
+
         return config;
     },
     (error) => Promise.reject(error)
 );
 
-// Wrapper function to make requests only if token exists
+// ✅ Wrapper for authenticated requests (optional use)
 export const axiosRequest = async (config) => {
     const token = getAuthToken();
     if (!token) {
@@ -50,6 +60,7 @@ export const axiosRequest = async (config) => {
     return axiosInstance(config);
 };
 
+// ✅ Registration - Public (no token)
 export const addStudent = async (studentData) => {
     try {
         const response = await axiosInstance.post(`/students/register`, studentData);
@@ -59,6 +70,7 @@ export const addStudent = async (studentData) => {
     }
 };
 
+// ✅ Login - Public (no token)
 export const loginStudent = async (credentials) => {
     try {
         const response = await axiosInstance.post(`/students/login`, credentials);
@@ -68,6 +80,7 @@ export const loginStudent = async (credentials) => {
     }
 };
 
+// ✅ Authenticated routes below
 export const getStudentById = async (id) => {
     try {
         const response = await axiosInstance.get(`/students/${id}`);
