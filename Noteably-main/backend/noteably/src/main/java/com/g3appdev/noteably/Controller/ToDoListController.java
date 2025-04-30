@@ -14,6 +14,11 @@ import com.g3appdev.noteably.Service.ToDoListService;
         "http://localhost:3000",
         "https://noteably-poa59jjve-muttia-selgas-projects.vercel.app"
     },
+    allowedHeaders = "*",
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},
+    allowCredentials = "true",
+    maxAge = 3600
+)
 @RestController
 @RequestMapping("/api/TodoList")
 public class ToDoListController {
