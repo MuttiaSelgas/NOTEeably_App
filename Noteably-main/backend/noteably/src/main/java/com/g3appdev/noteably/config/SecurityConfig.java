@@ -46,16 +46,9 @@ public class SecurityConfig {
             }))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/",
-                    "/index.html",
-                    "/favicon.ico",
-                    "/manifest.json",
-                    "/logo192.png",
-                    "/logo512.png",
-                    "/auth/**",
-                    "/public/**",
-                    "/api/students/register",
-                    "/api/students/login"
+                    "/", "/index.html", "/favicon.ico", "/manifest.json", "/logo192.png", "/logo512.png",
+                    "/auth/**", "/public/**",
+                    "/api/students/register", "/api/students/login"
                 ).permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/user/**").hasAuthority("USER")

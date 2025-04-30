@@ -35,8 +35,10 @@ public class JWTAuthFilter extends OncePerRequestFilter {
             path.equals("/api/students/login") ||
             path.equals("/api/students/register") ||
             path.equals("/manifest.json") ||
+            path.equals("/favicon.ico") ||
+            path.equals("/") ||
             path.startsWith("/uploads/") ||
-            path.startsWith("/favicon.ico")
+            path.startsWith("/logo") // optional: handles /logo192.png etc.
         ) {
             filterChain.doFilter(request, response);
             return;
