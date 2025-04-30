@@ -54,7 +54,6 @@ public class SecurityConfig {
                     "/logo512.png",
                     "/auth/**",
                     "/public/**",
-                    "/manifest.json",
                     "/api/students/register",
                     "/api/students/login"
                 ).permitAll()
