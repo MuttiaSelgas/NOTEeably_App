@@ -1,8 +1,8 @@
-# Use an official Maven image to build the app
+# 🏗 Stage 1: Build the application
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
 
-# Copy pom.xml and download dependencies
+# Copy pom.xml first to leverage Docker cache
 COPY pom.xml .
 RUN mvn dependency:go-offline
 
@@ -10,15 +10,15 @@ RUN mvn dependency:go-offline
 COPY src ./src
 RUN mvn clean package -DskipTests
 
-# Use a smaller JDK base image for running the app
+# 🏃 Stage 2: Run the application
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
 
-# Copy the jar from the builder stage
+# Copy the JAR built from stage 1
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port
+# Expose port used by Spring Boot
 EXPOSE 8080
 
-# Run the app
+# Run the Spring Boot app
 ENTRYPOINT ["java", "-jar", "app.jar"]
