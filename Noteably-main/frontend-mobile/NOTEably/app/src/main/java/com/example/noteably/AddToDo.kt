@@ -11,11 +11,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
-import com.example.noteably.api_service.ToDoAPIService
 import com.example.noteably.databinding.ActivityAddToDoBinding
 import com.example.noteably.model.Student
-import com.example.noteably.model.ToDoRequest
+import com.example.noteably.model.ToDo
 import com.example.noteably.network.ToDoAPIClient
+import com.example.noteably.network.ToDoAPIService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -27,6 +27,9 @@ class AddToDo : AppCompatActivity() {
     private var student: Student? = null
     private lateinit var apiService: ToDoAPIService
 
+    // For future use if you add a schedule dropdown
+    private var selectedScheduleId: Int = 4 // Default/hardcoded for now
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
@@ -34,11 +37,10 @@ class AddToDo : AppCompatActivity() {
         setContentView(binding.root)
 
         apiService = ToDoAPIClient.instance
-
         student = intent.getParcelableExtra("student")
 
         binding.studentName.text = student?.name ?: "N/A"
-        binding.studentId.text = student?.studentId?.toString() ?: "N/A"
+        binding.studentId.text = student?.studentId ?: "N/A"
 
         Glide.with(this)
             .load(R.drawable.blueprofile)
@@ -49,6 +51,10 @@ class AddToDo : AppCompatActivity() {
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
             view.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets
+        }
+
+        binding.inputSchedule.setOnClickListener {
+            showSchedulePopup() // Optional: in future, pick schedule
         }
 
         binding.addTaskBttn.setOnClickListener { createTask() }
@@ -62,28 +68,34 @@ class AddToDo : AppCompatActivity() {
         binding.settingsbttn.setOnClickListener { goToActivity(Settings::class.java) }
 
         binding.moreSetting.setOnClickListener { showPopupMenu(it) }
+
+        student = intent.getParcelableExtra("student")
+        Log.d("AddToDo", "Received student: $student")
     }
 
     private fun createTask() {
         val title = binding.inputTitle.text.toString().trim()
         val description = binding.inputDescription.text.toString().trim()
+        val studentId = student?.id
 
         if (title.isEmpty() || description.isEmpty()) {
             Toast.makeText(this, "Please fill in the title and description", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val studentId = student?.studentId
-        if (studentId == null) {
-            Toast.makeText(this, "Missing student ID", Toast.LENGTH_SHORT).show()
+        if (studentId == null || studentId <= 0) {
+            Toast.makeText(this, "Missing or invalid student ID", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val request = ToDoRequest(
+        val request = ToDo(
             title = title,
             description = description,
-            studentId = studentId
+            studentId = studentId,
+            sched = ToDo.Schedule(scheduleID = selectedScheduleId)
         )
+
+        Log.d("AddToDo", "Sending ToDo -> $request")
 
         CoroutineScope(Dispatchers.IO).launch {
             try {
@@ -117,6 +129,23 @@ class AddToDo : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun showSchedulePopup() {
+        val popup = PopupMenu(this, binding.inputSchedule)
+
+        // TODO: Replace with dynamic backend call
+        val schedules = mapOf("Math Homework" to 1, "Science Lab" to 2, "Finals" to 3)
+
+        schedules.forEach { (label, id) ->
+            popup.menu.add(label).setOnMenuItemClickListener {
+                binding.inputSchedule.setText(label)
+                selectedScheduleId = id
+                true
+            }
+        }
+
+        popup.show()
     }
 
     private fun goToActivity(cls: Class<*>) {

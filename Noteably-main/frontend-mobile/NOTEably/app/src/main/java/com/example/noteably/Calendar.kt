@@ -5,16 +5,23 @@ import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import android.widget.PopupMenu
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.noteably.databinding.ActivityCalendarBinding
+import com.example.noteably.model.ScheduleModel
 import com.example.noteably.model.Student
 import com.example.noteably.network.APIClient
+import com.example.noteably.util.ScheduleAdapter
+import com.prolificinteractive.materialcalendarview.CalendarDay
+import com.prolificinteractive.materialcalendarview.DayViewDecorator
+import com.prolificinteractive.materialcalendarview.DayViewFacade
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +30,12 @@ import kotlinx.coroutines.withContext
 class Calendar : AppCompatActivity() {
 
     private lateinit var binding: ActivityCalendarBinding
+    lateinit var adapter: ScheduleAdapter
+    private var student: Student? = null
+
+    private val scheduleActivityLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        reloadScheduleList()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,60 +55,101 @@ class Calendar : AppCompatActivity() {
             .override(140, 140)
             .into(binding.imageView)
 
-        val student = intent.getParcelableExtra<Student>("student")
+        student = intent.getParcelableExtra("student")
         if (student != null) {
-            Log.d("Dashboard", "Loaded student: ${student?.name} (${student?.studentId})")
-            binding.studentName.text = student.name
-            binding.studentId.text = student.studentId
+            binding.studentName.text = student!!.name
+            binding.studentId.text = student!!.studentId
+            com.example.noteably.util.TokenProvider.saveToken(student!!.jwtToken ?: "")
         } else {
-            Log.e("Dashboard", "No student found in intent")
             binding.studentName.text = "N/A"
             binding.studentId.text = "N/A"
         }
 
-        binding.moreSetting.setOnClickListener { view ->
-            showPopupMenu(view)
+        binding.moreSetting.setOnClickListener { view -> showPopupMenu(view) }
+
+        val putExtra = { intent: Intent ->
+            intent.putExtra("student", student)
+            startActivity(intent)
         }
 
-        binding.dashboardbttn.setOnClickListener {
-            val dashboardIntent = Intent(this, Dashboard::class.java)
-            dashboardIntent.putExtra("student", student)
-            startActivity(dashboardIntent)
-        }
+        binding.dashboardbttn.setOnClickListener { putExtra(Intent(this, Dashboard::class.java)) }
+        binding.folderbttn.setOnClickListener { putExtra(Intent(this, Folder::class.java)) }
+        binding.todobttn.setOnClickListener { putExtra(Intent(this, ToDo::class.java)) }
+        binding.calendarbttn.setOnClickListener { }
+        binding.timerbttn.setOnClickListener { putExtra(Intent(this, Timer::class.java)) }
+        binding.settingsbttn.setOnClickListener { putExtra(Intent(this, Settings::class.java)) }
 
-        binding.folderbttn.setOnClickListener {
-            val folderIntent = Intent(this, Folder::class.java)
-            folderIntent.putExtra("student", student)
-            startActivity(folderIntent)
-        }
-
-        binding.todobttn.setOnClickListener {
-            val todoIntent = Intent(this, ToDo::class.java)
-            todoIntent.putExtra("student", student)
-            startActivity(todoIntent)
-        }
-
-        binding.calendarbttn.setOnClickListener {
-
-        }
-
-        binding.timerbttn.setOnClickListener {
-            val timerIntent = Intent(this, Timer::class.java)
-            timerIntent.putExtra("student", student)
-            startActivity(timerIntent)
-        }
-
-        binding.settingsbttn.setOnClickListener {
-            val settingsIntent = Intent(this, Settings::class.java)
-            settingsIntent.putExtra("student", student)
-            startActivity(settingsIntent)
-        }
-
-        val addScheduleButton = findViewById<Button>(R.id.addScheduleBttn)
-        addScheduleButton.setOnClickListener {
+        binding.addScheduleBttn.setOnClickListener {
             val addScheduleIntent = Intent(this, AddSchedule::class.java)
             addScheduleIntent.putExtra("student", student)
-            startActivity(addScheduleIntent)
+            scheduleActivityLauncher.launch(addScheduleIntent)
+        }
+
+        adapter = ScheduleAdapter { view, schedule ->
+            val popup = PopupMenu(this, view)
+            popup.menuInflater.inflate(R.menu.menu_edit_delete, popup.menu)
+            popup.setOnMenuItemClickListener { item ->
+                when (item.itemId) {
+                    R.id.action_edit -> {
+                        val intentUpdateSchedule = Intent(this, UpdateSchedule::class.java)
+                        intentUpdateSchedule.putExtra("student", student)
+                        intentUpdateSchedule.putExtra("schedule", schedule)
+                        scheduleActivityLauncher.launch(intentUpdateSchedule)
+                        true
+                    }
+                    R.id.action_delete -> {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                APIClient.scheduleApi.deleteSchedule(schedule.scheduleID)
+                                withContext(Dispatchers.Main) {
+                                    adapter.removeItem(schedule)
+                                }
+                            } catch (e: Exception) {
+                                Log.e("Calendar", "Failed to delete: ${e.message}")
+                            }
+                        }
+                        true
+                    }
+                    else -> false
+                }
+            }
+            popup.show()
+        }
+
+        binding.schedulRecyclerView.layoutManager = LinearLayoutManager(this)
+        binding.schedulRecyclerView.adapter = adapter
+
+        reloadScheduleList()
+    }
+
+    private fun reloadScheduleList() {
+        student?.let { stu ->
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    val schedules = APIClient.scheduleApi.getSchedulesByStudent(stu.id)
+                    val markedDates = schedules.mapNotNull { schedule ->
+                        try {
+                            val parts = schedule.startDate.split("-").map { it.toInt() }
+                            CalendarDay.from(parts[0], parts[1], parts[2])
+                        } catch (e: Exception) {
+                            null
+                        }
+                    }
+                    withContext(Dispatchers.Main) {
+                        adapter.submitList(schedules)
+                        binding.calendarView.addDecorator(object : DayViewDecorator {
+                            override fun shouldDecorate(day: CalendarDay): Boolean {
+                                return day == CalendarDay.today()
+                            }
+                            override fun decorate(view: DayViewFacade) {
+                                view.setBackgroundDrawable(ContextCompat.getDrawable(this@Calendar, R.drawable.date_today_circle)!!)
+                            }
+                        })
+                    }
+                } catch (e: Exception) {
+                    Log.e("Calendar", "Failed to fetch schedules: ${e.message}")
+                }
+            }
         }
     }
 
@@ -118,36 +172,6 @@ class Calendar : AppCompatActivity() {
         val intent = Intent(this, MainActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
-    }
-
-    private fun fetchStudentData(studentId: String) {
-        CoroutineScope(Dispatchers.IO).launch {
-            try {
-                Log.d("Dashboard", "Calling API with studentId: $studentId")
-                val response = APIClient.api.getStudent(studentId)
-
-                if (response.isSuccessful && response.body() != null) {
-                    val student = response.body()
-                    withContext(Dispatchers.Main) {
-                        Log.d("Dashboard", "Student fetched: name=${student?.name}, id=${student?.studentId}")
-                        binding.studentName.text = student?.name ?: "No Name"
-                        binding.studentId.text = student?.studentId ?: "N/A"
-                    }
-                } else {
-                    Log.e("Dashboard", "Failed to load student. Code: ${response.code()}")
-                    withContext(Dispatchers.Main) {
-                        binding.studentName.text = "Error loading name"
-                        binding.studentId.text = "Error loading ID"
-                    }
-                }
-            } catch (e: Exception) {
-                Log.e("Dashboard", "Error fetching student data: ${e.message}")
-                withContext(Dispatchers.Main) {
-                    binding.studentName.text = "Network error"
-                    binding.studentId.text = "Try again later"
-                }
-            }
-        }
     }
 
     override fun onBackPressed() {

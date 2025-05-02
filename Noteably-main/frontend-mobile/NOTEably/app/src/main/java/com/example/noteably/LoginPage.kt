@@ -8,9 +8,8 @@ import android.text.InputType
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.noteably.model.LoginRequest
-import com.example.noteably.model.LoginResponse
-import com.example.noteably.model.Student
+import com.example.noteably.dto.LoginRequest
+import com.example.noteably.dto.LoginResponse
 import com.example.noteably.network.APIClient
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -116,7 +115,7 @@ class LoginPage : AppCompatActivity() {
                             }
                         } else {
                             showToast("Login failed: ${response.message()}")
-                            Log.e("LoginPage", "Login failed: ${response.errorBody()?.string()}")
+                            Log.e("LoginPage", "Login failed")
                         }
                     }
 

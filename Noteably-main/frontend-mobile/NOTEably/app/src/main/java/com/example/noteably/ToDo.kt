@@ -28,6 +28,7 @@ class ToDo : AppCompatActivity() {
 
     private lateinit var binding: ActivityToDoBinding
     private lateinit var toDoAdapter: TaskAdapter
+    private var student: Student? = null  // ✅ Moved to class level
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,90 +48,76 @@ class ToDo : AppCompatActivity() {
             .override(140, 140)
             .into(binding.imageView)
 
-        val student = intent.getParcelableExtra<Student>("student")
+        student = intent.getParcelableExtra("student")  // ✅ Assigned to class-level variable
         if (student != null) {
-            Log.d("ToDo", "Loaded student: ${student.name} (${student.studentId})")
-            binding.studentName.text = student.name
-            binding.studentId.text = student.studentId
+            Log.d("ToDo", "Loaded student: ${student!!.name} (${student!!.studentId})")
+            binding.studentName.text = student!!.name
+            binding.studentId.text = student!!.studentId
 
-            // ✅ Initialize ToDoAPIClient with JWT before making any API call
             ToDoAPIClient.initClient(this)
 
             val token = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
                 .getString("jwt_token", null)
             Log.d("ToDo", "Token before fetching ToDo list: $token")
 
-            fetchToDoList(student.studentId)
+            fetchToDoList(student!!.studentId)
         } else {
             Log.e("ToDo", "No student found in intent")
             binding.studentName.text = "N/A"
             binding.studentId.text = "N/A"
         }
 
-        binding.moreSetting.setOnClickListener { view ->
-            showPopupMenu(view)
-        }
+        binding.moreSetting.setOnClickListener { showPopupMenu(it) }
 
         binding.dashboardbttn.setOnClickListener {
-            val dashboardIntent = Intent(this, Dashboard::class.java)
-            dashboardIntent.putExtra("student", student)
-            startActivity(dashboardIntent)
+            goToActivity(Dashboard::class.java)
         }
 
         binding.folderbttn.setOnClickListener {
-            val folderIntent = Intent(this, Folder::class.java)
-            folderIntent.putExtra("student", student)
-            startActivity(folderIntent)
+            goToActivity(Folder::class.java)
         }
 
         binding.todobttn.setOnClickListener {
-            // Current screen, do nothing or refresh
+            // Stay on current screen
         }
 
         binding.calendarbttn.setOnClickListener {
-            val calendarIntent = Intent(this, Calendar::class.java)
-            calendarIntent.putExtra("student", student)
-            startActivity(calendarIntent)
+            goToActivity(Calendar::class.java)
         }
 
         binding.timerbttn.setOnClickListener {
-            val timerIntent = Intent(this, Timer::class.java)
-            timerIntent.putExtra("student", student)
-            startActivity(timerIntent)
+            goToActivity(Timer::class.java)
         }
 
         binding.settingsbttn.setOnClickListener {
-            val settingsIntent = Intent(this, Settings::class.java)
-            settingsIntent.putExtra("student", student)
-            startActivity(settingsIntent)
+            goToActivity(Settings::class.java)
         }
 
-        val addTaskButton = findViewById<Button>(R.id.addTaskBttn)
-        addTaskButton.setOnClickListener {
+        findViewById<Button>(R.id.addTaskBttn).setOnClickListener {
             val addTaskIntent = Intent(this, AddToDo::class.java)
-            addTaskIntent.putExtra("student", student)
+            addTaskIntent.putExtra("student", student)  // ✅ This now works
             startActivity(addTaskIntent)
         }
 
-        // Initialize the adapter with an empty list
-        toDoAdapter = TaskAdapter(mutableListOf()) { /* handle delete if needed */ }
-
-        // Setup RecyclerView
+        toDoAdapter = TaskAdapter(mutableListOf()) { /* handle delete */ }
         binding.taskRecycler.layoutManager = LinearLayoutManager(this)
         binding.taskRecycler.adapter = toDoAdapter
+    }
+
+    private fun goToActivity(cls: Class<*>) {
+        val intent = Intent(this, cls)
+        intent.putExtra("student", student)
+        startActivity(intent)
     }
 
     private fun showPopupMenu(view: View) {
         val popup = PopupMenu(this, view)
         popup.menuInflater.inflate(R.menu.menu_dashboard, popup.menu)
-        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-            when (menuItem.itemId) {
-                R.id.action_logout -> {
-                    logout()
-                    true
-                }
-                else -> false
-            }
+        popup.setOnMenuItemClickListener { item: MenuItem ->
+            if (item.itemId == R.id.action_logout) {
+                logout()
+                true
+            } else false
         }
         popup.show()
     }

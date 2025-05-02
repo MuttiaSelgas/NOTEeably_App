@@ -11,6 +11,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         Thread.sleep(3000)
         installSplashScreen()
+        com.example.noteably.util.TokenProvider.init(applicationContext)
         setContentView(R.layout.activity_main)
 
         val loginButton = findViewById<Button>(R.id.loginbttn)

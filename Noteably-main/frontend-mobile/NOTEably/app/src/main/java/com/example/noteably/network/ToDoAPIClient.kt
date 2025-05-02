@@ -2,16 +2,13 @@ package com.example.noteably.network
 
 import android.content.Context
 import android.util.Log
-import com.example.noteably.api_service.ToDoAPIService
-import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object ToDoAPIClient {
-    private const val BASE_URL = "http://10.0.2.2:8080/"
+    private const val BASE_URL = "http://192.168.68.106:8080/api/TodoList"
 
     private lateinit var retrofit: Retrofit
     lateinit var instance: ToDoAPIService

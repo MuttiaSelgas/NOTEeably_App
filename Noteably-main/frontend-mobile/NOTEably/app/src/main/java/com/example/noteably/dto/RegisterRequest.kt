@@ -1,4 +1,4 @@
-package com.example.noteably.model
+package com.example.noteably.dto
 
 data class RegisterRequest(
     val name: String,

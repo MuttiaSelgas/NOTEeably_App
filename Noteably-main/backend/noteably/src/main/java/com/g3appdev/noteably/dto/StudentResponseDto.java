@@ -1,6 +1,7 @@
 package com.g3appdev.noteably.dto;
 
 public class StudentResponseDto {
+    private int id;
     private String studentId;
     private String name;
     private String course;
@@ -10,13 +11,22 @@ public class StudentResponseDto {
 
     public StudentResponseDto() {}
 
-    public StudentResponseDto(String studentId, String name, String course, String contactNumber, String email, String profilePicture) {
+    public StudentResponseDto(int id, String studentId, String name, String course, String contactNumber, String email, String profilePicture) {
+        this.id = id;
         this.studentId = studentId;
         this.name = name;
         this.course = course;
         this.contactNumber = contactNumber;
         this.email = email;
         this.profilePicture = profilePicture;
+    }
+
+    public int getId() {
+        return id;
+    }
+    
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getStudentId() {
