@@ -1,14 +1,15 @@
 FROM maven:3.9.4-eclipse-temurin-17 AS build
 WORKDIR /app
 
-COPY Noteably-main/backend/noteably/pom.xml ./
+COPY pom.xml .
 RUN mvn dependency:go-offline
 
-COPY Noteably-main/backend/noteably/src ./src
+COPY src ./src
 RUN mvn clean package -DskipTests
 
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
+
 COPY --from=build /app/target/*.jar app.jar
 
 EXPOSE 8080
