@@ -13,8 +13,10 @@ import java.util.NoSuchElementException;
 @CrossOrigin(
     origins = {
         "http://localhost:3000",
-        "https://noteably-poa59jjve-muttia-selgas-projects.vercel.app"
+        "https://noteably-app.vercel.app",        // production frontend domain
+        "https://noteably-jkfpywezf-muttia-selgas-projects.vercel.app"  // preview deployment
     },
+
     allowedHeaders = "*",
     methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},
     allowCredentials = "true",
