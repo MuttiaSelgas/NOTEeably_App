@@ -1,8 +1,8 @@
 package com.example.noteably.api_service
 
-import com.example.noteably.model.LoginRequest
+import com.example.noteably.dto.LoginRequest
 import com.example.noteably.model.LoginResponse
-import com.example.noteably.model.RegisterRequest
+import com.example.noteably.dto.RegisterRequest
 import com.example.noteably.model.Student
 import retrofit2.Call
 import retrofit2.Response
