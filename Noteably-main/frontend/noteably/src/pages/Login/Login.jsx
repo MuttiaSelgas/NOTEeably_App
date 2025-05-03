@@ -1,80 +1,67 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { API_ENDPOINTS } from '../../config/api';
-import { getStudentByStudentId, axiosRequest } from '../../services/studentService';
+import { getStudentByStudentId, loginStudent } from '../../services/studentService';
 import './Login.css';
 import Header from '../../components/Header';
-
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
     const [message, setMessage] = useState('');
-    const [animationPhase, setAnimationPhase] = useState('pass-hide'); // Starting frame
-    const [customAlertMessage, setCustomAlertMessage] = useState(''); // Custom alert message
-    const [isAlertVisible, setIsAlertVisible] = useState(false); // Visibility of custom alert
+    const [animationPhase, setAnimationPhase] = useState('pass-hide');
+    const [customAlertMessage, setCustomAlertMessage] = useState('');
+    const [isAlertVisible, setIsAlertVisible] = useState(false);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            // Clear localStorage before login to avoid stale tokens
             localStorage.clear();
 
-            const response = await axiosRequest.post(API_ENDPOINTS.STUDENT.LOGIN, {
-                email: email,
-                password: password,
-            }, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
+            const response = await loginStudent({ email, password });
 
-            if (response.data) {
-                console.log('Login response:', response.data);
-                if (response.data.student) {
-                    const studentId = response.data.student.studentId;
+            if (response) {
+                console.log('Login response:', response);
+
+                if (response.student) {
+                    const studentId = response.student.studentId;
                     localStorage.setItem('studentId', studentId);
-                    localStorage.setItem('studentName', response.data.student.name);
-                    localStorage.setItem('token', response.data.token);
-                    console.log('Stored token:', localStorage.getItem('token'));
+                    localStorage.setItem('studentName', response.student.name);
+                    localStorage.setItem('token', response.token);
 
-                    // Fetch full student info after login
                     const fullStudentInfo = await getStudentByStudentId(studentId);
-                    console.log('Full student info:', fullStudentInfo);
                     localStorage.setItem('fullStudentInfo', JSON.stringify(fullStudentInfo));
 
-                    showAlert('Login successful!'); // Show custom alert
-                    setTimeout(() => navigate('/dashboard'), 1500); // Navigate after a delay
-                } else if (response.data.studentId) {
-                    // Handle flat student object response
-                    const studentId = response.data.studentId;
+                    showAlert('Login successful!');
+                    setTimeout(() => navigate('/dashboard'), 1500);
+                } else if (response.studentId) {
+                    // fallback if student object is flat
+                    const studentId = response.studentId;
                     localStorage.setItem('studentId', studentId);
-                    localStorage.setItem('studentName', response.data.name);
-                    // No token in this response structure
-                    showAlert('Login successful!'); // Show custom alert
-                    setTimeout(() => navigate('/dashboard'), 1500); // Navigate after a delay
+                    localStorage.setItem('studentName', response.name);
+                    showAlert('Login successful!');
+                    setTimeout(() => navigate('/dashboard'), 1500);
                 } else {
                     setMessage('Invalid login response structure.');
                 }
             } else {
                 setMessage('Invalid credentials. Please try again.');
             }
-            } catch (error) {
-                console.error('Error during login:', error);
-                if (error.response) {
-                    if (error.response.status === 401) {
-                        setMessage('Unauthorized: Invalid email or password.');
-                    } else if (error.response.status === 403) {
-                        setMessage('Forbidden: Access denied.');
-                    } else {
-                        setMessage('Error logging in. Please check your credentials.');
-                    }
+        } catch (error) {
+            console.error('Error during login:', error);
+            if (error.response) {
+                if (error.response.status === 401) {
+                    setMessage('Unauthorized: Invalid email or password.');
+                } else if (error.response.status === 403) {
+                    setMessage('Forbidden: Access denied.');
                 } else {
                     setMessage('Error logging in. Please check your credentials.');
                 }
+            } else {
+                setMessage('Error logging in. Please check your credentials.');
             }
+        }
     };
 
     const handleTogglePassword = () => {
@@ -157,7 +144,6 @@ const Login = () => {
                     <p>{customAlertMessage}</p>
                 </div>
             )}
-
         </div>
     );
 };

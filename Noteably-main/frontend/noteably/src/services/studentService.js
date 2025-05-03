@@ -8,7 +8,6 @@ export const getImageUrl = (imagePath) => {
     if (imagePath.startsWith('/ASSETS/') || imagePath.startsWith('http')) {
         return imagePath;
     }
-    console.log('Profile picture path:', imagePath);
     return '/ASSETS/Profile_blue.png';
 };
 
@@ -27,23 +26,18 @@ const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
 });
 
-// ✅ Interceptor: Add Authorization header to protected routes only
+// ✅ Interceptor: Add Authorization header to protected routes
 axiosInstance.interceptors.request.use(
     (config) => {
         const publicEndpoints = ['/students/register', '/students/login'];
-        const isPublic = publicEndpoints.some((endpoint) =>
-            config.url?.includes(endpoint)
-        );
+        const isPublic = publicEndpoints.some((endpoint) => config.url?.includes(endpoint));
 
         if (!isPublic) {
             const token = getAuthToken();
-            console.log('Axios Interceptor: token from localStorage:', token);
             if (token) {
                 config.headers['Authorization'] = `Bearer ${token}`;
-                console.log('Axios Interceptor: Authorization header set');
             } else {
                 delete config.headers['Authorization'];
-                console.log('Axios Interceptor: Authorization header deleted');
             }
         }
 
@@ -52,93 +46,60 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
-// 📌 Auth-Free Endpoints (Public)
+// ✅ Auth-Free Endpoints
 export const addStudent = async (studentData) => {
-    try {
-        const response = await axiosInstance.post(`/students/register`, studentData);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.post('/students/register', studentData);
+    return response.data;
 };
 
 export const loginStudent = async (credentials) => {
-    try {
-        const response = await axiosInstance.post(`/students/login`, credentials);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.post('/students/login', credentials);
+    return response.data;
 };
 
 // ✅ Authenticated API Calls
 export const getStudentById = async (id) => {
-    try {
-        const response = await axiosInstance.get(`/students/${id}`);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.get(`/students/${id}`);
+    return response.data;
 };
 
 export const getStudentByStudentId = async (studentId) => {
-    try {
-        const response = await axiosInstance.get(`/students/find/${studentId}`);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.get(`/students/find/${studentId}`);
+    return response.data;
 };
 
 export const updateStudent = async (id, studentData) => {
-    try {
-        const response = await axiosInstance.put(`/students/${id}`, studentData);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.put(`/students/${id}`, studentData);
+    return response.data;
 };
 
 export const uploadProfilePicture = async (id, file) => {
-    try {
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await axiosInstance.post(
-            `/students/${id}/profile-picture`,
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }
-        );
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await axiosInstance.post(
+        `/students/${id}/profile-picture`,
+        formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        }
+    );
+    return response.data;
 };
 
 export const deleteStudent = async (id) => {
-    try {
-        const response = await axiosInstance.delete(`/students/${id}`);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.delete(`/students/${id}`);
+    return response.data;
 };
 
-// ✅ Generic Axios wrapper for flexible requests
+// ✅ Generic Axios wrapper (if needed for custom requests)
 export const axiosRequest = async (method, url, data = null, config = {}) => {
-    try {
-        const response = await axiosInstance({
-            method,
-            url,
-            data,
-            ...config,
-        });
-        return response.data;
-    } catch (error) {
-        console.error(`Request failed: ${method.toUpperCase()} ${url}`, error);
-        throw error;
-    }
+    const response = await axiosInstance({
+        method,
+        url,
+        data,
+        ...config,
+    });
+    return response.data;
 };
