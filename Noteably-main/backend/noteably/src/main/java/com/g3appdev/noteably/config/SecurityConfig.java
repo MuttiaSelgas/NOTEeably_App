@@ -36,7 +36,7 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(request -> {
                 CorsConfiguration corsConfig = new CorsConfiguration();
                 corsConfig.setAllowedOrigins(List.of(
-                    "https://noteably-poa59jjve-muttia-selgas-projects.vercel.app"
+                    "https://noteably-app-muttia-selgas-projects.vercel.app"  // ✅ Correct domain
                 ));
                 corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
                 corsConfig.setAllowedHeaders(List.of("*"));
