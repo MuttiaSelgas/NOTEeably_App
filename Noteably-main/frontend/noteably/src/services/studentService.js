@@ -92,6 +92,7 @@ export const deleteStudent = async (id) => {
     const response = await axiosInstance.delete(`/students/${id}`);
     return response.data;
 };
+
 // ✅ Generic Axios wrapper (if needed for custom requests)
 export const axiosRequest = async (method, url, data = null, config = {}) => {
     const response = await axiosInstance({
