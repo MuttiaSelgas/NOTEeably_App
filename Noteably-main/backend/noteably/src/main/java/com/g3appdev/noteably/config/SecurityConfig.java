@@ -17,6 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
@@ -31,27 +33,18 @@ public class SecurityConfig {
     private JWTAuthFilter jwtAuthFilter;
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
-        httpSecurity.csrf(AbstractHttpConfigurer::disable)
-        .cors(cors -> cors.configurationSource(request -> {
-            CorsConfiguration corsConfig = new CorsConfiguration();
-            corsConfig.setAllowedOrigins(List.of(
-                "https://noteably-app-muttia-selgas-projects.vercel.app", // main
-                "https://noteably-app-git-main-muttia-selgas-projects.vercel.app" // preview
-            ));
-            corsConfig.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-            corsConfig.setAllowedHeaders(List.of("*"));
-            corsConfig.setAllowCredentials(true);
-            corsConfig.setMaxAge(3600L);
-            return corsConfig;
-        }))
-        
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+            .csrf(AbstractHttpConfigurer::disable)
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/", "/index.html", "/favicon.ico", "/manifest.json", "/logo192.png", "/logo512.png",
+                    "/", "/index.html", "/favicon.ico", "/manifest.json", 
+                    "/logo192.png", "/logo512.png", "/uploads/**",
                     "/auth/**", "/public/**",
                     "/api/students/register", "/api/students/login"
                 ).permitAll()
+                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // allow preflight
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/user/**").hasAuthority("USER")
                 .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN", "USER")
@@ -62,7 +55,25 @@ public class SecurityConfig {
             .authenticationProvider(authenticationProvider())
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
-        return httpSecurity.build();
+        return http.build();
+    }
+
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowedOrigins(List.of(
+            "https://noteably-app.vercel.app",
+            "https://noteably-app-git-main-muttia-selgas-projects.vercel.app",
+            "http://localhost:3000"
+        ));
+        config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(List.of("*"));
+        config.setAllowCredentials(true);
+        config.setMaxAge(3600L);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", config);
+        return source;
     }
 
     @Bean
