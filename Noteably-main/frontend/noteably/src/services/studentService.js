@@ -95,8 +95,9 @@ export const deleteStudent = async (id) => {
 
 // ✅ Generic Axios wrapper (if needed for custom requests)
 export const axiosRequest = async (method, url, data = null, config = {}) => {
+    const safeMethod = typeof method === 'string' ? method.toLowerCase() : 'get'; // ✅ sanitize
     const response = await axiosInstance({
-        method,
+        method: safeMethod,
         url,
         data,
         ...config,
