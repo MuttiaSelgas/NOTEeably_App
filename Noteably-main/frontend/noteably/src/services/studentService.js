@@ -46,6 +46,9 @@ axiosInstance.interceptors.request.use(
     (error) => Promise.reject(error)
 );
 
+// ✅ Export the axios instance for direct use
+export default axiosInstance;
+
 // ✅ Auth-Free Endpoints
 export const addStudent = async (studentData) => {
     const response = await axiosInstance.post('/students/register', studentData);
@@ -93,13 +96,19 @@ export const deleteStudent = async (id) => {
     return response.data;
 };
 
-// ✅ Generic Axios wrapper (if needed for custom requests)
-export const axiosRequest = async (method, url, data = null, config = {}) => {
-    const response = await axiosInstance({
-        method,
-        url,
-        data,
-        ...config,
-    });
+// ✅ Generic Axios wrapper supporting both object-style and positional-style calls
+export const axiosRequest = async (...args) => {
+    let requestConfig;
+
+    if (typeof args[0] === 'object') {
+        // Object-style call: axiosRequest({ method, url, data, headers })
+        requestConfig = { ...args[0] };
+    } else {
+        // Positional call: axiosRequest('get', url, data, config)
+        const [method, url, data = null, config = {}] = args;
+        requestConfig = { method, url, data, ...config };
+    }
+
+    const response = await axiosInstance.request(requestConfig);
     return response.data;
 };
