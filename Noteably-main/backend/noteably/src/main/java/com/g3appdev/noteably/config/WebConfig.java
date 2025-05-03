@@ -17,9 +17,9 @@ public class WebConfig implements WebMvcConfigurer {
                 "https://noteably-app-muttia-selgas-projects.vercel.app"
             )
             .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-            .allowedHeaders("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin")
+            .allowedHeaders("*")  // Allow all headers
             .exposedHeaders("Authorization")
             .allowCredentials(true)
-            .maxAge(3600L);
+            .maxAge(3600);
     }
 }
