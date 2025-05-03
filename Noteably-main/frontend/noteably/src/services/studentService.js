@@ -23,7 +23,7 @@ export const getAuthToken = () => {
 };
 
 // 🔄 Create Axios instance
-const axiosInstance = axios.create({
+export const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
 });
 
@@ -122,6 +122,21 @@ export const deleteStudent = async (id) => {
     try {
         const response = await axiosInstance.delete(`/students/${id}`);
         return response.data;
+    } catch (error) {
+        throw error;
+    }
+};
+
+// 🔁 Generic Axios Request Function (for flexible custom calls)
+export const axiosRequest = async ({ method, url, data, headers }) => {
+    try {
+        const response = await axiosInstance({
+            method,
+            url,
+            data,
+            headers,
+        });
+        return response;
     } catch (error) {
         throw error;
     }
