@@ -21,11 +21,12 @@ export const getAuthToken = () => {
     return token;
 };
 
-// 🔄 Axios instance with interceptor
+// 🔄 Create Axios instance
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
 });
 
+// ✅ Interceptor: Add Authorization header to protected routes
 axiosInstance.interceptors.request.use(
     (config) => {
         const publicEndpoints = ['/students/register', '/students/login'];
@@ -44,9 +45,6 @@ axiosInstance.interceptors.request.use(
     },
     (error) => Promise.reject(error)
 );
-
-// ✅ Export the axios instance for direct use
-export default axiosInstance;
 
 // ✅ Auth-Free Endpoints
 export const addStudent = async (studentData) => {
@@ -95,9 +93,9 @@ export const deleteStudent = async (id) => {
     return response.data;
 };
 
-// ✅ Generic Axios wrapper (correct usage!)
+// ✅ Generic Axios wrapper (if needed for custom requests)
 export const axiosRequest = async (method, url, data = null, config = {}) => {
-    const response = await axiosInstance.request({
+    const response = await axiosInstance({
         method,
         url,
         data,
