@@ -30,8 +30,8 @@ function FolderApp() {
   const fetchFolders = useCallback(async () => {
     if (!studentId) return;
     try {
-      const res = await axiosRequest('get', `${url}/getByStudent/${studentId}`);
-      setFolders(res);
+      const res = await axiosRequest({ method: 'get', url: `${url}/getByStudent/${studentId}` });
+      setFolders(res.data);
     } catch (error) {
       console.error("Error fetching folders:", error);
     }
@@ -56,7 +56,7 @@ function FolderApp() {
     if (!studentId) return;
     try {
       const folderData = { ...data, studentId };
-      await axiosRequest('post', `${url}/postFolderRecord`, folderData);
+      await axiosRequest({ method: 'post', url: `${url}/postFolderRecord`, data: folderData });
       setData({ folderId: "", title: "", dashboardId: 1 });
       setIsModalOpen(false);
       fetchFolders();
@@ -70,7 +70,7 @@ function FolderApp() {
     if (!studentId) return;
     try {
       const folderData = { ...data, studentId };
-      await axiosRequest('put', `${url}/putFolderDetails/${data.folderId}`, folderData);
+      await axiosRequest({ method: 'put', url: `${url}/putFolderDetails/${data.folderId}`, data: folderData });
       setData({ folderId: "", title: "", dashboardId: 1 });
       setShowRenameConfirm(false);
       setIsModalOpen(false);
@@ -101,14 +101,11 @@ function FolderApp() {
   const handleDelete = async () => {
     try {
       const token = getAuthToken();
-      await axiosRequest(
-        'delete',
-        `${url}/deleteFolder/${selectedFolder.folderId}`,
-        null,
-        {
-          headers: { Authorization: `Bearer ${token}` }
-        }
-      );
+      await axiosRequest({
+        method: 'delete',
+        url: `${url}/deleteFolder/${selectedFolder.folderId}`,
+        headers: { Authorization: `Bearer ${token}` },
+      });
       setShowDeleteConfirm(false);
       fetchFolders();
     } catch (error) {
