@@ -1,0 +1,25 @@
+package com.g3appdev.noteably.config;
+
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class WebConfig implements WebMvcConfigurer {
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+            .allowedOrigins(
+                "http://localhost:3000",
+                "https://noteably-app.vercel.app",
+                "https://noteably-app-git-main-muttia-selgas-projects.vercel.app",
+                "https://noteably-app-muttia-selgas-projects.vercel.app"
+            )
+            .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+            .allowedHeaders("Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin")
+            .exposedHeaders("Authorization")
+            .allowCredentials(true)
+            .maxAge(3600L);
+    }
+}
