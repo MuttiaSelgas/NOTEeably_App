@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://noteably.onrender.com/api';
+const API_BASE_URL = 'https://noteeablyapp-production.up.railway.app/api';
 
 // 🔧 Utility: Get fallback or full image URL
 export const getImageUrl = (imagePath) => {
