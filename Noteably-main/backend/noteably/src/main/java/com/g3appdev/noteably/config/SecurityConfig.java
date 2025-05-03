@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.http.HttpMethod;
 
 import java.util.List;
 
@@ -39,12 +40,12 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(
-                    "/", "/index.html", "/favicon.ico", "/manifest.json", 
+                    "/", "/index.html", "/favicon.ico", "/manifest.json",
                     "/logo192.png", "/logo512.png", "/uploads/**",
                     "/auth/**", "/public/**",
                     "/api/students/register", "/api/students/login"
                 ).permitAll()
-                .requestMatchers(org.springframework.http.HttpMethod.OPTIONS, "/**").permitAll() // allow preflight
+                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() // Preflight CORS
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
                 .requestMatchers("/user/**").hasAuthority("USER")
                 .requestMatchers("/adminuser/**").hasAnyAuthority("ADMIN", "USER")
@@ -62,14 +63,16 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-    "https://noteably-app.vercel.app",
-    "https://noteably-app-git-main-muttia-selgas-projects.vercel.app",
-    "https://noteably-app-muttia-selgas-projects.vercel.app", // ✅ ADD THIS
-    "http://localhost:3000"
-));
-
+            "http://localhost:3000",
+            "https://noteably-app.vercel.app",
+            "https://noteably-app-git-main-muttia-selgas-projects.vercel.app",
+            "https://noteably-app-muttia-selgas-projects.vercel.app"
+        ));
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
-        config.setAllowedHeaders(List.of("*"));
+        config.setAllowedHeaders(List.of(
+            "Authorization", "Content-Type", "X-Requested-With", "Accept", "Origin"
+        ));
+        config.setExposedHeaders(List.of("Authorization"));
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
