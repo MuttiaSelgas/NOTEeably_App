@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { API_ENDPOINTS } from '../../config/api';
-import axios from 'axios';
-import { getStudentByStudentId } from '../../services/studentService';
+import { getStudentByStudentId, axiosRequest } from '../../services/studentService';
 import './Login.css';
 import Header from '../../components/Header';
 
@@ -23,15 +22,14 @@ const Login = () => {
             // Clear localStorage before login to avoid stale tokens
             localStorage.clear();
 
-            const response = await axios.post(API_ENDPOINTS.STUDENT.LOGIN, {
-                email,
-                password
+            const response = await axiosRequest.post(API_ENDPOINTS.STUDENT.LOGIN, {
+                email: email,
+                password: password,
             }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            
 
             if (response.data) {
                 console.log('Login response:', response.data);
