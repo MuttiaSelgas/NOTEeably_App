@@ -14,7 +14,7 @@ import '../../antioverflow.css';
 import './Dashboard.css';
 
 function Dashboard() {
-  const [studentData, setStudentData] = useState({ studentId: '', studentName: localStorage.getItem('studentName')|| "" }); 
+  const [studentData, setStudentData] = useState({ studentId: '', studentName: '' }); 
 
   useEffect(() => {
     const fetchStudentData = async () => {
