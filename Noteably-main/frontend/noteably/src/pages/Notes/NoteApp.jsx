@@ -50,11 +50,7 @@ function NoteApp() {
 
   const fetchFolderDetails = useCallback(async () => {
     try {
-      const res = await axiosRequest(
-        'get',
-        `${folderUrl}/${parsedFolderId}`
-      );
-      
+      const res = await axiosRequest({ method: 'get', url: `${folderUrl}/${parsedFolderId}` });
       setFolderTitle(res.data.title);
     } catch (err) {
       console.error("Error fetching folder title:", err);
@@ -63,11 +59,7 @@ function NoteApp() {
 
   const fetchNotes = useCallback(async () => {
     try {
-      const res = await axiosRequest(
-        'get',
-        `${folderUrl}/${parsedFolderId}/notes`
-      );
-      
+      const res = await axiosRequest({ method: 'get', url: `${folderUrl}/${parsedFolderId}/notes` });
       setNotes(res.data);
     } catch (err) {
       console.error("Error fetching notes:", err);
@@ -103,11 +95,11 @@ function NoteApp() {
     }
 
     try {
-      await axiosRequest(
-        "post",
-        `${noteUrl}/postnoterecord`,
-        { ...data, folderId: parsedFolderId }
-      );
+      await axiosRequest({
+        method: "post",
+        url: `${noteUrl}/postnoterecord`,
+        data: { ...data, folderId: parsedFolderId },
+      });
       fetchNotes();
       resetForm();
       setShowForm(false);
@@ -166,10 +158,7 @@ function NoteApp() {
 
   const confirmDelete = async () => {
     try {
-      await axiosRequest(
-        'delete',
-        `${noteUrl}/deleteNoteDetails/${selectedNote.noteId}`
-      );      
+      await axiosRequest({ method: 'delete', url: `${noteUrl}/deleteNoteDetails/${selectedNote.noteId}` });
       fetchNotes();
       setShowDeleteConfirm(false);
       setSelectedNote(null);

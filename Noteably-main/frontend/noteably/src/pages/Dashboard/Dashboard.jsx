@@ -33,13 +33,7 @@ function Dashboard() {
         return;
       }
       try {
-        const response = await axiosRequest(
-          'get',
-          API_ENDPOINTS.STUDENT.GET_BY_ID(studentId),
-          null,                // no data for GET
-          axiosConfig          // your extra config (e.g., headers)
-        );
-        
+        const response = await axiosRequest({ method: 'get', url: API_ENDPOINTS.STUDENT.GET_BY_ID(studentId), ...axiosConfig });
         const { studentId: apiStudentId, name, profilePicture } = response.data;
         setStudentData({ 
           studentId: apiStudentId, 

@@ -42,11 +42,7 @@ function SettingsPage() {
       const fullStudentInfo = localStorage.getItem('fullStudentInfo');
       if (!fullStudentInfo) return navigate('/login');
       const { id } = JSON.parse(fullStudentInfo);
-      const response = await axiosRequest(
-        'get',
-        `https://noteably.onrender.com/api/students/${id}`
-      );
-      
+      const response = await axiosRequest({ method: 'get', url: `https://noteably.onrender.com/api/students/${id}` });
       const data = response.data;
       setStudent(prev => ({
         ...prev,
