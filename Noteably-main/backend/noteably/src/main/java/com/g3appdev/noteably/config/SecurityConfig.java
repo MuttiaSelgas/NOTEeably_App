@@ -62,10 +62,12 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowedOrigins(List.of(
-            "https://noteably-app.vercel.app",
-            "https://noteably-app-git-main-muttia-selgas-projects.vercel.app",
-            "http://localhost:3000"
-        ));
+    "https://noteably-app.vercel.app",
+    "https://noteably-app-git-main-muttia-selgas-projects.vercel.app",
+    "https://noteably-app-muttia-selgas-projects.vercel.app", // ✅ ADD THIS
+    "http://localhost:3000"
+));
+
         config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(List.of("*"));
         config.setAllowCredentials(true);
