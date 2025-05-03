@@ -1,14 +1,13 @@
 package com.g3appdev.noteably.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
-    // ✅ Serve uploaded files
+    // ✅ Serve uploaded files (e.g., profile pictures)
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/uploads/**")
@@ -16,13 +15,9 @@ public class WebConfig implements WebMvcConfigurer {
                 .setCachePeriod(3600);
     }
 
-    // ✅ Allow CORS for frontend on Vercel
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/api/**")
-                .allowedOrigins("https://noteably-app-git-main-muttia-selgas-projects.vercel.app")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                .allowedHeaders("*")
-                .allowCredentials(true);
-    }
+    // ❌ REMOVE this: CORS is now fully handled in SecurityConfig
+    // @Override
+    // public void addCorsMappings(CorsRegistry registry) {
+    //     ...
+    // }
 }
