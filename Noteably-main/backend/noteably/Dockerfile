@@ -14,8 +14,8 @@ WORKDIR /app
 # Copy the built JAR from the builder
 COPY --from=build /app/target/*.jar app.jar
 
-# Expose port 8080 (important for Railway)
+# Expose the dynamic port (optional, but good practice)
 EXPOSE 8080
 
-# Run the application
-ENTRYPOINT ["java", "-jar", "app.jar"]
+# ✅ Use Railway-assigned PORT env var
+ENTRYPOINT ["java", "-Dserver.port=${PORT}", "-jar", "app.jar"]
