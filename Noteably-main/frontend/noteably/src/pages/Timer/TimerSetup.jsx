@@ -42,7 +42,11 @@ function TimerSetup() {
   const fetchTimers = useCallback(async () => {
     if (!studentId) return;
     try {
-      const response = await axiosRequest({ method: 'get', url: `${url}/getByStudent/${studentId}` });
+      const response = await axiosRequest(
+        'get',
+        `${url}/getByStudent/${studentId}`
+      );
+      
       setTimerList(response.data);
     } catch (error) {
       console.error("Error fetching timers:", error);
@@ -63,7 +67,12 @@ function TimerSetup() {
       studentId,
     };
     try {
-      const response = await axiosRequest({ method: 'post', url: `${url}/create`, data: newTimer });
+      const response = await axiosRequest(
+        'post',
+        `${url}/create`,
+        newTimer
+      );
+      
       setTimerList(prev => [...prev, response.data]);
     } catch (error) {
       console.error("Error adding timer:", error);

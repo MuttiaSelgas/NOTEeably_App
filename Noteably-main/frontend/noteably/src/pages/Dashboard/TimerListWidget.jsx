@@ -24,7 +24,11 @@ const TimerListWidget = () => {
             return;
         }
         try {
-            const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
+            const response = await axiosRequest(
+                'get',
+                `${apiUrl}/getByStudent/${studentId}`
+              );
+              
             setTimerList(response.data);
         } catch (error) {
             console.error("Error fetching timers:", error);

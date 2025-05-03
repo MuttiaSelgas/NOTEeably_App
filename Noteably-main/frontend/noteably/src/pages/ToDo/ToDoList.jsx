@@ -27,7 +27,11 @@ function ToDoList() {
   const fetchToDoItems = useCallback(async () => {
     if (!studentId) return;
     try {
-      const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
+      const response = await axiosRequest(
+        'get',
+        `${apiUrl}/getByStudent/${studentId}`
+      );
+      
       setToDoItems(response.data);
     } catch (error) {
       console.error("Error fetching ToDo items", error);
@@ -37,7 +41,11 @@ function ToDoList() {
   const fetchSchedules = async () => {
     if (!studentId) return;
     try {
-      const response = await axiosRequest({ method: 'get', url: `https://noteeablyapp-production.up.railway.app/api/schedules/getByStudent/${studentId}` });
+      const response = await axiosRequest(
+        'get',
+        `https://noteeablyapp-production.up.railway.app/api/schedules/getByStudent/${studentId}`
+      );
+      
       setSchedules(response.data);
     } catch (error) {
       console.error("Error fetching schedules", error);

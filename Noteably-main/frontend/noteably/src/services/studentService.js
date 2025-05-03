@@ -97,20 +97,11 @@ export const deleteStudent = async (id) => {
 
 // ✅ Generic Axios wrapper (correct usage!)
 export const axiosRequest = async (method, url, data = null, config = {}) => {
-    const safeMethod =
-        typeof method === 'string'
-            ? method.toLowerCase()
-            : (typeof method === 'object' && method?.type)
-            ? method.type.toLowerCase()
-            : 'get'; // fallback default
-
-    const response = await axiosInstance({
-        method: safeMethod,
+    const response = await axiosInstance.request({
+        method,
         url,
         data,
         ...config,
     });
-
     return response.data;
 };
-

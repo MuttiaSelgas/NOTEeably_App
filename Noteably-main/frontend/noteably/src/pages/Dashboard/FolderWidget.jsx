@@ -28,8 +28,12 @@ const FolderWidget = () => {
     useEffect(() => {
         const fetchFolders = async () => {
             try {
-                const res = await axiosRequest({ method: 'get', url: `${url}/getByStudent/${studentId}` });
-                setFolders(res.data);
+                const res = await axiosRequest(
+                    'get',
+                    `${url}/getByStudent/${studentId}`
+                  );
+                  setFolders(res);
+                  
             } catch (error) {
                 console.error("Error fetching folders:", error);
             }

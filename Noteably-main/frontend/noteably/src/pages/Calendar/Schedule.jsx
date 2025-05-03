@@ -27,7 +27,7 @@ function Schedule() {
 
   const fetchSchedules = useCallback(async () => {
     try {
-      const res = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
+      const res = await axiosRequest('get', `${apiUrl}/getByStudent/${studentId}`);
       setSchedules(res.data);
     } catch (error) {
       console.error("Error fetching schedules", error);

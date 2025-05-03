@@ -17,7 +17,10 @@ function Calendar() {
 
   const fetchSchedules = useCallback(async () => {
     try {
-      const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
+      const response = await axiosRequest(
+        'get',
+        `${apiUrl}/getByStudent/${studentId}`
+      );    
       setSchedules(response.data);
     } catch (error) {
       console.error("Error fetching schedules", error);
