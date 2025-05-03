@@ -24,6 +24,7 @@ export const getAuthToken = () => {
 // 🔄 Create Axios instance
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
+    withCredentials: true, // ✅ Required for CORS preflight success with allowCredentials
 });
 
 // ✅ Interceptor: Add Authorization header to protected routes
@@ -93,7 +94,7 @@ export const deleteStudent = async (id) => {
     return response.data;
 };
 
-// ✅ Generic Axios wrapper (if needed for custom requests)
+// ✅ Generic Axios wrapper (for custom requests)
 export const axiosRequest = async (method, url, data = null, config = {}) => {
     const response = await axiosInstance({
         method,
