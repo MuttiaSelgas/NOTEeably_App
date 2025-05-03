@@ -16,7 +16,7 @@ import {
 import { Add, Edit, Delete } from '@mui/icons-material';
 import ConfirmEditDialog from '../../dialogs/ConfirmEditDialog';
 
-const apiUrl = "https://noteably.onrender.com/api/TodoList";
+const apiUrl = "https://noteeablyapp-production.up.railway.app/api/TodoList";
 
 const ToDoListWidget = () => {
   const [toDoItems, setToDoItems] = useState([]);

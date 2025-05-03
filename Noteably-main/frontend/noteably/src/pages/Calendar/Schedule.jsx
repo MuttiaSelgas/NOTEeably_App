@@ -119,7 +119,7 @@ function Schedule() {
   const addNewToDo = async () => {
     try {
       const newToDoData = { ...newToDo, studentId: parseInt(studentId, 10) };
-      await axiosRequest({ method: 'post', url: "https://noteably.onrender.com/api/TodoList/postListRecord", data: { ...newToDoData, scheduleId: selectedId } });
+      await axiosRequest({ method: 'post', url: "https://noteeablyapp-production.up.railway.app/api/TodoList/postListRecord", data: { ...newToDoData, scheduleId: selectedId } });
       setNewToDo({ title: "", description: "" });
       setOpenToDoDialog(false);
     } catch (error) {

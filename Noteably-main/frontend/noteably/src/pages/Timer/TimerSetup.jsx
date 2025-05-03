@@ -15,7 +15,7 @@ import ConfirmEditDialog from '../../dialogs/ConfirmEditDialog';
 import ConfirmDeleteDialog from '../../dialogs/ConfirmDeleteDialog';
 
 function TimerSetup() {
-  const url = "https://noteably.onrender.com/api/timer";
+  const url = "https://noteeablyapp-production.up.railway.app/api/timer";
   const navigate = useNavigate();
 
   const fullStudentInfo = localStorage.getItem('fullStudentInfo');

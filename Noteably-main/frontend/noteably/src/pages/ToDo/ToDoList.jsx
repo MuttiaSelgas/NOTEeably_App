@@ -37,7 +37,7 @@ function ToDoList() {
   const fetchSchedules = async () => {
     if (!studentId) return;
     try {
-      const response = await axiosRequest({ method: 'get', url: `https://noteably.onrender.com/api/schedules/getByStudent/${studentId}` });
+      const response = await axiosRequest({ method: 'get', url: `https://noteeablyapp-production.up.railway.app/api/schedules/getByStudent/${studentId}` });
       setSchedules(response.data);
     } catch (error) {
       console.error("Error fetching schedules", error);

@@ -76,7 +76,7 @@ function SettingsPage() {
       const { id } = JSON.parse(localStorage.getItem('fullStudentInfo'));
       await axiosRequest({
         method: 'put',
-        url: `https://noteably.onrender.com/api/students/${id}`,
+        url: `https://noteeablyapp-production.up.railway.app/api/students/${id}`,
         data: {
           name: student.name,
           course: student.course,

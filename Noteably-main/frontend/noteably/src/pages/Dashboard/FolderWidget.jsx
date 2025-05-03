@@ -11,7 +11,7 @@ const FolderWidget = () => {
         navigate(`/noteApp/${folderId}`);
     };
 
-    const url = "https://noteably.onrender.com/api/folders";
+    const url = "https://noteeablyapp-production.up.railway.app/api/folders";
     const fullStudentInfo = localStorage.getItem('fullStudentInfo');
     let studentId = null;
     if (fullStudentInfo) {

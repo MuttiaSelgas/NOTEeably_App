@@ -1,6 +1,6 @@
 import { axiosInstance } from '../studentService';
 
-const BASE_URL = 'http://localhost:8080/api/timer';
+const BASE_URL = 'https://noteeablyapp-production.up.railway.app/api/timer';
 
 const timerService = {
     getAllTimers: async () => {

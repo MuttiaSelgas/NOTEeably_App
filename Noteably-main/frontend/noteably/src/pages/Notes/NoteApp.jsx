@@ -26,8 +26,8 @@ const ConfirmationDialog = ({ isOpen, message, onConfirm, onCancel }) => {
 function NoteApp() {
   const { folderId } = useParams();
   const navigate = useNavigate();
-  const folderUrl = "https://noteably.onrender.com/api/folders";
-  const noteUrl = "https://noteably.onrender.com/api/note";
+  const folderUrl = "https://noteeablyapp-production.up.railway.app/api/folders";
+  const noteUrl = "https://noteeablyapp-production.up.railway.app/api/note";
   const parsedFolderId = parseInt(folderId, 10);
 
   const [data, setData] = useState({
