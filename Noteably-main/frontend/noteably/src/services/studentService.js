@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api';
+const API_BASE_URL = 'https://noteably.onrender.com/api';
 
 // 🔧 Utility: Get fallback or full image URL
 export const getImageUrl = (imagePath) => {
@@ -23,7 +23,7 @@ export const getAuthToken = () => {
 };
 
 // 🔄 Create Axios instance
-export const axiosInstance = axios.create({
+const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
 });
 
@@ -127,17 +127,18 @@ export const deleteStudent = async (id) => {
     }
 };
 
-// 🔁 Generic Axios Request Function (for flexible custom calls)
-export const axiosRequest = async ({ method, url, data, headers }) => {
+// ✅ Generic Axios wrapper for flexible requests
+export const axiosRequest = async (method, url, data = null, config = {}) => {
     try {
         const response = await axiosInstance({
             method,
             url,
             data,
-            headers,
+            ...config,
         });
-        return response;
+        return response.data;
     } catch (error) {
+        console.error(`Request failed: ${method.toUpperCase()} ${url}`, error);
         throw error;
     }
 };
