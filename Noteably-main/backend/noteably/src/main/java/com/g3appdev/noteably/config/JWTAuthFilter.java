@@ -25,31 +25,27 @@ public class JWTAuthFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    // ✅ Skip JWT check for public endpoints
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) {
+        String path = request.getRequestURI();
+        return path.equals("/api/students/login") ||
+               path.equals("/api/students/register") ||
+               path.equals("/") ||
+               path.equals("/favicon.ico") ||
+               path.equals("/manifest.json") ||
+               path.startsWith("/uploads/") ||
+               path.startsWith("/logo") ||
+               path.startsWith("/actuator"); // ✅ skip JWT for /actuator/**
+    }
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String path = request.getRequestURI();
-
-        // 🔓 Skip JWT check for public endpoints
-        if (
-            path.equals("/api/students/login") ||
-            path.equals("/api/students/register") ||
-            path.equals("/manifest.json") ||
-            path.equals("/favicon.ico") ||
-            path.equals("/") ||
-            path.startsWith("/uploads/") ||
-            path.startsWith("/logo") // optional: handles /logo192.png etc.
-        ) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         final String authHeader = request.getHeader("Authorization");
         String jwtToken = null;
         String userEmail = null;
-
-        System.out.println("JWTAuthFilter: Request URI: " + path);
-        System.out.println("JWTAuthFilter: Authorization header: " + authHeader);
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             jwtToken = authHeader.substring(7);
