@@ -43,7 +43,8 @@ public class SecurityConfig {
                     "/", "/index.html", "/favicon.ico", "/manifest.json",
                     "/logo192.png", "/logo512.png", "/uploads/**",
                     "/auth/**", "/public/**",
-                    "/api/students/register", "/api/students/login"
+                    "/api/students/register", "/api/students/login", 
+                    "/actuator/health"
                 ).permitAll()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/admin/**").hasAuthority("ADMIN")
