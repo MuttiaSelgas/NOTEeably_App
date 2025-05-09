@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="priority"
-                android:textColor="@color/darkblue" />
+                android:textColor="@color/blue" />
 
             <TextView
                 android:id="@+id/scheduleStart"

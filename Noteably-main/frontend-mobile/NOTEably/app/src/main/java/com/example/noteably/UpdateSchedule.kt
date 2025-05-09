@@ -14,7 +14,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
-import com.example.noteably.databinding.ActivityAddScheduleBinding
+import com.example.noteably.databinding.ActivityUpdateScheduleBinding
 import com.example.noteably.model.ScheduleModel
 import com.example.noteably.model.Student
 import com.example.noteably.network.APIClient
@@ -25,15 +25,15 @@ import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AddSchedule : AppCompatActivity() {
+class UpdateSchedule : AppCompatActivity() {
 
-    private lateinit var binding: ActivityAddScheduleBinding
+    private lateinit var binding: ActivityUpdateScheduleBinding
     private val priorityOptions = arrayOf("High", "Medium", "Low")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-        binding = ActivityAddScheduleBinding.inflate(layoutInflater)
+        binding = ActivityUpdateScheduleBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         ViewCompat.setOnApplyWindowInsetsListener(binding.root) { v, insets ->
@@ -48,40 +48,42 @@ class AddSchedule : AppCompatActivity() {
             .into(binding.imageView)
 
         val student = intent.getParcelableExtra<Student>("student")
+        val schedule = intent.getParcelableExtra<ScheduleModel>("schedule")
+
         if (student != null) {
             binding.studentName.text = student.name
             binding.studentId.text = student.studentId
-
             com.example.noteably.util.TokenProvider.saveToken(student.jwtToken ?: "")
         } else {
             binding.studentName.text = "N/A"
             binding.studentId.text = "N/A"
         }
 
+        if (schedule != null) {
+            binding.inputScheduleTitle.setText(schedule.title)
+            binding.inputPriority.setText(schedule.priority)
+            binding.inputStartDate.setText(schedule.startDate)
+            binding.inputEndDate.setText(schedule.endDate ?: "")
+        }
+
         binding.moreSetting.setOnClickListener { view -> showPopupMenu(view) }
 
         binding.backSchedule.setOnClickListener { finish() }
 
-        // 🔽 Priority dropdown (on button click instead of EditText)
-        binding.priorityDropdown.setOnClickListener {
-            showPriorityDialog()
-        }
+        binding.priorityDropdown.setOnClickListener { showPriorityDialog() }
 
-        // 📅 Start Date Picker button
         binding.startDatePicker.setOnClickListener {
             showDatePicker { selected ->
                 binding.inputStartDate.setText(selected)
             }
         }
 
-        // 📅 End Date Picker button
         binding.endDatePicker.setOnClickListener {
             showDatePicker { selected ->
                 binding.inputEndDate.setText(selected)
             }
         }
 
-        // Navigation buttons
         val navTargets = mapOf(
             binding.dashboardbttn to Dashboard::class.java,
             binding.folderbttn to Folder::class.java,
@@ -95,7 +97,6 @@ class AddSchedule : AppCompatActivity() {
             }
         }
 
-        // ✅ Create button logic
         binding.addTaskBttn.isClickable = true
         binding.addTaskBttn.setOnClickListener {
             val title = binding.inputScheduleTitle.text.toString()
@@ -108,35 +109,34 @@ class AddSchedule : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val schedule = ScheduleModel(
-                scheduleID = 0,
+            val updatedSchedule = ScheduleModel(
+                scheduleID = schedule?.scheduleID ?: 0,
                 studentId = student?.id ?: 0,
                 title = title,
                 priority = priority,
-                colorCode = "#ef476f",
+                colorCode = schedule?.colorCode ?: "#ef476f",
                 startDate = startDate,
                 endDate = if (endDate.isBlank()) null else endDate
             )
 
             CoroutineScope(Dispatchers.IO).launch {
                 try {
-                    val response = APIClient.scheduleApi.createSchedule(schedule)
+                    val response = APIClient.scheduleApi.updateSchedule(updatedSchedule.scheduleID, updatedSchedule)
                     if (response.isSuccessful) {
                         withContext(Dispatchers.Main) {
-                            Toast.makeText(this@AddSchedule, "Schedule created!", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(this@UpdateSchedule, "Schedule updated!", Toast.LENGTH_SHORT).show()
                             finish()
                         }
                     } else {
-                        Log.e("AddSchedule", "API failed: ${response.code()}")
+                        Log.e("UpdateSchedule", "API failed: ${response.code()}")
                     }
                 } catch (e: Exception) {
-                    Log.e("AddSchedule", "Error: ${e.message}")
+                    Log.e("UpdateSchedule", "Error: ${e.message}")
                 }
             }
         }
     }
 
-    // 📅 Date Picker Dialog
     private fun showDatePicker(onDateSelected: (String) -> Unit) {
         val calendar = java.util.Calendar.getInstance()
         val datePicker = DatePickerDialog(
@@ -154,7 +154,6 @@ class AddSchedule : AppCompatActivity() {
         datePicker.show()
     }
 
-    // 🔽 Priority Dialog
     private fun showPriorityDialog() {
         AlertDialog.Builder(this)
             .setTitle("Select Priority")

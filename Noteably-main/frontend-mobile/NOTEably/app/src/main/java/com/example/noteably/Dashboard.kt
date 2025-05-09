@@ -37,8 +37,11 @@ class Dashboard : AppCompatActivity() {
         val student = intent.getParcelableExtra<Student>("student")
         if (student != null) {
             Log.d("Dashboard", "Loaded student: ${student?.name} (${student?.studentId})")
+            Log.d("Dashboard", "student.id = ${student.id}")
             binding.studentName.text = student.name
             binding.studentId.text = student.studentId
+
+            com.example.noteably.util.TokenProvider.saveToken(student.jwtToken ?: "")
         } else {
             Log.e("Dashboard", "No student found in intent")
             binding.studentName.text = "N/A"

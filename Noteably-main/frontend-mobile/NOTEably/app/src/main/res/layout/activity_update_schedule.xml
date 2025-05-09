@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/polkadot_portrait"
     android:orientation="vertical"
-    tools:context=".AddToDo">
+    tools:context=".UpdateSchedule">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -107,10 +107,10 @@
                 android:layout_width="100dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/yellow_button"
+                android:background="@drawable/yellow_button2"
                 android:text="to-do"
                 android:textAllCaps="false"
-                android:textColor="@color/white"
+                android:textColor="@color/yellow"
                 android:textStyle="bold" />
 
             <Button
@@ -118,10 +118,10 @@
                 android:layout_width="100dp"
                 android:layout_height="35dp"
                 android:layout_marginEnd="8dp"
-                android:background="@drawable/green_button2"
+                android:background="@drawable/green_button"
                 android:text="calendar"
                 android:textAllCaps="false"
-                android:textColor="@color/green"
+                android:textColor="@color/white"
                 android:textStyle="bold" />
 
             <Button
@@ -149,77 +149,141 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="25dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="25dp">
+
+            <Button
+                android:id="@+id/backSchedule"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/baseline_arrow_circle_left_24"
+                android:textSize="20dp"
+                android:textAllCaps="false"
+                android:textColor="@color/white" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Edit Schedule"
+                android:textColor="@color/darkblue"
+                android:textStyle="bold"
+                android:textSize="22dp"
+                android:layout_marginStart="10dp"/>
+        </LinearLayout>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/edittext"
+            android:hint="Title"
+            android:padding="15dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:id="@+id/inputScheduleTitle"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="310dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="Priority"
+                android:padding="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="20dp"
+                android:id="@+id/inputPriority"
+                android:focusable="false"
+                android:clickable="false">
+            </EditText>
+
+            <Button
+                android:id="@+id/priorityDropdown"
+                android:layout_marginTop="15dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/dropdown"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/inputStartDate"
+                android:layout_width="310dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/edittext"
+                android:clickable="false"
+                android:focusable="false"
+                android:hint="Start Date"
+                android:padding="15dp" />
+
+            <Button
+                android:id="@+id/startDatePicker"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/calendar" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="310dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="End Date"
+                android:padding="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="20dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:id="@+id/inputEndDate"/>
+
+            <Button
+                android:id="@+id/endDatePicker"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/calendar" />
+        </LinearLayout>
 
         <Button
-            android:id="@+id/backTask"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/yellow_back_bttn"
-            android:textSize="20dp"
+            android:id="@+id/addTaskBttn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/yellow_button"
+            android:text="Save Changes"
+            android:textSize="18dp"
             android:textAllCaps="false"
-            android:textColor="@color/white" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Add Task"
             android:textColor="@color/darkblue"
             android:textStyle="bold"
-            android:textSize="22dp"
-            android:layout_marginStart="10dp"/>
+            android:focusable="false"
+            android:clickable="false"/>
     </LinearLayout>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/edittext"
-        android:hint="Title"
-        android:padding="15dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="20dp"
-        android:id="@+id/inputTitle"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/edittext"
-        android:hint="Select Schedule"
-        android:padding="15dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="20dp"
-        android:id="@+id/inputSchedule"
-        android:focusable="false"
-        android:clickable="true"/>
-
-    <EditText
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@drawable/edittext"
-        android:hint="Description"
-        android:padding="15dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="20dp"
-        android:id="@+id/inputDescription"/>
-
-    <Button
-        android:id="@+id/addTaskBttn"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/green_button"
-        android:text="Create"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        android:textStyle="bold" />
 
 </LinearLayout>

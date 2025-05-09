@@ -8,9 +8,8 @@ import android.text.InputType
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import com.example.noteably.model.LoginRequest
-import com.example.noteably.model.LoginResponse
-import com.example.noteably.model.Student
+import com.example.noteably.dto.LoginRequest
+import com.example.noteably.dto.LoginResponse
 import com.example.noteably.network.APIClient
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
@@ -116,7 +115,7 @@ class LoginPage : AppCompatActivity() {
                             }
                         } else {
                             showToast("Login failed: ${response.message()}")
-                            Log.e("LoginPage", "Login failed: ${response.errorBody()?.string()}")
+                            Log.e("LoginPage", "Login failed")
                         }
                     }
 
@@ -130,23 +129,32 @@ class LoginPage : AppCompatActivity() {
 
     private fun handleSuccessfulLogin(loginResponse: LoginResponse) {
         val student = loginResponse.student
-        val jwtToken = loginResponse.jwtToken
+        val jwtToken = loginResponse.token
+
+        // Log JWT token for debugging
+        Log.d("LoginPage", "Received JWT Token: $jwtToken")
+
+        // Check if JWT token is null or empty
+        if (jwtToken.isNullOrEmpty()) {
+            Log.e("LoginPage", "JWT Token is null or empty!")
+            Toast.makeText(this, "Login failed: Invalid token", Toast.LENGTH_SHORT).show()
+            return
+        }
 
         Log.d("LoginPage", "Login successful. Student ID: ${student.studentId}")
         Toast.makeText(this, "Welcome ${student.name}!", Toast.LENGTH_SHORT).show()
 
-        // 🌟 SAVE JWT Token to SharedPreferences here
+        // 🌟 Save JWT token
         val sharedPreferences = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putString("jwt_token", jwtToken)
-        editor.apply() // Save the changes
+        sharedPreferences.edit()
+            .putString("jwt_token", jwtToken)
+            .apply()
 
         val studentWithToken = student.copy(jwtToken = jwtToken)
-
-        val intent = Intent(this, Dashboard::class.java).apply {
+        val intentDashboard = Intent(this, Dashboard::class.java).apply {
             putExtra("student", studentWithToken)
         }
-        startActivity(intent)
+        startActivity(intentDashboard)
         finish()
     }
 

@@ -169,11 +169,11 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/darkgray_container"
+                android:background="@drawable/custom_edittext"
                 android:orientation="vertical"
-                android:paddingStart="10dp"
+                android:paddingStart="20dp"
                 android:paddingTop="10dp"
-                android:paddingEnd="10dp"
+                android:paddingEnd="20dp"
                 android:paddingBottom="30dp">
 
                 <TextView
@@ -217,50 +217,40 @@
                         android:alignmentMode="alignMargins"
                         android:useDefaultMargins="true">
 
-                        <ImageView
-                            android:id="@+id/profile_red"
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/redimageView"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:src="@drawable/profile_red"
-                            android:background="@drawable/circle_photo"
-                            android:padding="4dp"
-                            android:scaleType="centerInside"/>
+                            app:shapeAppearanceOverlay="@style/roundedImageView" />
 
-                        <ImageView
-                            android:id="@+id/profile_orange"
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/orangeimageView"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:src="@drawable/profile_orange"
-                            android:background="@drawable/circle_photo"
-                            android:padding="4dp"
-                            android:scaleType="centerInside"/>
+                            app:shapeAppearanceOverlay="@style/roundedImageView" />
 
-                        <ImageView
-                            android:id="@+id/profile_yellow"
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/yellowimageView"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:src="@drawable/profile_yellow"
-                            android:background="@drawable/circle_photo"
-                            android:padding="4dp"
-                            android:scaleType="centerInside"/>
+                            app:shapeAppearanceOverlay="@style/roundedImageView" />
 
-                        <ImageView
-                            android:id="@+id/profile_green"
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/greenimageView"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:src="@drawable/profile_green"
-                            android:background="@drawable/circle_photo"
-                            android:padding="4dp"
-                            android:scaleType="centerInside"/>
+                            app:shapeAppearanceOverlay="@style/roundedImageView" />
 
-                        <ImageView
-                            android:id="@+id/profile_blue"
+                        <com.google.android.material.imageview.ShapeableImageView
+                            android:id="@+id/blueimageView"
                             android:layout_width="50dp"
                             android:layout_height="50dp"
                             android:src="@drawable/profile_blue"
-                            android:background="@drawable/circle_photo"
-                            android:padding="4dp"
-                            android:scaleType="centerInside"/>
+                            app:shapeAppearanceOverlay="@style/roundedImageView" />
                     </GridLayout>
                 </LinearLayout>
 
@@ -273,11 +263,11 @@
                 android:layout_marginTop="15dp"
                 android:layout_marginStart="20dp"
                 android:layout_marginEnd="20dp"
-                android:background="@drawable/darkgray_container"
+                android:background="@drawable/custom_edittext"
                 android:orientation="vertical"
-                android:paddingStart="10dp"
+                android:paddingStart="20dp"
                 android:paddingTop="10dp"
-                android:paddingEnd="10dp"
+                android:paddingEnd="20dp"
                 android:paddingBottom="30dp">
 
                 <TextView
@@ -394,6 +384,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
+                android:paddingEnd="20dp"
                 android:gravity="end"
                 android:layout_marginTop="20dp">
 
@@ -402,13 +393,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Save"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/white"
                     android:background="@drawable/green_button"
                     android:layout_marginEnd="10dp"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
+                    android:textStyle="bold"
                     android:textSize="14sp"
                     android:stateListAnimator="@null"
                     android:layout_weight="0" />
@@ -418,11 +410,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Cancel"
-                    android:textColor="@android:color/white"
+                    android:textColor="@color/white"
                     android:paddingStart="20dp"
                     android:paddingEnd="20dp"
                     android:paddingTop="8dp"
                     android:paddingBottom="8dp"
+                    android:layout_marginBottom="30dp"
+                    android:textStyle="bold"
                     android:textSize="14sp"
                     android:background="@drawable/red_button"
                     android:stateListAnimator="@null"

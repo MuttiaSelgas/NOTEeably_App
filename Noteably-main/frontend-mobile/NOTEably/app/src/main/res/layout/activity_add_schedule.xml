@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/polkadot_portrait"
     android:orientation="vertical"
-    tools:context=".Calendar">
+    tools:context=".AddSchedule">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -190,51 +190,84 @@
             android:layout_marginTop="20dp"
             android:id="@+id/inputScheduleTitle"/>
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext"
-            android:hint="Priority"
-            android:padding="15dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="20dp"
-            android:id="@+id/inputPriority"
-            android:focusable="false"
-            android:clickable="true"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext"
-            android:hint="Color Code"
-            android:padding="15dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="20dp"
-            android:id="@+id/inputColorCode"/>
+            <EditText
+                android:layout_width="310dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="Priority"
+                android:padding="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="20dp"
+                android:id="@+id/inputPriority"
+                android:focusable="false"
+                android:clickable="false">
+            </EditText>
 
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext"
-            android:hint="Start Date"
-            android:padding="15dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="20dp"
-            android:id="@+id/inputStartDate"/>
+            <Button
+                android:id="@+id/priorityDropdown"
+                android:layout_marginTop="15dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/dropdown"/>
+        </LinearLayout>
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@drawable/edittext"
-            android:hint="End Date"
-            android:padding="15dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginTop="20dp"
-            android:id="@+id/inputEndDate"/>
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/inputStartDate"
+                android:layout_width="310dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="5dp"
+                android:background="@drawable/edittext"
+                android:clickable="false"
+                android:focusable="false"
+                android:hint="Start Date"
+                android:padding="15dp" />
+
+            <Button
+                android:id="@+id/startDatePicker"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/calendar" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <EditText
+                android:layout_width="310dp"
+                android:layout_height="50dp"
+                android:background="@drawable/edittext"
+                android:hint="End Date"
+                android:padding="15dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="20dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:id="@+id/inputEndDate"/>
+
+            <Button
+                android:id="@+id/endDatePicker"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/calendar" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/addTaskBttn"
@@ -243,11 +276,14 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginTop="20dp"
-            android:background="@drawable/green_button"
+            android:background="@drawable/yellow_button"
             android:text="Create"
+            android:textSize="18dp"
             android:textAllCaps="false"
-            android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textColor="@color/darkblue"
+            android:textStyle="bold"
+            android:focusable="false"
+            android:clickable="false"/>
     </LinearLayout>
 
 </LinearLayout>

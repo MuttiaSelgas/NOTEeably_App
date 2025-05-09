@@ -7,14 +7,18 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.PopupMenu
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.noteably.databinding.ActivityToDoBinding
 import com.example.noteably.model.Student
-import com.example.noteably.network.APIClient
+import com.example.noteably.model.ToDo
+import com.example.noteably.network.ToDoAPIClient
+import com.example.noteably.util.TaskAdapter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -23,6 +27,8 @@ import kotlinx.coroutines.withContext
 class ToDo : AppCompatActivity() {
 
     private lateinit var binding: ActivityToDoBinding
+    private lateinit var toDoAdapter: TaskAdapter
+    private var student: Student? = null  // ✅ Moved to class level
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,74 +48,76 @@ class ToDo : AppCompatActivity() {
             .override(140, 140)
             .into(binding.imageView)
 
-        val student = intent.getParcelableExtra<Student>("student")
+        student = intent.getParcelableExtra("student")  // ✅ Assigned to class-level variable
         if (student != null) {
-            Log.d("Dashboard", "Loaded student: ${student?.name} (${student?.studentId})")
-            binding.studentName.text = student.name
-            binding.studentId.text = student.studentId
+            Log.d("ToDo", "Loaded student: ${student!!.name} (${student!!.studentId})")
+            binding.studentName.text = student!!.name
+            binding.studentId.text = student!!.studentId
+
+            ToDoAPIClient.initClient(this)
+
+            val token = getSharedPreferences("MyAppPrefs", MODE_PRIVATE)
+                .getString("jwt_token", null)
+            Log.d("ToDo", "Token before fetching ToDo list: $token")
+
+            fetchToDoList(student!!.studentId)
         } else {
-            Log.e("Dashboard", "No student found in intent")
+            Log.e("ToDo", "No student found in intent")
             binding.studentName.text = "N/A"
             binding.studentId.text = "N/A"
         }
 
-        binding.moreSetting.setOnClickListener { view ->
-            showPopupMenu(view)
-        }
+        binding.moreSetting.setOnClickListener { showPopupMenu(it) }
 
         binding.dashboardbttn.setOnClickListener {
-            val dashboardIntent = Intent(this, Dashboard::class.java)
-            dashboardIntent.putExtra("student", student)
-            startActivity(dashboardIntent)
+            goToActivity(Dashboard::class.java)
         }
 
         binding.folderbttn.setOnClickListener {
-            val folderIntent = Intent(this, Folder::class.java)
-            folderIntent.putExtra("student", student)
-            startActivity(folderIntent)
+            goToActivity(Folder::class.java)
         }
 
         binding.todobttn.setOnClickListener {
-
+            // Stay on current screen
         }
 
         binding.calendarbttn.setOnClickListener {
-            val calendarIntent = Intent(this, Calendar::class.java)
-            calendarIntent.putExtra("student", student)
-            startActivity(calendarIntent)
+            goToActivity(Calendar::class.java)
         }
 
         binding.timerbttn.setOnClickListener {
-            val timerIntent = Intent(this, Timer::class.java)
-            timerIntent.putExtra("student", student)
-            startActivity(timerIntent)
+            goToActivity(Timer::class.java)
         }
 
         binding.settingsbttn.setOnClickListener {
-            val settingsIntent = Intent(this, Settings::class.java)
-            settingsIntent.putExtra("student", student)
-            startActivity(settingsIntent)
+            goToActivity(Settings::class.java)
         }
 
-        val addTaskButton = findViewById<Button>(R.id.addTaskBttn)
-        addTaskButton.setOnClickListener {
+        findViewById<Button>(R.id.addTaskBttn).setOnClickListener {
             val addTaskIntent = Intent(this, AddToDo::class.java)
-            addTaskIntent.putExtra("student", student)
+            addTaskIntent.putExtra("student", student)  // ✅ This now works
             startActivity(addTaskIntent)
         }
+
+        toDoAdapter = TaskAdapter(mutableListOf()) { /* handle delete */ }
+        binding.taskRecycler.layoutManager = LinearLayoutManager(this)
+        binding.taskRecycler.adapter = toDoAdapter
+    }
+
+    private fun goToActivity(cls: Class<*>) {
+        val intent = Intent(this, cls)
+        intent.putExtra("student", student)
+        startActivity(intent)
     }
 
     private fun showPopupMenu(view: View) {
         val popup = PopupMenu(this, view)
         popup.menuInflater.inflate(R.menu.menu_dashboard, popup.menu)
-        popup.setOnMenuItemClickListener { menuItem: MenuItem ->
-            when (menuItem.itemId) {
-                R.id.action_logout -> {
-                    logout()
-                    true
-                }
-                else -> false
-            }
+        popup.setOnMenuItemClickListener { item: MenuItem ->
+            if (item.itemId == R.id.action_logout) {
+                logout()
+                true
+            } else false
         }
         popup.show()
     }
@@ -120,31 +128,31 @@ class ToDo : AppCompatActivity() {
         startActivity(intent)
     }
 
-    private fun fetchStudentData(studentId: String) {
+    private fun fetchToDoList(studentId: String) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
-                Log.d("Dashboard", "Calling API with studentId: $studentId")
-                val response = APIClient.api.getStudent(studentId)
+                Log.d("ToDo", "Fetching ToDo list for studentId: $studentId")
+                val numericStudentId = studentId.filter { it.isDigit() }
+                val apiService = ToDoAPIClient.instance
+
+                val response = apiService.getToDoListByStudentId(numericStudentId.toInt())
 
                 if (response.isSuccessful && response.body() != null) {
-                    val student = response.body()
+                    val todoList = response.body()!!
                     withContext(Dispatchers.Main) {
-                        Log.d("Dashboard", "Student fetched: name=${student?.name}, id=${student?.studentId}")
-                        binding.studentName.text = student?.name ?: "No Name"
-                        binding.studentId.text = student?.studentId ?: "N/A"
+                        Log.d("ToDo", "Fetched ${todoList.size} tasks")
+                        toDoAdapter.updateData(todoList)
                     }
                 } else {
-                    Log.e("Dashboard", "Failed to load student. Code: ${response.code()}")
                     withContext(Dispatchers.Main) {
-                        binding.studentName.text = "Error loading name"
-                        binding.studentId.text = "Error loading ID"
+                        Log.e("ToDo", "Failed to load ToDo list. Code: ${response.code()}")
+                        Toast.makeText(this@ToDo, "Failed to load tasks", Toast.LENGTH_SHORT).show()
                     }
                 }
             } catch (e: Exception) {
-                Log.e("Dashboard", "Error fetching student data: ${e.message}")
+                Log.e("ToDo", "Error fetching ToDo list: ${e.message}")
                 withContext(Dispatchers.Main) {
-                    binding.studentName.text = "Network error"
-                    binding.studentId.text = "Try again later"
+                    Toast.makeText(this@ToDo, "Error loading tasks", Toast.LENGTH_SHORT).show()
                 }
             }
         }
