@@ -12,7 +12,19 @@ import com.g3appdev.noteably.Entity.FolderEntity;
 import com.g3appdev.noteably.Service.NoteService;
 import com.g3appdev.noteably.Service.FolderService;
 
-@CrossOrigin(origins = "http://localhost:3000")
+@CrossOrigin(
+    origins = {
+        "http://localhost:3000",
+        "https://noteably-app.vercel.app",        // production frontend domain
+        "https://noteably-app-git-main-muttia-selgas-projects.vercel.app"  // preview deployment
+    },
+
+    allowedHeaders = "*",
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},
+    allowCredentials = "true",
+    maxAge = 3600
+)
+
 @RestController
 @RequestMapping("/api/note")
 public class NoteController {

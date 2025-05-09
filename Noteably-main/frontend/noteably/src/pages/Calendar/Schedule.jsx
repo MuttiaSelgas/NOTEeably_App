@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useState, useCallback } from 'react';
 import { axiosRequest } from '../../services/studentService';
 import FullCalendar from '@fullcalendar/react';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -9,12 +8,11 @@ import { Button, TextField, Select, MenuItem, Typography, Box, Dialog, DialogAct
 import { Edit, Delete, Event, PriorityHigh, LowPriority, Star, EventNote, Add } from '@mui/icons-material';
 import './Fullcalendar.css';
 
-const apiUrl = "http://localhost:8080/api/schedules";
+const apiUrl = "https://noteably.onrender.com/api/schedules";
 
 function Schedule() {
-  const studentId = localStorage.getItem('studentId'); // Get studentId from local storage
+  const studentId = localStorage.getItem('studentId');
   const [schedules, setSchedules] = useState([]);
-  const [toDoItems, setToDoItems] = useState([]);
   const [formData, setFormData] = useState({ title: "", priority: "moderate", startDate: "", endDate: "", colorCode: "", todoListIds: [] });
   const [isEditMode, setIsEditMode] = useState(false);
   const [selectedId, setSelectedId] = useState(null);
@@ -27,30 +25,18 @@ function Schedule() {
   const [openAlertDialog, setOpenAlertDialog] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
 
-
- 
-  useEffect(() => {
-    fetchSchedules();
-    fetchToDoItems();
-  }, []);
-
-  const fetchSchedules = async () => {
+  const fetchSchedules = useCallback(async () => {
     try {
-      const response = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` }); // Fetch schedules by studentId
-      setSchedules(response.data);
+      const res = await axiosRequest({ method: 'get', url: `${apiUrl}/getByStudent/${studentId}` });
+      setSchedules(res.data);
     } catch (error) {
       console.error("Error fetching schedules", error);
     }
-  };
+  }, [studentId]);
 
-  const fetchToDoItems = async () => {
-    try {
-      const response = await axiosRequest({ method: 'get', url: "http://localhost:8080/api/TodoList/getByStudent/" + studentId }); // Fetch ToDo items by studentId
-      setToDoItems(response.data);
-    } catch (error) {
-      console.error("Error fetching ToDo items", error);
-    }
-  };
+  useEffect(() => {
+    fetchSchedules();
+  }, [fetchSchedules]);
 
   const groupedSchedules = {
     high: schedules.filter(schedule => schedule.priority === 'high'),
@@ -70,13 +56,11 @@ function Schedule() {
       setOpenAlertDialog(true);
       return;
     }
-  
+
     try {
       const url = isEditMode ? `${apiUrl}/editSched/${selectedId}` : `${apiUrl}/postSched`;
       const method = isEditMode ? "put" : "post";
-  
-      const scheduleData = { ...formData, studentId: parseInt(studentId, 10) }; // Include studentId
-  
+      const scheduleData = { ...formData, studentId: parseInt(studentId, 10) };
       await axiosRequest({ method, url, data: scheduleData, headers: { "Content-Type": "application/json" } });
       setFormData({ title: "", priority: "moderate", startDate: "", endDate: "", colorCode: "", todoListIds: [] });
       setIsEditMode(false);
@@ -86,8 +70,6 @@ function Schedule() {
       console.error("Error saving schedule", error);
     }
   };
-  
-  
 
   const handleDeleteClick = (id) => {
     setScheduleToDelete(id);
@@ -105,26 +87,22 @@ function Schedule() {
     }
   };
 
-
-const handleEdit = (schedule) => {
-  setFormData({
-    title: schedule.title,
-    priority: schedule.priority,
-    startDate: schedule.startDate,
-    endDate: schedule.endDate,
-    colorCode: schedule.colorCode,
-    todoListIds: schedule.tasks.map((task) => task.toDoListID),
-  });
-  setIsEditMode(true);
-  setSelectedId(schedule.scheduleID);
-  setOpenEditConfirmationDialog(true); // Open confirmation dialog first
-};
-
-
-  
+  const handleEdit = (schedule) => {
+    setFormData({
+      title: schedule.title,
+      priority: schedule.priority,
+      startDate: schedule.startDate,
+      endDate: schedule.endDate,
+      colorCode: schedule.colorCode,
+      todoListIds: schedule.tasks?.map((task) => task.toDoListID) || [],
+    });
+    setIsEditMode(true);
+    setSelectedId(schedule.scheduleID);
+    setOpenEditConfirmationDialog(true);
+  };
 
   const handleCloseEditDialog = () => {
-    setOpenEditDialog(false); // Close the edit dialog
+    setOpenEditDialog(false);
     setIsEditMode(false);
     setSelectedId(null);
     setFormData({ title: "", priority: "moderate", startDate: "", endDate: "", colorCode: "", todoListIds: [] });
@@ -140,11 +118,10 @@ const handleEdit = (schedule) => {
 
   const addNewToDo = async () => {
     try {
-      const newToDoData = { ...newToDo, studentId: parseInt(studentId, 10) }; // Include studentId
-      const response = await axiosRequest({ method: 'post', url: "http://localhost:8080/api/TodoList/postListRecord", data: { ...newToDoData, scheduleId: selectedId } });
+      const newToDoData = { ...newToDo, studentId: parseInt(studentId, 10) };
+      await axiosRequest({ method: 'post', url: "https://noteeablyapp-production.up.railway.app/api/TodoList/postListRecord", data: { ...newToDoData, scheduleId: selectedId } });
       setNewToDo({ title: "", description: "" });
       setOpenToDoDialog(false);
-      fetchToDoItems();
     } catch (error) {
       console.error("Error adding ToDo item", error);
     }
@@ -152,16 +129,13 @@ const handleEdit = (schedule) => {
 
   const getPriorityIcon = (priority) => {
     switch (priority) {
-      case 'high':
-        return <PriorityHigh sx={{ color: '#FF6F61' }} />;
-      case 'moderate':
-        return <Star sx={{ color: '#FFD166' }} />;
-      case 'low':
-        return <LowPriority sx={{ color: '#FFC067' }} />;
-      default:
-        return <Event />;
+      case 'high': return <PriorityHigh sx={{ color: '#FF6F61' }} />;
+      case 'moderate': return <Star sx={{ color: '#FFD166' }} />;
+      case 'low': return <LowPriority sx={{ color: '#FFC067' }} />;
+      default: return <Event />;
     }
   };
+
 
   return (
     <div style={{

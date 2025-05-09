@@ -10,8 +10,19 @@ import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.NoSuchElementException;
+@CrossOrigin(
+    origins = {
+        "http://localhost:3000",
+        "https://noteably-app.vercel.app",        // production frontend domain
+        "https://noteably-app-git-main-muttia-selgas-projects.vercel.app"  // preview deployment
+    },
 
-@CrossOrigin(origins = "http://localhost:3000")
+    allowedHeaders = "*",
+    methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE},
+    allowCredentials = "true",
+    maxAge = 3600
+)
+
 @RestController
 @RequestMapping("/api/schedules")
 public class ScheduleController {

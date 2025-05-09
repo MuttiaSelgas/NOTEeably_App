@@ -1,17 +1,17 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'https://noteeablyapp-production.up.railway.app/api';
 
-// Utility function to get complete image URL
+// 🔧 Utility: Get fallback or full image URL
 export const getImageUrl = (imagePath) => {
     if (!imagePath) return '/ASSETS/Profile_blue.png';
     if (imagePath.startsWith('/ASSETS/') || imagePath.startsWith('http')) {
         return imagePath;
     }
-    console.log('Profile picture path:', imagePath);
     return '/ASSETS/Profile_blue.png';
 };
 
+// 🔐 Token utility
 export const getAuthToken = () => {
     const token = localStorage.getItem('token');
     if (!token || token === 'null' || token === 'undefined') {
@@ -21,104 +21,86 @@ export const getAuthToken = () => {
     return token;
 };
 
+// 🔄 Create Axios instance
 const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
+    withCredentials: true, // ✅ Required for CORS preflight success with allowCredentials
 });
 
+// ✅ Interceptor: Add Authorization header to protected routes
 axiosInstance.interceptors.request.use(
     (config) => {
-        const token = getAuthToken();
-        console.log('Axios Interceptor: token from localStorage:', token);
-        if (token) {
-            config.headers['Authorization'] = `Bearer ${token}`;
-            console.log('Axios Interceptor: Authorization header set');
-        } else {
-            delete config.headers['Authorization'];
-            console.log('Axios Interceptor: Authorization header deleted');
+        const publicEndpoints = ['/students/register', '/students/login'];
+        const isPublic = publicEndpoints.some((endpoint) => config.url?.includes(endpoint));
+
+        if (!isPublic) {
+            const token = getAuthToken();
+            if (token) {
+                config.headers['Authorization'] = `Bearer ${token}`;
+            } else {
+                delete config.headers['Authorization'];
+            }
         }
+
         return config;
     },
     (error) => Promise.reject(error)
 );
 
-// Wrapper function to make requests only if token exists
-export const axiosRequest = async (config) => {
-    const token = getAuthToken();
-    if (!token) {
-        throw new Error('No auth token found. Please login.');
-    }
-    return axiosInstance(config);
-};
-
+// ✅ Auth-Free Endpoints
 export const addStudent = async (studentData) => {
-    try {
-        const response = await axiosInstance.post(`/students/register`, studentData);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.post('/students/register', studentData);
+    return response.data;
 };
 
 export const loginStudent = async (credentials) => {
-    try {
-        const response = await axiosInstance.post(`/students/login`, credentials);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.post('/students/login', credentials);
+    return response.data;
 };
 
+// ✅ Authenticated API Calls
 export const getStudentById = async (id) => {
-    try {
-        const response = await axiosInstance.get(`/students/${id}`);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.get(`/students/${id}`);
+    return response.data;
 };
 
 export const getStudentByStudentId = async (studentId) => {
-    try {
-        const response = await axiosInstance.get(`/students/find/${studentId}`);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.get(`/students/find/${studentId}`);
+    return response.data;
 };
 
 export const updateStudent = async (id, studentData) => {
-    try {
-        const response = await axiosInstance.put(`/students/${id}`, studentData);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.put(`/students/${id}`, studentData);
+    return response.data;
 };
 
 export const uploadProfilePicture = async (id, file) => {
-    try {
-        const formData = new FormData();
-        formData.append('file', file);
-        const response = await axiosInstance.post(
-            `/students/${id}/profile-picture`,
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }
-        );
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await axiosInstance.post(
+        `/students/${id}/profile-picture`,
+        formData,
+        {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        }
+    );
+    return response.data;
 };
 
 export const deleteStudent = async (id) => {
-    try {
-        const response = await axiosInstance.delete(`/students/${id}`);
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
+    const response = await axiosInstance.delete(`/students/${id}`);
+    return response.data;
+};
+
+// ✅ Generic Axios wrapper (for custom requests)
+export const axiosRequest = async (method, url, data = null, config = {}) => {
+    const response = await axiosInstance({
+        method,
+        url,
+        data,
+        ...config,
+    });
+    return response.data;
 };

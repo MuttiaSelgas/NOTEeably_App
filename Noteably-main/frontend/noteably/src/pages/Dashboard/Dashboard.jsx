@@ -14,7 +14,7 @@ import '../../antioverflow.css';
 import './Dashboard.css';
 
 function Dashboard() {
-  const [studentData, setStudentData] = useState({ studentId: '', studentName: '' });
+  const [studentData, setStudentData] = useState({ studentId: '', studentName:  localStorage.setItem('studentName')|| ""}); 
 
   useEffect(() => {
     const fetchStudentData = async () => {
@@ -33,7 +33,13 @@ function Dashboard() {
         return;
       }
       try {
-        const response = await axiosRequest({ method: 'get', url: API_ENDPOINTS.STUDENT.GET_BY_ID(studentId), ...axiosConfig });
+        const response = await axiosRequest(
+          'get',
+          API_ENDPOINTS.STUDENT.GET_BY_ID(studentId),
+          null,
+          axiosConfig
+        );
+        
         const { studentId: apiStudentId, name, profilePicture } = response.data;
         setStudentData({ 
           studentId: apiStudentId, 

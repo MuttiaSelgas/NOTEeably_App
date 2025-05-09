@@ -4,7 +4,7 @@ import { Box, Typography, List, ListItem, ListItemText, IconButton } from '@mui/
 import { useNavigate } from 'react-router-dom';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
-const apiUrl = "http://localhost:8080/api/timer";
+const apiUrl = "https://noteeablyapp-production.up.railway.app/api/timer";
 
 const TimerListWidget = () => {
     const [timerList, setTimerList] = useState([]);

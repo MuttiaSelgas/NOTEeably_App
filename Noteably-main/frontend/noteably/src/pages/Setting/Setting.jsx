@@ -4,7 +4,7 @@ import { Box, Modal, IconButton, Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import LockIcon from '@mui/icons-material/Lock';
-import AddIcon from '@mui/icons-material/Add'; // For plus icon
+import AddIcon from '@mui/icons-material/Add';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import './Settings.css';
@@ -21,11 +21,12 @@ const AVATAR_OPTIONS = [
 function SettingsPage() {
   const [student, setStudent] = useState({
     name: '', course: '', contactNumber: '', email: '',
-    currentPassword: '', newPassword: '', confirmPassword: '', profilePicture: '',
+    newPassword: '', confirmPassword: '', profilePicture: '',
   });
 
   const [uploadedFile, setUploadedFile] = useState(null);
   const [uploadedImageUrl, setUploadedImageUrl] = useState(null);
+
   const [openProfileModal, setOpenProfileModal] = useState(false);
   const [openInfoModal, setOpenInfoModal] = useState(false);
   const [openPasswordModal, setOpenPasswordModal] = useState(false);
@@ -33,6 +34,7 @@ function SettingsPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [alertMessage, setAlertMessage] = useState('');
   const [isAlertVisible, setIsAlertVisible] = useState(false);
+
   const navigate = useNavigate();
 
   const fetchStudentData = useCallback(async () => {
@@ -40,19 +42,24 @@ function SettingsPage() {
       const fullStudentInfo = localStorage.getItem('fullStudentInfo');
       if (!fullStudentInfo) return navigate('/login');
       const { id } = JSON.parse(fullStudentInfo);
-      const response = await axiosRequest({ method: 'get', url: `http://localhost:8080/api/students/${id}` });
+      const response = await axiosRequest({ method: 'get', url: `https://noteably.onrender.com/api/students/${id}` });
       const data = response.data;
       setStudent(prev => ({
         ...prev,
-        name: data.name || '', course: data.course || '', contactNumber: data.contactNumber || '',
-        email: data.email || '', profilePicture: data.profilePicture || '/ASSETS/Profile_blue.png',
+        name: data.name || '',
+        course: data.course || '',
+        contactNumber: data.contactNumber || '',
+        email: data.email || '',
+        profilePicture: data.profilePicture || '/ASSETS/Profile_blue.png',
       }));
     } catch (error) {
       console.error('Error fetching student data:', error);
     }
   }, [navigate]);
 
-  useEffect(() => { fetchStudentData(); }, [fetchStudentData]);
+  useEffect(() => {
+    fetchStudentData();
+  }, [fetchStudentData]);
 
   const handleInputChange = (e) => {
     const { id, value } = e.target;
@@ -69,7 +76,7 @@ function SettingsPage() {
       const { id } = JSON.parse(localStorage.getItem('fullStudentInfo'));
       await axiosRequest({
         method: 'put',
-        url: `http://localhost:8080/api/students/${id}`,
+        url: `https://noteeablyapp-production.up.railway.app/api/students/${id}`,
         data: {
           name: student.name,
           course: student.course,
@@ -95,25 +102,6 @@ function SettingsPage() {
     setTimeout(() => navigate('/login'), 2000);
   };
 
-  const handleUploadFileChange = (e) => {
-    setUploadedFile(e.target.files[0]);
-  };
-
-  const handleSaveProfilePicture = async () => {
-    try {
-      if (uploadedFile) {
-        const { id } = JSON.parse(localStorage.getItem('fullStudentInfo'));
-        const response = await uploadProfilePicture(id, uploadedFile);
-        setStudent(prev => ({ ...prev, profilePicture: response.profilePicture }));
-      }
-      // Otherwise avatar already selected
-      await handleSaveChanges();
-      setUploadedFile(null);
-      setOpenProfileModal(false);
-    } catch (error) {
-      console.error('Error uploading profile picture:', error);
-    }
-  };
 
   return (
     <Box sx={{
@@ -455,3 +443,4 @@ function SettingsPage() {
 }
 
 export default SettingsPage;
+
